@@ -88,19 +88,10 @@ bool Dropdown(
 
     float textX = bb.Min.x + 10.0f * dpi;
     if (!currentIcon.empty()) {
-        auto sub = ctx.Icons().GetIcon(currentIcon);
-        if (sub.valid && sub.srv) {
-            const float iconDim = 14.0f * dpi;
-            const ImVec2 iconPos = ImVec2(textX, bb.Min.y + (height - iconDim) * 0.5f);
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                iconPos,
-                ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                sub.uv0, sub.uv1,
-                ImColor(colors.Accent)
-            );
-            textX += iconDim + 8.0f * dpi;
-        }
+        const float iconDim = 14.0f * dpi;
+        const ImVec2 iconPos = ImVec2(textX, bb.Min.y + (height - iconDim) * 0.5f);
+        ctx.Icons().DrawIcon(drawList, currentIcon.c_str(), iconPos, ImVec2(iconDim, iconDim), colors.Accent);
+        textX += iconDim + 8.0f * dpi;
     }
 
     const ImVec2 textPos = ImVec2(textX, bb.Min.y + (height - ImGui::GetFontSize()) * 0.5f);
@@ -108,21 +99,9 @@ bool Dropdown(
 
     // Chevron Icon on right edge
     const char* chevName = isOpen ? "chevron-up" : "chevron-down";
-    auto chevronSub = ctx.Icons().GetIcon(chevName);
-    if (!chevronSub.valid || !chevronSub.srv) {
-        chevronSub = ctx.Icons().GetIcon("chevron-down");
-    }
-    if (chevronSub.valid && chevronSub.srv) {
-        const float chevDim = 14.0f * dpi;
-        const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(chevronSub.srv),
-            chevPos,
-            ImVec2(chevPos.x + chevDim, chevPos.y + chevDim),
-            chevronSub.uv0, chevronSub.uv1,
-            ImColor(isOpen ? colors.Accent : colors.TextMuted)
-        );
-    }
+    const float chevDim = 14.0f * dpi;
+    const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
+    ctx.Icons().DrawIcon(drawList, chevName, chevPos, ImVec2(chevDim, chevDim), isOpen ? colors.Accent : colors.TextMuted);
 
     bool changed = false;
 
@@ -200,18 +179,10 @@ bool Dropdown(
 
             // Draw item icon first without overlapping text
             if (i < static_cast<int>(item_icons.size()) && !item_icons[i].empty()) {
-                auto itemSub = ctx.Icons().GetIcon(item_icons[i]);
-                if (itemSub.valid && itemSub.srv) {
-                    const float itemIconDim = 14.0f * dpi;
-                    listDraw->AddImage(
-                        reinterpret_cast<ImTextureID>(itemSub.srv),
-                        ImVec2(itemDrawX, itemPos.y + (itemH - itemIconDim) * 0.5f),
-                        ImVec2(itemDrawX + itemIconDim, itemPos.y + (itemH + itemIconDim) * 0.5f),
-                        itemSub.uv0, itemSub.uv1,
-                        ImColor(isSelected ? colors.Accent : colors.TextSecondary)
-                    );
-                    itemDrawX += itemIconDim + 8.0f * dpi;
-                }
+                const float itemIconDim = 14.0f * dpi;
+                const ImVec2 iconPos = ImVec2(itemDrawX, itemPos.y + (itemH - itemIconDim) * 0.5f);
+                ctx.Icons().DrawIcon(listDraw, item_icons[i].c_str(), iconPos, ImVec2(itemIconDim, itemIconDim), isSelected ? colors.Accent : colors.TextSecondary);
+                itemDrawX += itemIconDim + 8.0f * dpi;
             }
 
             // Draw item text clearly separated from the icon
@@ -319,21 +290,9 @@ bool MultiDropdown(
 
     // Chevron Icon on right edge
     const char* chevName = isOpen ? "chevron-up" : "chevron-down";
-    auto chevronSub = ctx.Icons().GetIcon(chevName);
-    if (!chevronSub.valid || !chevronSub.srv) {
-        chevronSub = ctx.Icons().GetIcon("chevron-down");
-    }
-    if (chevronSub.valid && chevronSub.srv) {
-        const float chevDim = 14.0f * dpi;
-        const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(chevronSub.srv),
-            chevPos,
-            ImVec2(chevPos.x + chevDim, chevPos.y + chevDim),
-            chevronSub.uv0, chevronSub.uv1,
-            ImColor(isOpen ? colors.Accent : colors.TextMuted)
-        );
-    }
+    const float chevDim = 14.0f * dpi;
+    const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
+    ctx.Icons().DrawIcon(drawList, chevName, chevPos, ImVec2(chevDim, chevDim), isOpen ? colors.Accent : colors.TextMuted);
 
     bool anyChanged = false;
 
@@ -432,18 +391,10 @@ bool MultiDropdown(
 
             // Draw item icon if present
             if (i < item_icons.size() && !item_icons[i].empty()) {
-                auto itemSub = ctx.Icons().GetIcon(item_icons[i]);
-                if (itemSub.valid && itemSub.srv) {
-                    const float itemIconDim = 14.0f * dpi;
-                    listDraw->AddImage(
-                        reinterpret_cast<ImTextureID>(itemSub.srv),
-                        ImVec2(textDrawX, rowPos.y + (itemH - itemIconDim) * 0.5f),
-                        ImVec2(textDrawX + itemIconDim, rowPos.y + (itemH + itemIconDim) * 0.5f),
-                        itemSub.uv0, itemSub.uv1,
-                        ImColor(state ? colors.Accent : colors.TextSecondary)
-                    );
-                    textDrawX += itemIconDim + 6.0f * dpi;
-                }
+                const float itemIconDim = 14.0f * dpi;
+                const ImVec2 iconPos = ImVec2(textDrawX, rowPos.y + (itemH - itemIconDim) * 0.5f);
+                ctx.Icons().DrawIcon(listDraw, item_icons[i].c_str(), iconPos, ImVec2(itemIconDim, itemIconDim), state ? colors.Accent : colors.TextSecondary);
+                textDrawX += itemIconDim + 6.0f * dpi;
             }
 
             // Draw item label

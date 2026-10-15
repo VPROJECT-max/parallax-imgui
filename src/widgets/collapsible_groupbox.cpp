@@ -100,7 +100,8 @@ bool BeginCollapsibleGroupbox(
 
     if (centered) {
         const float titleX = headerBb.Min.x + (cardW - titleSize.x) * 0.5f;
-        drawList->AddText(ImVec2(titleX, midHeaderY), ImColor(colors.TextPrimary), title);
+        const char* textEnd = ImGui::FindRenderedTextEnd(title);
+        drawList->AddText(nullptr, 0.0f, ImVec2(titleX, midHeaderY), ImColor(colors.TextPrimary), title, textEnd);
 
         const float lineY = headerBb.Min.y + headerH * 0.5f;
         const float margin = 14.0f * dpi;
@@ -121,40 +122,20 @@ bool BeginCollapsibleGroupbox(
     } else {
         float textX = headerBb.Min.x + 12.0f * dpi;
         if (icon && icon[0] != '\0') {
-            auto sub = ctx.Icons().GetIcon(icon);
-            if (sub.valid && sub.srv) {
-                const float iconDim = 16.0f * dpi;
-                const ImVec2 iconPos = ImVec2(textX, headerBb.Min.y + (headerH - iconDim) * 0.5f);
-                drawList->AddImage(
-                    reinterpret_cast<ImTextureID>(sub.srv),
-                    iconPos,
-                    ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                    sub.uv0, sub.uv1,
-                    ImColor(colors.Accent)
-                );
-                textX += iconDim + 8.0f * dpi;
-            }
+            const float iconDim = 16.0f * dpi;
+            const ImVec2 iconPos = ImVec2(textX, headerBb.Min.y + (headerH - iconDim) * 0.5f);
+            ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), colors.Accent);
+            textX += iconDim + 8.0f * dpi;
         }
-        drawList->AddText(ImVec2(textX, midHeaderY), ImColor(colors.TextPrimary), title);
+        const char* textEnd = ImGui::FindRenderedTextEnd(title);
+        drawList->AddText(nullptr, 0.0f, ImVec2(textX, midHeaderY), ImColor(colors.TextPrimary), title, textEnd);
     }
 
     // Chevron icon indicating expand/collapse state
     const char* chevIcon = (*p_expanded && progress > 0.5f) ? "chevron-down" : "chevron-right";
-    auto chevSub = ctx.Icons().GetIcon(chevIcon);
-    if (!chevSub.valid || !chevSub.srv) {
-        chevSub = ctx.Icons().GetIcon("chevron-down");
-    }
-    if (chevSub.valid && chevSub.srv) {
-        const float chevDim = 14.0f * dpi;
-        const ImVec2 chevPos = ImVec2(headerBb.Max.x - chevDim - 12.0f * dpi, headerBb.Min.y + (headerH - chevDim) * 0.5f);
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(chevSub.srv),
-            chevPos,
-            ImVec2(chevPos.x + chevDim, chevPos.y + chevDim),
-            chevSub.uv0, chevSub.uv1,
-            ImColor(hovered ? colors.TextPrimary : colors.TextMuted)
-        );
-    }
+    const float chevDim = 14.0f * dpi;
+    const ImVec2 chevPos = ImVec2(headerBb.Max.x - chevDim - 12.0f * dpi, headerBb.Min.y + (headerH - chevDim) * 0.5f);
+    ctx.Icons().DrawIcon(drawList, chevIcon, chevPos, ImVec2(chevDim, chevDim), hovered ? colors.TextPrimary : colors.TextMuted);
 
     // Horizontal divider line below header if expanded
     if (progress > 0.05f) {

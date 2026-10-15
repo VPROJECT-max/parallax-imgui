@@ -129,19 +129,21 @@ bool Button(const char* label, const char* icon, ButtonVariant variant, const Im
     // Compute centered content position
     const float totalContentWidth = iconSize + iconSpacing + labelSize.x;
     float startX = bb.Min.x + (size.x - totalContentWidth) * 0.5f;
+    startX = std::max(startX, bb.Min.x + metrics.FramePadding.x * dpi);
     const float centerY = bb.Min.y + (size.y * 0.5f);
 
-    // Render optional icon
+    // Render optional icon directly into drawList at centered position
     if (icon && icon[0]) {
         const ImVec2 iconPos(startX, centerY - (iconSize * 0.5f));
-        ctx.Icons().DrawIcon(icon, ImVec2(iconSize, iconSize), textCol);
+        ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconSize, iconSize), textCol);
         startX += iconSize + iconSpacing;
     }
 
-    // Render label
-    if (labelSize.x > 0.0f) {
+    // Render label with ## ID truncation support
+    const char* textEnd = ImGui::FindRenderedTextEnd(label);
+    if (textEnd > label && labelSize.x > 0.0f) {
         const ImVec2 textPos(startX, centerY - (labelSize.y * 0.5f));
-        drawList->AddText(textPos, ImColor(textCol), label);
+        drawList->AddText(nullptr, 0.0f, textPos, ImColor(textCol), label, textEnd);
     }
 
     PopFont();

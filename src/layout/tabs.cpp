@@ -66,7 +66,8 @@ bool SubTabs::Item(const char* label, bool selected) {
     // Text color
     ImVec4 textCol = selected ? colors.TextPrimary : (hovered ? colors.TextPrimary : colors.TextSecondary);
     ImVec2 textPos = ImVec2(bb.Min.x + 10.0f * dpi, bb.Min.y + (size.y - ImGui::GetFontSize()) * 0.5f);
-    drawList->AddText(textPos, ImColor(textCol), label);
+    const char* textEnd = ImGui::FindRenderedTextEnd(label);
+    drawList->AddText(nullptr, 0.0f, textPos, ImColor(textCol), label, textEnd);
     PopFont();
 
     if (s_placement == SubTabPlacement::TopHorizontal || s_placement == SubTabPlacement::BottomHorizontal) {

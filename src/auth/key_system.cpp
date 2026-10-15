@@ -161,63 +161,87 @@ void KeySystem::Logout() {
 bool KeySystem::RenderModal(bool* p_open) {
     Update();
 
+    if (p_open && !*p_open) return false;
+
     Context& ctx = Context::Get();
     const float dpi = ctx.GetDpiScale();
     const auto& colors = StyleManager::Get().Colors();
     const auto& metrics = StyleManager::Get().Metrics();
 
-    const ImVec2 dialogSize(480.0f * dpi, 380.0f * dpi);
-    const ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-    const ImVec2 dialogPos(
-        (screenSize.x - dialogSize.x) * 0.5f,
-        (screenSize.y - dialogSize.y) * 0.5f
-    );
+    if (!ImGui::IsPopupOpen("##ParallaxKeyModal")) {
+        ImGui::OpenPopup("##ParallaxKeyModal");
+    }
 
-    ImGui::SetNextWindowPos(dialogPos, ImGuiCond_Always);
-    ImGui::SetNextWindowSize(dialogSize, ImGuiCond_Always);
+    const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(480.0f * dpi, 0.0f), ImGuiCond_Always);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, metrics.WindowRounding * dpi);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24.0f * dpi, 24.0f * dpi));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24.0f * dpi, 20.0f * dpi));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, colors.WindowBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
+    ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, ImVec4(0.04f, 0.05f, 0.08f, 0.75f));
 
-    bool opened = ImGui::Begin("##ParallaxKeyModal", p_open,
-        ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    bool opened = ImGui::BeginPopupModal("##ParallaxKeyModal", p_open,
+        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
+
+    if (!opened) {
+        ImGui::PopStyleColor(3);
+        ImGui::PopStyleVar(2);
+        if (p_open) *p_open = false;
+        return false;
+    }
+
+    // Dismiss modal on Escape key
+    if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+        if (p_open) *p_open = false;
+        ImGui::CloseCurrentPopup();
+    }
 
     ImDrawList* drawList = ImGui::GetWindowDrawList();
     const ImVec2 winPos = ImGui::GetWindowPos();
+    const float contentWidth = ImGui::GetContentRegionAvail().x;
 
-    // Top Header Icon + Branding
+    // -------------------------------------------------------------------------
+    // Top Header: Shield Icon + Title / Subtitle + Close 'X' Button
+    // -------------------------------------------------------------------------
     const float shieldDim = 28.0f * dpi;
-    auto shieldIcon = ctx.Icons().GetIcon("shield");
-    if (shieldIcon.valid && shieldIcon.srv) {
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(shieldIcon.srv),
-            ImVec2(winPos.x + 24.0f * dpi, winPos.y + 24.0f * dpi),
-            ImVec2(winPos.x + 24.0f * dpi + shieldDim, winPos.y + 24.0f * dpi + shieldDim),
-            shieldIcon.uv0, shieldIcon.uv1,
-            ImColor(colors.Accent)
-        );
+    const ImVec2 iconPos(winPos.x + 24.0f * dpi, winPos.y + 20.0f * dpi);
+    ctx.Icons().DrawIcon(drawList, "shield", iconPos, ImVec2(shieldDim, shieldDim), colors.Accent);
+
+    // Title & Subtitle text block
+    const float titleX = winPos.x + 24.0f * dpi + shieldDim + 12.0f * dpi;
+    PushFont(FontWeight::Bold);
+    drawList->AddText(ImVec2(titleX, winPos.y + 18.0f * dpi), ImColor(colors.TextPrimary), "PARALLAX // AUTHORIZATION");
+    PopFont();
+
+    PushFont(FontWeight::Caption);
+    drawList->AddText(ImVec2(titleX, winPos.y + 38.0f * dpi), ImColor(colors.TextMuted), "Enter your product key to unlock the complete UI suite.");
+    PopFont();
+
+    // Close 'X' button in top-right
+    const float closeDim = 26.0f * dpi;
+    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi + contentWidth - closeDim, winPos.y + 18.0f * dpi));
+    if (Button("##CloseKeyModal", "x", ButtonVariant::Ghost, ImVec2(closeDim, closeDim))) {
+        if (p_open) *p_open = false;
+        ImGui::CloseCurrentPopup();
     }
 
-    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 64.0f * dpi, winPos.y + 22.0f * dpi));
-    PushFont(FontWeight::Bold);
-    ImGui::TextColored(colors.TextPrimary, "PARALLAX // AUTHORIZATION");
-    PopFont();
+    // Advance cursor past header
+    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 60.0f * dpi));
+    drawList->AddLine(
+        ImVec2(winPos.x + 24.0f * dpi, winPos.y + 60.0f * dpi),
+        ImVec2(winPos.x + 24.0f * dpi + contentWidth, winPos.y + 60.0f * dpi),
+        ImColor(colors.Border),
+        1.0f
+    );
 
-    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 64.0f * dpi, winPos.y + 44.0f * dpi));
-    PushFont(FontWeight::Caption);
-    ImGui::TextColored(colors.TextMuted, "Enter your product key to unlock the complete UI suite.");
-    PopFont();
-
-    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 78.0f * dpi));
-    ImGui::Separator();
-    ImGui::Spacing();
+    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 72.0f * dpi));
     ImGui::Spacing();
 
     // Key input label
     PushFont(FontWeight::Medium);
-    ImGui::TextColored(colors.TextSecondary, "Product License Key:");
+    ImGui::TextColored(colors.TextSecondary, "Product License Key");
     PopFont();
 
     ImGui::Spacing();
@@ -228,10 +252,11 @@ bool KeySystem::RenderModal(bool* p_open) {
         snprintf(s_keyBuffer, sizeof(s_keyBuffer), "%s", m_enteredKey.c_str());
     }
 
-    const float inputW = dialogSize.x - 48.0f * dpi - 44.0f * dpi;
+    const float eyeBtnDim = 36.0f * dpi;
+    const float inputW = contentWidth - eyeBtnDim - 8.0f * dpi;
 
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, metrics.FrameRounding);
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * dpi, 8.0f * dpi));
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, metrics.FrameRounding * dpi);
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * dpi, 9.0f * dpi));
     ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.CardBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
 
@@ -245,13 +270,17 @@ bool KeySystem::RenderModal(bool* p_open) {
         m_enteredKey = s_keyBuffer;
     }
 
+    if (ImGui::IsItemFocused() && ImGui::IsKeyPressed(ImGuiKey_Enter) && m_status != KeyStatus::Verifying) {
+        StartVerification(s_keyBuffer);
+    }
+
     ImGui::PopStyleColor(2);
     ImGui::PopStyleVar(2);
 
     ImGui::SameLine(0.0f, 8.0f * dpi);
 
     // Eye toggle button (show / hide key)
-    if (Button("##ToggleShowKey", m_showKeyText ? "eye-off" : "eye", ButtonVariant::Secondary, ImVec2(36.0f * dpi, 36.0f * dpi))) {
+    if (Button("##ToggleShowKey", m_showKeyText ? "eye-off" : "eye", ButtonVariant::Secondary, ImVec2(eyeBtnDim, eyeBtnDim))) {
         m_showKeyText = !m_showKeyText;
     }
 
@@ -259,35 +288,55 @@ bool KeySystem::RenderModal(bool* p_open) {
     ImGui::Spacing();
 
     // Remember key checkbox
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.CardBg);
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, colors.CardHover);
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, colors.Accent);
+    ImGui::PushStyleColor(ImGuiCol_CheckMark, colors.Accent);
+    ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
+    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f * dpi);
     ImGui::Checkbox("Remember key on this device", &m_rememberKey);
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor(5);
 
     ImGui::Spacing();
 
-    // Status / Feedback message area
+    // Status / Feedback message area (deterministic height to prevent layout jumps)
+    const float statusBannerHeight = 34.0f * dpi;
     if (m_status == KeyStatus::Verifying) {
-        // Animated loading state
-        const float time = static_cast<float>(ImGui::GetTime());
-        const float spinnerR = 7.0f * dpi;
-        const ImVec2 spinPos = ImVec2(winPos.x + 36.0f * dpi, winPos.y + 225.0f * dpi);
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.12f));
+        ImGui::PushStyleColor(ImGuiCol_Border, colors.Accent);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
+        ImGui::BeginChild("##VerifyingBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-        drawList->PathClear();
+        ImDrawList* bannerDraw = ImGui::GetWindowDrawList();
+        const ImVec2 bannerPos = ImGui::GetWindowPos();
+        const float time = static_cast<float>(ImGui::GetTime());
+        const float spinnerR = 6.0f * dpi;
+        const ImVec2 spinCenter(bannerPos.x + 18.0f * dpi, bannerPos.y + statusBannerHeight * 0.5f);
+
+        bannerDraw->PathClear();
         for (int i = 0; i < 6; ++i) {
             const float a = time * 6.0f + static_cast<float>(i) * 0.4f;
-            drawList->PathLineTo(ImVec2(spinPos.x + std::cos(a) * spinnerR, spinPos.y + std::sin(a) * spinnerR));
+            bannerDraw->PathLineTo(ImVec2(spinCenter.x + std::cos(a) * spinnerR, spinCenter.y + std::sin(a) * spinnerR));
         }
-        drawList->PathStroke(ImColor(colors.Accent), 0, 2.0f);
+        bannerDraw->PathStroke(ImColor(colors.Accent), 0, 2.0f);
 
-        ImGui::SetCursorScreenPos(ImVec2(spinPos.x + 18.0f * dpi, spinPos.y - 8.0f * dpi));
+        ImGui::SetCursorScreenPos(ImVec2(spinCenter.x + 14.0f * dpi, bannerPos.y + (statusBannerHeight - ImGui::GetTextLineHeight()) * 0.5f));
         PushFont(FontWeight::Caption);
-        ImGui::TextColored(colors.Accent, "%s", m_statusMessage.c_str());
+        ImGui::TextColored(colors.Accent, "%s", m_statusMessage.empty() ? "Contacting authorization server..." : m_statusMessage.c_str());
         PopFont();
+
+        ImGui::EndChild();
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor(2);
     } else if (m_status == KeyStatus::Success) {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.05f, 0.25f, 0.12f, 0.35f));
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Success);
-        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding);
-        ImGui::BeginChild("##SuccessBanner", ImVec2(-1.0f, 32.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
+        ImGui::BeginChild("##SuccessBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::SetCursorPos(ImVec2(12.0f * dpi, (statusBannerHeight - ImGui::GetTextLineHeight()) * 0.5f));
         PushFont(FontWeight::Caption);
-        ImGui::TextColored(colors.Success, "✓  %s", m_statusMessage.c_str());
+        ImGui::TextColored(colors.Success, "%s", m_statusMessage.empty() ? "Key verified successfully. Welcome!" : m_statusMessage.c_str());
         PopFont();
         ImGui::EndChild();
         ImGui::PopStyleVar();
@@ -295,39 +344,48 @@ bool KeySystem::RenderModal(bool* p_open) {
     } else if (m_status == KeyStatus::InvalidKey) {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.30f, 0.08f, 0.08f, 0.35f));
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Danger);
-        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding);
-        ImGui::BeginChild("##ErrorBanner", ImVec2(-1.0f, 32.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
+        ImGui::BeginChild("##ErrorBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::SetCursorPos(ImVec2(12.0f * dpi, (statusBannerHeight - ImGui::GetTextLineHeight()) * 0.5f));
         PushFont(FontWeight::Caption);
-        ImGui::TextColored(colors.Danger, "⚠  %s", m_statusMessage.c_str());
+        ImGui::TextColored(colors.Danger, "%s", m_statusMessage.empty() ? "Invalid or expired license key." : m_statusMessage.c_str());
         PopFont();
         ImGui::EndChild();
         ImGui::PopStyleVar();
         ImGui::PopStyleColor(2);
     } else {
-        ImGui::Dummy(ImVec2(0.0f, 32.0f * dpi));
+        ImGui::Dummy(ImVec2(contentWidth, statusBannerHeight));
     }
 
     ImGui::Spacing();
     ImGui::Spacing();
 
     // Bottom Action Buttons
-    const float buttonW = (dialogSize.x - 48.0f * dpi - 12.0f * dpi) * 0.5f;
+    const float buttonGap = 12.0f * dpi;
+    const float buttonW = (contentWidth - buttonGap) * 0.5f;
+    const float buttonH = 38.0f * dpi;
 
     // Get Key button (links to developer portal)
-    if (Button("Get License Key", "external-link", ButtonVariant::Secondary, ImVec2(buttonW, 38.0f * dpi))) {
+    if (Button("Get License Key", "external-link", ButtonVariant::Secondary, ImVec2(buttonW, buttonH))) {
         ShellExecuteA(NULL, "open", m_keyUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
     }
 
-    ImGui::SameLine(0.0f, 12.0f * dpi);
+    ImGui::SameLine(0.0f, buttonGap);
 
     // Verify / Unlock button
-    const char* unlockLabel = (m_status == KeyStatus::Verifying) ? "Verifying..." : "Unlock Suite";
-    if (Button(unlockLabel, "check", ButtonVariant::Primary, ImVec2(buttonW, 38.0f * dpi))) {
-        StartVerification(s_keyBuffer);
+    const char* unlockLabel = (m_status == KeyStatus::Verifying) ? "Verifying..." : (m_authenticated ? "Done / Continue" : "Unlock Suite");
+    const char* unlockIcon = m_authenticated ? "check-circle" : "key";
+    if (Button(unlockLabel, unlockIcon, ButtonVariant::Primary, ImVec2(buttonW, buttonH))) {
+        if (m_authenticated) {
+            if (p_open) *p_open = false;
+            ImGui::CloseCurrentPopup();
+        } else if (m_status != KeyStatus::Verifying) {
+            StartVerification(s_keyBuffer);
+        }
     }
 
-    ImGui::End();
-    ImGui::PopStyleColor(2);
+    ImGui::EndPopup();
+    ImGui::PopStyleColor(3);
     ImGui::PopStyleVar(2);
 
     return opened;

@@ -208,24 +208,16 @@ bool ControlRow::Render() {
     if (m_icon && m_icon[0] != '\0') {
         const float iconDim = 16.0f * dpi;
         const ImVec2 iconPos = ImVec2(textX, bb.Min.y + (hasDesc ? 6.0f * dpi : (rowHeight - iconDim) * 0.5f));
-        auto sub = ctx.Icons().GetIcon(m_icon);
-        if (sub.valid && sub.srv) {
-            ImVec4 iconCol = m_disabled ? colors.TextMuted : (hovered ? colors.Accent : colors.TextSecondary);
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                iconPos,
-                ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                sub.uv0, sub.uv1,
-                ImColor(iconCol)
-            );
-        }
+        const ImVec4 iconCol = m_disabled ? colors.TextMuted : (hovered ? colors.Accent : colors.TextSecondary);
+        ctx.Icons().DrawIcon(drawList, m_icon, iconPos, ImVec2(iconDim, iconDim), iconCol);
         textX += iconDim + 8.0f * dpi;
     }
 
     ImVec4 labelCol = m_disabled ? colors.TextMuted : colors.TextPrimary;
     const float labelY = hasDesc ? (bb.Min.y + 4.0f * dpi) : (bb.Min.y + (rowHeight - ImGui::GetFontSize()) * 0.5f);
     PushFont(FontWeight::Medium);
-    drawList->AddText(ImVec2(textX, labelY), ImColor(labelCol), m_label);
+    const char* textEnd = ImGui::FindRenderedTextEnd(m_label);
+    drawList->AddText(nullptr, 0.0f, ImVec2(textX, labelY), ImColor(labelCol), m_label, textEnd);
     PopFont();
 
     if (hasDesc) {
@@ -317,6 +309,9 @@ bool ControlRow::Render() {
     if (m_tooltip && hovered) {
         ImGui::SetTooltip("%s", m_tooltip);
     }
+
+    // Ensure cursor is restored to the end of the entire row so chained sub-widgets do not corrupt layout
+    ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + ImGui::GetStyle().ItemSpacing.y));
 
     return pressed;
 }

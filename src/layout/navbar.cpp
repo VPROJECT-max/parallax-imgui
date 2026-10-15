@@ -308,30 +308,24 @@ bool NavBar::TabItem(const char* icon, const char* label, bool selected, const c
         const float iconDim = 18.0f * dpi;
 
         // Centered icon when collapsed, glides to left as it expands
-        const float startIconX = bb.Min.x + (size.x - iconDim) * 0.5f;
+        const float collapsedTabW = (68.0f - 16.0f) * dpi;
+        const float startIconX = bb.Min.x + (collapsedTabW - iconDim) * 0.5f;
         const float targetIconX = bb.Min.x + 14.0f * dpi;
         const float curIconX = startIconX + (targetIconX - startIconX) * expandT;
         const ImVec2 iconPos(curIconX, bb.Min.y + (size.y - iconDim) * 0.5f);
 
-        if (sub.valid && sub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                iconPos,
-                ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                sub.uv0, sub.uv1,
-                ImColor(iconTint)
-            );
-        }
+        ctx.Icons().DrawIcon(drawList, icon ? icon : "circle", iconPos, ImVec2(iconDim, iconDim), iconTint);
 
         // Text & Badge fade in with expandT
         if (expandT > 0.05f) {
             PushFont(FontWeight::Medium);
             const float textLineH = ImGui::GetTextLineHeight();
-            const ImVec2 textPos(curIconX + 26.0f * dpi, bb.Min.y + (size.y - textLineH) * 0.5f);
+            const ImVec2 textPos(targetIconX + iconDim + 10.0f * dpi, bb.Min.y + (size.y - textLineH) * 0.5f);
 
             ImVec4 fadeTextCol = textCol;
             fadeTextCol.w *= expandT;
-            drawList->AddText(textPos, ImColor(fadeTextCol), label);
+            const char* textEnd = ImGui::FindRenderedTextEnd(label);
+            drawList->AddText(nullptr, 0.0f, textPos, ImColor(fadeTextCol), label, textEnd);
             PopFont();
 
             if (badge && badge[0] != '\0') {
@@ -365,20 +359,13 @@ bool NavBar::TabItem(const char* icon, const char* label, bool selected, const c
         // Horizontal top/bottom tab
         const float iconDim = 16.0f * dpi;
         const ImVec2 iconPos(bb.Min.x + 10.0f * dpi, bb.Min.y + (size.y - iconDim) * 0.5f);
-        if (sub.valid && sub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                iconPos,
-                ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                sub.uv0, sub.uv1,
-                ImColor(iconTint)
-            );
-        }
+        ctx.Icons().DrawIcon(drawList, icon ? icon : "circle", iconPos, ImVec2(iconDim, iconDim), iconTint);
 
         PushFont(FontWeight::Medium);
         const float textLineH = ImGui::GetTextLineHeight();
-        const ImVec2 textPos(iconPos.x + 22.0f * dpi, bb.Min.y + (size.y - textLineH) * 0.5f);
-        drawList->AddText(textPos, ImColor(textCol), label);
+        const ImVec2 textPos(iconPos.x + iconDim + 8.0f * dpi, bb.Min.y + (size.y - textLineH) * 0.5f);
+        const char* textEnd = ImGui::FindRenderedTextEnd(label);
+        drawList->AddText(nullptr, 0.0f, textPos, ImColor(textCol), label, textEnd);
         PopFont();
 
         ImGui::SameLine(0.0f, 6.0f * dpi);

@@ -70,7 +70,8 @@ bool SliderFloat(
         // Label on top left, value badge on top right
         ImVec4 labelCol = disabled ? colors.TextMuted : colors.TextPrimary;
         PushFont(FontWeight::Medium);
-        drawList->AddText(bb.Min, ImColor(labelCol), label);
+        const char* textEnd = ImGui::FindRenderedTextEnd(label);
+        drawList->AddText(nullptr, 0.0f, bb.Min, ImColor(labelCol), label, textEnd);
         PopFont();
 
         PushFont(FontWeight::Caption);
@@ -82,10 +83,11 @@ bool SliderFloat(
         trackBb = ImRect(ImVec2(bb.Min.x, trackY), ImVec2(bb.Max.x, trackY + trackH));
     } else {
         // Inline: label on left, slider + value on right
-        ImVec2 labelSize = ImGui::CalcTextSize(label);
-        ImVec4 labelCol = disabled ? colors.TextMuted : colors.TextPrimary;
         PushFont(FontWeight::Medium);
-        drawList->AddText(ImVec2(bb.Min.x, bb.Min.y + (rowHeight - labelSize.y) * 0.5f), ImColor(labelCol), label);
+        const char* textEnd = ImGui::FindRenderedTextEnd(label);
+        const ImVec2 labelSize = ImGui::CalcTextSize(label, textEnd);
+        ImVec4 labelCol = disabled ? colors.TextMuted : colors.TextPrimary;
+        drawList->AddText(nullptr, 0.0f, ImVec2(bb.Min.x, bb.Min.y + (rowHeight - labelSize.y) * 0.5f), ImColor(labelCol), label, textEnd);
         PopFont();
 
         const float valWidth = valTextSize.x + 8.0f * dpi;
@@ -222,7 +224,8 @@ bool RangeSliderFloat(
 
     // Header line: Label on left, formatted min-max on right
     PushFont(FontWeight::Medium);
-    drawList->AddText(bb.Min, ImColor(disabled ? colors.TextMuted : colors.TextPrimary), label);
+    const char* textEnd = ImGui::FindRenderedTextEnd(label);
+    drawList->AddText(nullptr, 0.0f, bb.Min, ImColor(disabled ? colors.TextMuted : colors.TextPrimary), label, textEnd);
     PopFont();
 
     PushFont(FontWeight::Caption);

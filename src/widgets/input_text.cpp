@@ -86,14 +86,12 @@ bool InputText(
 
     float textStartX = frameBb.Min.x + 12.0f * dpi;
 
-    // Render optional leading icon
+    // Render optional leading icon directly into drawList
     if (icon && icon[0]) {
         const float iconDim = 16.0f * dpi;
         const ImVec2 iconPos(textStartX, frameBb.Min.y + (height - iconDim) * 0.5f);
-        ImGui::SetCursorScreenPos(iconPos);
-
         const ImVec4 iconTint = isFocused ? colors.Accent : colors.TextMuted;
-        ctx.Icons().DrawIcon(icon, ImVec2(iconDim, iconDim), iconTint);
+        ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), iconTint);
         textStartX += iconDim + 8.0f * dpi;
     }
 
@@ -129,7 +127,7 @@ bool InputText(
     }
 
     // Set cursor for native text input inside custom frame
-    const float inputWidth = textEndX - textStartX;
+    const float inputWidth = std::max(textEndX - textStartX, 10.0f * dpi);
     ImGui::SetCursorScreenPos(ImVec2(textStartX, frameBb.Min.y + (height - ImGui::GetTextLineHeight()) * 0.5f - 1.0f));
 
     ImGui::PushItemWidth(inputWidth);

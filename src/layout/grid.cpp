@@ -3,6 +3,7 @@
 #include "parallax/core/style.hpp"
 #include "parallax/core/typography.hpp"
 #include "parallax/icons/icon_atlas.hpp"
+#include <imgui_internal.h>
 #include <algorithm>
 
 namespace parallax::layout {
@@ -81,17 +82,28 @@ bool Groupbox::Begin(const char* title, const char* icon, float height) {
 
     if (title && title[0] != '\0') {
         PushFont(FontWeight::SemiBold);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        const ImVec2 startPos = ImGui::GetCursorScreenPos();
+        const float fontH = ImGui::GetFontSize();
+        const float iconDim = 16.0f * dpi;
+        const float headerH = std::max(fontH, iconDim);
+        float textX = startPos.x;
+
         if (icon && icon[0] != '\0') {
-            ctx.Icons().DrawIcon(icon, ImVec2(16.0f * dpi, 16.0f * dpi), colors.Accent);
-            ImGui::SameLine(0.0f, 8.0f * dpi);
+            const ImVec2 iconPos(textX, startPos.y + (headerH - iconDim) * 0.5f);
+            ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), colors.Accent);
+            textX += iconDim + 8.0f * dpi;
         }
-        ImGui::TextColored(colors.TextPrimary, "%s", title);
+
+        const char* textEnd = ImGui::FindRenderedTextEnd(title);
+        const ImVec2 textPos(textX, startPos.y + (headerH - fontH) * 0.5f);
+        drawList->AddText(nullptr, 0.0f, textPos, ImColor(colors.TextPrimary), title, textEnd);
         PopFont();
 
-        ImGui::Spacing();
+        // Advance cursor past header title
+        ImGui::SetCursorScreenPos(ImVec2(startPos.x, startPos.y + headerH + 6.0f * dpi));
 
         // Custom subtle 1px divider
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
         const ImVec2 lineStart = ImGui::GetCursorScreenPos();
         const float lineW = ImGui::GetContentRegionAvail().x;
         drawList->AddLine(
@@ -101,8 +113,7 @@ bool Groupbox::Begin(const char* title, const char* icon, float height) {
             1.0f
         );
 
-        ImGui::Spacing();
-        ImGui::Spacing();
+        ImGui::SetCursorScreenPos(ImVec2(lineStart.x, lineStart.y + 8.0f * dpi));
     }
 
     return open;

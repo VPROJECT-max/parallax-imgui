@@ -67,23 +67,15 @@ bool ToggleEx(const char* label, bool* v, const ToggleOptions& options) {
     if (options.icon && options.icon[0] != '\0') {
         const float iconDim = 16.0f * dpi;
         const ImVec2 iconPos = ImVec2(textCursorX, bb.Min.y + (hasDesc ? 6.0f * dpi : (rowHeight - iconDim) * 0.5f));
-        auto sub = ctx.Icons().GetIcon(options.icon);
-        if (sub.valid && sub.srv) {
-            ImVec4 iconCol = options.disabled ? colors.TextMuted : (hovered ? colors.Accent : colors.TextSecondary);
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                iconPos,
-                ImVec2(iconPos.x + iconDim, iconPos.y + iconDim),
-                sub.uv0, sub.uv1,
-                ImColor(iconCol)
-            );
-        }
+        const ImVec4 iconCol = options.disabled ? colors.TextMuted : (hovered ? colors.Accent : colors.TextSecondary);
+        ctx.Icons().DrawIcon(drawList, options.icon, iconPos, ImVec2(iconDim, iconDim), iconCol);
         textCursorX += iconDim + 8.0f * dpi;
     }
 
     ImVec4 labelCol = options.disabled ? colors.TextMuted : colors.TextPrimary;
     const float labelY = hasDesc ? (bb.Min.y + 4.0f * dpi) : (bb.Min.y + (rowHeight - ImGui::GetFontSize()) * 0.5f);
-    drawList->AddText(ImVec2(textCursorX, labelY), ImColor(labelCol), label);
+    const char* textEnd = ImGui::FindRenderedTextEnd(label);
+    drawList->AddText(nullptr, 0.0f, ImVec2(textCursorX, labelY), ImColor(labelCol), label, textEnd);
 
     if (hasDesc) {
         const float descY = labelY + ImGui::GetFontSize() + 2.0f * dpi;

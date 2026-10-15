@@ -27,5 +27,8 @@ $RECYCLE.BIN/
 # Runtime demo files
 imgui.ini
 *.dat
+*.log
+*.pdb
+*.ilk
 test_configs/
 configs/*.tmp

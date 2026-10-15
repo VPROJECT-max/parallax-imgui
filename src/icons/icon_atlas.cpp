@@ -1,5 +1,6 @@
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/icons/icon_loader.hpp"
+#include "parallax/core/context.hpp"
 #include <d3d11.h>
 #include <cmath>
 #include <algorithm>
@@ -234,12 +235,15 @@ AtlasSubTexture IconAtlas::GetIcon(std::string_view name, float dpiScale, bool p
 }
 
 void IconAtlas::DrawIcon(const char* name, const ImVec2& size, const ImVec4& tint, bool preserveColors) {
-    AtlasSubTexture sub = GetIcon(name, 1.0f, preserveColors);
+    const float dpi = Context::Get().GetDpiScale();
+    AtlasSubTexture sub = GetIcon(name, dpi, preserveColors);
+
+    const ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : ImVec2(sub.size.x * dpi, sub.size.y * dpi);
+    const ImVec2 pos = ImGui::GetCursorScreenPos();
+    ImGui::Dummy(renderSize);
+
     if (!sub.valid || !sub.srv) return;
 
-    ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : sub.size;
-    ImVec2 pos = ImGui::GetCursorScreenPos();
-    ImGui::Dummy(renderSize);
     ImGui::GetWindowDrawList()->AddImage(
         reinterpret_cast<ImTextureID>(sub.srv),
         pos,
@@ -251,10 +255,11 @@ void IconAtlas::DrawIcon(const char* name, const ImVec2& size, const ImVec4& tin
 
 void IconAtlas::DrawIcon(ImDrawList* drawList, const char* name, const ImVec2& pos, const ImVec2& size, const ImVec4& tint, bool preserveColors) {
     if (!drawList) return;
-    AtlasSubTexture sub = GetIcon(name, 1.0f, preserveColors);
+    const float dpi = Context::Get().GetDpiScale();
+    AtlasSubTexture sub = GetIcon(name, dpi, preserveColors);
     if (!sub.valid || !sub.srv) return;
 
-    ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : sub.size;
+    const ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : ImVec2(sub.size.x * dpi, sub.size.y * dpi);
     drawList->AddImage(
         reinterpret_cast<ImTextureID>(sub.srv),
         pos,

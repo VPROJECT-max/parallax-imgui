@@ -48,16 +48,7 @@ bool HeaderWidgets::SearchBar(std::string& inOutQuery, const char* placeholder, 
     // Draw search icon inside the input
     const ImVec2 iconPos = ImVec2(bb.Min.x + 10.0f * dpi, bb.Min.y + (height - 16.0f * dpi) * 0.5f);
     const ImVec4 iconColor = isFocused ? colors.Accent : colors.TextMuted;
-    auto sub = ctx.Icons().GetIcon("search");
-    if (sub.valid && sub.srv) {
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(sub.srv),
-            iconPos,
-            ImVec2(iconPos.x + 16.0f * dpi, iconPos.y + 16.0f * dpi),
-            sub.uv0, sub.uv1,
-            ImColor(iconColor)
-        );
-    }
+    ctx.Icons().DrawIcon(drawList, "search", iconPos, ImVec2(16.0f * dpi, 16.0f * dpi), iconColor);
 
     // Border highlight
     if (focusHighlight > 0.01f) {
@@ -72,16 +63,7 @@ bool HeaderWidgets::SearchBar(std::string& inOutQuery, const char* placeholder, 
     if (!inOutQuery.empty()) {
         const float clearDim = 16.0f * dpi;
         const ImVec2 clearBtnPos = ImVec2(bb.Max.x - clearDim - 10.0f * dpi, bb.Min.y + (height - clearDim) * 0.5f);
-        auto clearSub = ctx.Icons().GetIcon("x");
-        if (clearSub.valid && clearSub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(clearSub.srv),
-                clearBtnPos,
-                ImVec2(clearBtnPos.x + clearDim, clearBtnPos.y + clearDim),
-                clearSub.uv0, clearSub.uv1,
-                ImColor(colors.TextMuted)
-            );
-        }
+        ctx.Icons().DrawIcon(drawList, "x", clearBtnPos, ImVec2(clearDim, clearDim), colors.TextMuted);
         ImGui::SetCursorScreenPos(ImVec2(clearBtnPos.x - 2.0f, clearBtnPos.y - 2.0f));
         if (ImGui::InvisibleButton("##ClearSearch", ImVec2(clearDim + 4.0f, clearDim + 4.0f))) {
             inOutQuery.clear();
@@ -137,16 +119,9 @@ void UserProfileCard(const UserProfile& profile, const ImVec2& sizeArg) {
 
         // Icon inside Avatar
         const float iconDim = 15.0f * dpi;
-        auto sub = ctx.Icons().GetIcon(profile.icon.empty() ? "user" : profile.icon.c_str());
-        if (sub.valid && sub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f),
-                ImVec2(avatarCenter.x + iconDim * 0.5f, avatarCenter.y + iconDim * 0.5f),
-                sub.uv0, sub.uv1,
-                ImColor(colors.TextPrimary)
-            );
-        }
+        const char* iconName = profile.icon.empty() ? "user" : profile.icon.c_str();
+        const ImVec2 iconPos = ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f);
+        ctx.Icons().DrawIcon(drawList, iconName, iconPos, ImVec2(iconDim, iconDim), colors.TextPrimary);
 
         // Online Status Dot
         if (profile.isOnline) {
@@ -167,16 +142,9 @@ void UserProfileCard(const UserProfile& profile, const ImVec2& sizeArg) {
 
         // Icon inside Avatar
         const float iconDim = 18.0f * dpi;
-        auto sub = ctx.Icons().GetIcon(profile.icon.empty() ? "user" : profile.icon.c_str());
-        if (sub.valid && sub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(sub.srv),
-                ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f),
-                ImVec2(avatarCenter.x + iconDim * 0.5f, avatarCenter.y + iconDim * 0.5f),
-                sub.uv0, sub.uv1,
-                ImColor(colors.TextPrimary)
-            );
-        }
+        const char* iconName = profile.icon.empty() ? "user" : profile.icon.c_str();
+        const ImVec2 iconPos = ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f);
+        ctx.Icons().DrawIcon(drawList, iconName, iconPos, ImVec2(iconDim, iconDim), colors.TextPrimary);
 
         // Online Status Dot
         if (profile.isOnline) {

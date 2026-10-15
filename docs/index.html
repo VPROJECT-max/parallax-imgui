@@ -36,7 +36,12 @@
       <a href="#custom-inputs" class="nav-link">Custom Text Inputs & Search</a>
       <a href="#toast-notifications" class="nav-link">Toast Notification System</a>
       <a href="#watermark-system" class="nav-link">Watermark Status Pill</a>
-      <a href="#layout-presets-engine" class="nav-link">Layout Presets & Resizing Engine</a>
+      <a href="#layout-presets-engine" class="nav-link">Layout Presets & Fixed Dimensions</a>
+
+      <div class="nav-group-title">Phase 4: Key System & Config Engine</div>
+      <a href="#key-system-core" class="nav-link">Developer Key System <span class="badge badge-chain">NEW</span></a>
+      <a href="#config-engine" class="nav-link">JSON Configuration Engine <span class="badge badge-chain">NEW</span></a>
+      <a href="#config-sharing" class="nav-link">Base64 Config Sharing</a>
 
       <div class="nav-group-title">Phase 2: Chained Widgets</div>
       <a href="#chaining-api" class="nav-link">Declarative Chaining API <span class="badge badge-chain">RAYFIELD</span></a>
@@ -457,18 +462,92 @@ parallax::Watermark("PARALLAX", "TK", /*showFps=*/true, /*showFrameTime=*/true, 
         Parallax enforces a default size of <strong>980&times;640</strong>, hard min bounds of <strong>740&times;480</strong>, and max bounds of <strong>1920&times;1080</strong>.
         Features responsive column reflow, automated text ellipsis, bounded popups, and an ergonomic bottom-right diagonal drag grip.
       </div>
-      <pre><code>// Apply preset to active window configuration:
-parallax::ApplyLayoutPreset(myWindowConfig, parallax::LayoutPreset::ModernSidebar);
+      <pre><code>// Strict Fixed Dimensions — 1137x699 logical pixels enforced at all times:
+parallax::BeginWindow("Parallax Control System", &isOpen);
+// Resize handles and manual corner scaling permanently disabled.
+// Internal columns reflow deterministically within 1137x699 space.</code></pre>
+    </section>
 
-// Window constraints & corner grip:
-parallax::Window("Main Menu", &isOpen)
-    .DefaultSize(980, 640)
-    .MinSize(740, 480)
-    .MaxSize(1920, 1080)
-    .Preset(parallax::LayoutPreset::ModernSidebar)
-    .Render([&]() {
-        // Your content here — responds seamlessly to resizing
-    });</code></pre>
+    <!-- Phase 4: Developer Key System -->
+    <section id="key-system-core" class="doc-section">
+      <h2 class="section-title">
+        Developer Key System & Licensing
+        <span class="badge badge-chain">PHASE 4</span>
+      </h2>
+      <p>
+        A modular cryptographic authorization system designed for professional developer seat management and licensing. Features non-blocking asynchronous validation (zero frame latency impact), masked password inputs with show/hide eye toggle, and persistent license storage.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Asynchronous Non-Blocking Verification</div>
+          <p>Runs verification on a background worker thread with <code>std::future</code>. The UI stays at 60/144/240 FPS with physical harmonic spinner animation.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Persistent Machine Licensing</div>
+          <p>Stores validated credentials locally with optional auto-login on startup. Provides clear Success (emerald) and Error (crimson) banners.</p>
+        </div>
+      </div>
+      <pre><code>// 1. Configure custom verification callback:
+auto& keySys = parallax::auth::KeySystem::Get();
+keySys.SetVerifier([](const std::string& key) -> bool {
+    // Check against your remote licensing API or crypto signature:
+    return key.rfind("PRLX-", 0) == 0 && key.length() >= 10;
+});
+
+// 2. Open branded modal dialog or inspect auth state:
+if (!keySys.IsAuthenticated()) {
+    keySys.RenderModal(&showModal);
+}</code></pre>
+    </section>
+
+    <!-- Phase 4: JSON Configuration Engine -->
+    <section id="config-engine" class="doc-section">
+      <h2 class="section-title">
+        JSON Configuration Engine & Profile Manager
+        <span class="badge badge-chain">PHASE 4</span>
+      </h2>
+      <p>
+        Production-grade, schema-driven configuration management built on <code>nlohmann/json</code>. Supports stable variable identifiers, type-safe bindings for all Parallax widget types, profile management (Default, Legit, Rage), and atomic disk persistence.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Atomic Disk Writes</div>
+          <p>Writes configuration to <code>.tmp</code> file before replacing the target <code>.json</code> profile. Eliminates corrupted configuration files caused by crashes or sudden power termination.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Debounced Auto-Save</div>
+          <p>Automatically triggers debounced disk writes 1.5 seconds after any setting change, minimizing disk I/O while ensuring state persistence.</p>
+        </div>
+      </div>
+      <pre><code>// 1. Bind variables with stable string keys during initialization:
+auto& cfg = parallax::config::ConfigManager::Get();
+cfg.BindBool("visuals.box_esp", &boxEsp, true);
+cfg.BindColor("visuals.box_color", &boxColor, ImVec4(0.388f, 0.400f, 0.945f, 1.0f));
+cfg.BindKeybind("aim.trigger_key", &triggerKey);
+cfg.BindFloat("aim.fov", &fovValue, 90.0f);
+
+// 2. Save, load, or render full Profile Manager UI:
+cfg.SaveProfile("Legit_Tournament");
+cfg.LoadProfile("Legit_Tournament");
+
+// In your settings tab:
+cfg.RenderConfigTab();</code></pre>
+    </section>
+
+    <!-- Phase 4: Base64 Config Sharing -->
+    <section id="config-sharing" class="doc-section">
+      <h2 class="section-title">
+        Base64 Configuration Sharing
+        <span class="badge badge-chain">PHASE 4</span>
+      </h2>
+      <p>
+        Export complete profiles as compact, single-line RFC 4648 Base64 strings to share via Discord, forums, or text files, and import them with one click:
+      </p>
+      <pre><code>// Copy active configuration code to system clipboard:
+parallax::config::ConfigManager::Get().CopyConfigToClipboard();
+
+// Import Base64 string directly from clipboard:
+parallax::config::ConfigManager::Get().ImportConfigFromClipboard();</code></pre>
     </section>
 
     <!-- Declarative Chaining API -->

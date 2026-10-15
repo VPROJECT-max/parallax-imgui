@@ -4,6 +4,7 @@
 #include "parallax/anim/manager.hpp"
 #include "parallax/anim/spring.hpp"
 #include "parallax/input/hotkeys.hpp"
+#include <imgui_internal.h>
 #include <algorithm>
 
 namespace parallax::layout {
@@ -11,7 +12,7 @@ namespace parallax::layout {
 static ImVec2 s_windowPos{0.0f, 0.0f};
 static ImVec2 s_windowSize{0.0f, 0.0f};
 static float s_appliedScale{1.0f};
-static int s_vtxStartIndex{0};
+static bool s_closingDisabledPushed{false};
 
 constexpr float PARALLAX_FIXED_WIDTH = 1137.0f;
 constexpr float PARALLAX_FIXED_HEIGHT = 699.0f;
@@ -42,6 +43,20 @@ ImVec2 WindowShell::GetMaxBounds() noexcept {
     return ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
+static void ScaleWindowDrawListRecursive(ImGuiWindow* win, ImVec2 center, float scale) {
+    if (!win) return;
+    if (win->DrawList) {
+        for (int i = 0; i < win->DrawList->VtxBuffer.Size; ++i) {
+            ImDrawVert& v = win->DrawList->VtxBuffer[i];
+            v.pos.x = center.x + (v.pos.x - center.x) * scale;
+            v.pos.y = center.y + (v.pos.y - center.y) * scale;
+        }
+    }
+    for (int i = 0; i < win->DC.ChildWindows.Size; ++i) {
+        ScaleWindowDrawListRecursive(win->DC.ChildWindows[i], center, scale);
+    }
+}
+
 bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraFlags) {
     Context& ctx = Context::Get();
 
@@ -64,9 +79,10 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
     ctx.Input().Update();
 
     bool requestOpen = ctx.Input().IsMenuOpen();
-    if (p_open) {
-        *p_open = requestOpen;
-        s_lastKnownCallerState = requestOpen;
+
+    // If menu is closing, dismiss open popups cleanly
+    if (!requestOpen) {
+        ImGui::ClosePopupsOverWindow(nullptr, false);
     }
 
     float alpha = 1.0f;
@@ -77,6 +93,12 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
     ctx.MenuVisibilityAlpha = alpha;
     ctx.MenuScale = scale;
     s_appliedScale = scale;
+
+    // The user's *p_open flag only flips to false when the close animation has fully finished
+    if (p_open) {
+        *p_open = shouldRender;
+        s_lastKnownCallerState = shouldRender;
+    }
 
     if (!shouldRender) {
         return false;
@@ -105,12 +127,23 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
 
     s_windowPos = ImGui::GetWindowPos();
     s_windowSize = ImGui::GetWindowSize();
-    s_vtxStartIndex = ImGui::GetWindowDrawList()->VtxBuffer.Size;
+
+    // Disable input interactions during closing transition
+    s_closingDisabledPushed = !requestOpen;
+    if (s_closingDisabledPushed) {
+        ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+    }
 
     return opened;
 }
 
 void WindowShell::End() {
+    if (s_closingDisabledPushed) {
+        ImGui::PopItemFlag();
+        s_closingDisabledPushed = false;
+    }
+
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
     ImDrawList* drawList = ImGui::GetWindowDrawList();
     const float dpi = Context::Get().GetDpiScale();
     const auto& colors = StyleManager::Get().Colors();
@@ -126,18 +159,14 @@ void WindowShell::End() {
         1.0f
     );
 
-    // Apply smooth scale transform to window vertices if in open/close transition
+    // Apply cohesive scale transform across the root window AND all child windows
     if (s_appliedScale < 0.999f || s_appliedScale > 1.001f) {
         const ImVec2 center = ImVec2(
             s_windowPos.x + s_windowSize.x * 0.5f,
             s_windowPos.y + s_windowSize.y * 0.5f
         );
 
-        for (int i = s_vtxStartIndex; i < drawList->VtxBuffer.Size; ++i) {
-            ImDrawVert& v = drawList->VtxBuffer[i];
-            v.pos.x = center.x + (v.pos.x - center.x) * s_appliedScale;
-            v.pos.y = center.y + (v.pos.y - center.y) * s_appliedScale;
-        }
+        ScaleWindowDrawListRecursive(window, center, s_appliedScale);
     }
 
     ImGui::End();

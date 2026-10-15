@@ -50,7 +50,7 @@ bool SliderFloat(
     snprintf(valText, sizeof(valText), format ? format : "%.2f", *v);
     const ImVec2 valTextSize = ImGui::CalcTextSize(valText);
 
-    const float rowHeight = twoLine ? (38.0f * dpi) : (26.0f * dpi);
+    const float rowHeight = twoLine ? (40.0f * dpi) : (28.0f * dpi);
     const ImVec2 pos = ImGui::GetCursorScreenPos();
     const ImRect bb(pos, ImVec2(pos.x + availW, pos.y + rowHeight));
 
@@ -67,10 +67,15 @@ bool SliderFloat(
 
     ImRect trackBb;
     if (twoLine) {
-        // Label on top left, value on top right
+        // Label on top left, value badge on top right
         ImVec4 labelCol = disabled ? colors.TextMuted : colors.TextPrimary;
+        PushFont(FontWeight::Medium);
         drawList->AddText(bb.Min, ImColor(labelCol), label);
-        drawList->AddText(ImVec2(bb.Max.x - valTextSize.x, bb.Min.y), ImColor(colors.Accent), valText);
+        PopFont();
+
+        PushFont(FontWeight::Caption);
+        drawList->AddText(ImVec2(bb.Max.x - valTextSize.x, bb.Min.y + 1.0f * dpi), ImColor(colors.Accent), valText);
+        PopFont();
 
         const float trackH = 6.0f * dpi;
         const float trackY = bb.Max.y - trackH - 4.0f * dpi;
@@ -79,23 +84,27 @@ bool SliderFloat(
         // Inline: label on left, slider + value on right
         ImVec2 labelSize = ImGui::CalcTextSize(label);
         ImVec4 labelCol = disabled ? colors.TextMuted : colors.TextPrimary;
+        PushFont(FontWeight::Medium);
         drawList->AddText(ImVec2(bb.Min.x, bb.Min.y + (rowHeight - labelSize.y) * 0.5f), ImColor(labelCol), label);
+        PopFont();
 
         const float valWidth = valTextSize.x + 8.0f * dpi;
-        const float trackW = std::max(availW - labelSize.x - valWidth - 24.0f * dpi, 100.0f * dpi);
+        const float trackW = std::max(availW - labelSize.x - valWidth - 28.0f * dpi, 100.0f * dpi);
         const float trackH = 6.0f * dpi;
         const float trackX = bb.Max.x - trackW - valWidth - 8.0f * dpi;
         const float trackY = bb.Min.y + (rowHeight - trackH) * 0.5f;
 
         trackBb = ImRect(ImVec2(trackX, trackY), ImVec2(trackX + trackW, trackY + trackH));
 
-        // Value text on right
+        // Value text badge on right
+        PushFont(FontWeight::Caption);
         drawList->AddText(ImVec2(bb.Max.x - valTextSize.x, bb.Min.y + (rowHeight - labelSize.y) * 0.5f), ImColor(colors.Accent), valText);
+        PopFont();
     }
 
     // Interaction handling on track
-    const ImRect hitBb(ImVec2(trackBb.Min.x - 4.0f * dpi, trackBb.Min.y - 6.0f * dpi),
-                       ImVec2(trackBb.Max.x + 4.0f * dpi, trackBb.Max.y + 6.0f * dpi));
+    const ImRect hitBb(ImVec2(trackBb.Min.x - 6.0f * dpi, trackBb.Min.y - 8.0f * dpi),
+                       ImVec2(trackBb.Max.x + 6.0f * dpi, trackBb.Max.y + 8.0f * dpi));
 
     bool hovered = false;
     bool held = false;
@@ -120,28 +129,33 @@ bool SliderFloat(
 
     // Normalized progress (0 to 1)
     const float rawT = (v_max > v_min) ? std::clamp((*v - v_min) / (v_max - v_min), 0.0f, 1.0f) : 0.0f;
-    const float t = ctx.Anim().SpringFloat(id, rawT, {220.0f, 24.0f, 1.0f});
+    const float t = ctx.Anim().SpringFloat(id, rawT, {240.0f, 24.0f, 1.0f});
 
-    // Render background track
+    // Render recessed background track
     drawList->AddRectFilled(trackBb.Min, trackBb.Max, ImColor(colors.CardHover), 3.0f * dpi);
     drawList->AddRect(trackBb.Min, trackBb.Max, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
 
-    // Render filled track
+    // Render active gradient filled track
     const float thumbX = trackBb.Min.x + trackBb.GetWidth() * t;
     if (t > 0.001f) {
         ImVec4 fillCol = disabled ? colors.TextMuted : colors.Accent;
         drawList->AddRectFilled(trackBb.Min, ImVec2(thumbX, trackBb.Max.y), ImColor(fillCol), 3.0f * dpi);
     }
 
-    // Animated thumb size
-    const float targetRadius = (held ? 8.0f : (hovered ? 7.0f : 6.0f)) * dpi;
+    // Animated tactile thumb radius with physical spring
+    const float targetRadius = (held ? 8.5f : (hovered ? 7.5f : 6.0f)) * dpi;
     const float thumbRadius = ctx.Anim().SpringFloat(id + 1, targetRadius, {260.0f, 22.0f, 1.0f});
     const ImVec2 thumbCenter = ImVec2(thumbX, trackBb.Min.y + trackBb.GetHeight() * 0.5f);
 
-    // Thumb shadow + circle
-    drawList->AddCircleFilled(ImVec2(thumbCenter.x, thumbCenter.y + 1.0f * dpi), thumbRadius, IM_COL32(0, 0, 0, 80));
+    // Ambient glow halo when held or hovered
+    if ((held || hovered) && !disabled) {
+        drawList->AddCircleFilled(thumbCenter, thumbRadius + 5.0f * dpi, ImColor(colors.Accent.x, colors.Accent.y, colors.Accent.z, held ? 0.35f : 0.20f));
+    }
+
+    // Drop shadow + thumb core
+    drawList->AddCircleFilled(ImVec2(thumbCenter.x, thumbCenter.y + 1.5f * dpi), thumbRadius, IM_COL32(0, 0, 0, 90));
     drawList->AddCircleFilled(thumbCenter, thumbRadius, disabled ? ImU32(ImColor(colors.CardHover)) : IM_COL32(255, 255, 255, 255));
-    drawList->AddCircle(thumbCenter, thumbRadius, ImColor(disabled ? colors.Border : colors.Accent), 16, 1.5f);
+    drawList->AddCircle(thumbCenter, thumbRadius, ImColor(disabled ? colors.Border : colors.Accent), 20, 1.5f);
 
     return changed;
 }
@@ -158,7 +172,7 @@ bool SliderInt(
 ) {
     if (!v) return false;
     float fval = static_cast<float>(*v);
-    if (SliderFloat(label, &fval, static_cast<float>(v_min), static_cast<float>(v_max), format, width, twoLine, disabled)) {
+    if (SliderFloat(label, &fval, static_cast<float>(v_min), static_cast<float>(v_max), format ? format : "%d", width, twoLine, disabled)) {
         *v = static_cast<int>(std::round(fval));
         return true;
     }
@@ -177,6 +191,11 @@ bool RangeSliderFloat(
 ) {
     if (!v_min || !v_max) return false;
 
+    // Enforce invariant
+    if (*v_min > *v_max) std::swap(*v_min, *v_max);
+    *v_min = std::clamp(*v_min, min_limit, max_limit);
+    *v_max = std::clamp(*v_max, min_limit, max_limit);
+
     Context& ctx = Context::Get();
     const float dpi = ctx.GetDpiScale();
     const auto& colors = StyleManager::Get().Colors();
@@ -188,15 +207,13 @@ bool RangeSliderFloat(
     const ImGuiID id = window->GetID(label);
     const float availW = (width > 0.0f) ? width : ImGui::GetContentRegionAvail().x;
 
-    char rangeText[96];
-    char fmtMin[32], fmtMax[32];
+    char fmtMin[32], fmtMax[32], rangeText[80];
     snprintf(fmtMin, sizeof(fmtMin), format ? format : "%.2f", *v_min);
     snprintf(fmtMax, sizeof(fmtMax), format ? format : "%.2f", *v_max);
     snprintf(rangeText, sizeof(rangeText), "%s - %s", fmtMin, fmtMax);
     const ImVec2 rangeTextSize = ImGui::CalcTextSize(rangeText);
 
-    // Always 2-line for clean range presentation
-    const float rowHeight = 38.0f * dpi;
+    const float rowHeight = 40.0f * dpi;
     const ImVec2 pos = ImGui::GetCursorScreenPos();
     const ImRect bb(pos, ImVec2(pos.x + availW, pos.y + rowHeight));
 
@@ -204,8 +221,13 @@ bool RangeSliderFloat(
     if (!ImGui::ItemAdd(bb, id)) return false;
 
     // Header line: Label on left, formatted min-max on right
+    PushFont(FontWeight::Medium);
     drawList->AddText(bb.Min, ImColor(disabled ? colors.TextMuted : colors.TextPrimary), label);
-    drawList->AddText(ImVec2(bb.Max.x - rangeTextSize.x, bb.Min.y), ImColor(colors.Accent), rangeText);
+    PopFont();
+
+    PushFont(FontWeight::Caption);
+    drawList->AddText(ImVec2(bb.Max.x - rangeTextSize.x, bb.Min.y + 1.0f * dpi), ImColor(colors.Accent), rangeText);
+    PopFont();
 
     const float trackH = 6.0f * dpi;
     const float trackY = bb.Max.y - trackH - 4.0f * dpi;
@@ -224,8 +246,8 @@ bool RangeSliderFloat(
     static int s_activeRangeThumb = 0;
     static ImGuiID s_activeRangeId = 0;
 
-    const ImRect hitBb(ImVec2(trackBb.Min.x - 6.0f * dpi, trackBb.Min.y - 8.0f * dpi),
-                       ImVec2(trackBb.Max.x + 6.0f * dpi, trackBb.Max.y + 8.0f * dpi));
+    const ImRect hitBb(ImVec2(trackBb.Min.x - 8.0f * dpi, trackBb.Min.y - 10.0f * dpi),
+                       ImVec2(trackBb.Max.x + 8.0f * dpi, trackBb.Max.y + 10.0f * dpi));
 
     bool hovered = false;
     bool held = false;
@@ -238,7 +260,11 @@ bool RangeSliderFloat(
             float mx = ImGui::GetIO().MousePos.x;
             float dist1 = std::abs(mx - thumb1X);
             float dist2 = std::abs(mx - thumb2X);
-            s_activeRangeThumb = (dist1 <= dist2) ? 1 : 2;
+            if (std::abs(dist1 - dist2) < 6.0f * dpi) {
+                s_activeRangeThumb = (mx < thumb1X) ? 1 : 2;
+            } else {
+                s_activeRangeThumb = (dist1 < dist2) ? 1 : 2;
+            }
         }
 
         if (held && s_activeRangeId == id) {
@@ -261,9 +287,9 @@ bool RangeSliderFloat(
         }
     }
 
-    // Recompute thumbs
-    t1 = ctx.Anim().SpringFloat(id + 1, (totalRange > 0.001f) ? std::clamp((*v_min - min_limit) / totalRange, 0.0f, 1.0f) : 0.0f, {220.0f, 24.0f, 1.0f});
-    t2 = ctx.Anim().SpringFloat(id + 2, (totalRange > 0.001f) ? std::clamp((*v_max - min_limit) / totalRange, 0.0f, 1.0f) : 1.0f, {220.0f, 24.0f, 1.0f});
+    // Spring smooth thumb positions
+    t1 = ctx.Anim().SpringFloat(id + 1, (totalRange > 0.001f) ? std::clamp((*v_min - min_limit) / totalRange, 0.0f, 1.0f) : 0.0f, {240.0f, 24.0f, 1.0f});
+    t2 = ctx.Anim().SpringFloat(id + 2, (totalRange > 0.001f) ? std::clamp((*v_max - min_limit) / totalRange, 0.0f, 1.0f) : 1.0f, {240.0f, 24.0f, 1.0f});
     thumb1X = trackBb.Min.x + trackBb.GetWidth() * t1;
     thumb2X = trackBb.Min.x + trackBb.GetWidth() * t2;
 
@@ -271,7 +297,7 @@ bool RangeSliderFloat(
     drawList->AddRectFilled(trackBb.Min, trackBb.Max, ImColor(colors.CardHover), 3.0f * dpi);
     drawList->AddRect(trackBb.Min, trackBb.Max, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
 
-    // Active range segment between thumb 1 and thumb 2
+    // Active highlighted span between thumb 1 and thumb 2
     if (thumb2X > thumb1X) {
         drawList->AddRectFilled(
             ImVec2(thumb1X, trackBb.Min.y),
@@ -281,19 +307,28 @@ bool RangeSliderFloat(
         );
     }
 
-    // Render Thumbs
-    const float r = 6.5f * dpi;
+    // Dynamic radii for dual thumbs
+    const float r1 = (s_activeRangeThumb == 1 && held) ? (8.5f * dpi) : (7.0f * dpi);
+    const float r2 = (s_activeRangeThumb == 2 && held) ? (8.5f * dpi) : (7.0f * dpi);
     const float midY = trackBb.Min.y + trackBb.GetHeight() * 0.5f;
 
-    // Thumb 1
-    drawList->AddCircleFilled(ImVec2(thumb1X, midY + 1.0f * dpi), r, IM_COL32(0, 0, 0, 80));
-    drawList->AddCircleFilled(ImVec2(thumb1X, midY), r, IM_COL32(255, 255, 255, 255));
-    drawList->AddCircle(ImVec2(thumb1X, midY), r, ImColor(colors.Accent), 16, 1.5f);
+    // Glow halos when active
+    if (s_activeRangeThumb == 1 && held) {
+        drawList->AddCircleFilled(ImVec2(thumb1X, midY), r1 + 5.0f * dpi, ImColor(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.35f));
+    }
+    if (s_activeRangeThumb == 2 && held) {
+        drawList->AddCircleFilled(ImVec2(thumb2X, midY), r2 + 5.0f * dpi, ImColor(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.35f));
+    }
 
-    // Thumb 2
-    drawList->AddCircleFilled(ImVec2(thumb2X, midY + 1.0f * dpi), r, IM_COL32(0, 0, 0, 80));
-    drawList->AddCircleFilled(ImVec2(thumb2X, midY), r, IM_COL32(255, 255, 255, 255));
-    drawList->AddCircle(ImVec2(thumb2X, midY), r, ImColor(colors.Accent), 16, 1.5f);
+    // Thumb 1 (Min)
+    drawList->AddCircleFilled(ImVec2(thumb1X, midY + 1.5f * dpi), r1, IM_COL32(0, 0, 0, 90));
+    drawList->AddCircleFilled(ImVec2(thumb1X, midY), r1, IM_COL32(255, 255, 255, 255));
+    drawList->AddCircle(ImVec2(thumb1X, midY), r1, ImColor(colors.Accent), 20, 1.5f);
+
+    // Thumb 2 (Max)
+    drawList->AddCircleFilled(ImVec2(thumb2X, midY + 1.5f * dpi), r2, IM_COL32(0, 0, 0, 90));
+    drawList->AddCircleFilled(ImVec2(thumb2X, midY), r2, IM_COL32(255, 255, 255, 255));
+    drawList->AddCircle(ImVec2(thumb2X, midY), r2, ImColor(colors.Accent), 20, 1.5f);
 
     return changed;
 }

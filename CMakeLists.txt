@@ -68,6 +68,16 @@ if(MSVC AND TARGET lunasvg)
 endif()
 
 # -----------------------------------------------------------------------------
+# 2.1. nlohmann/json for Configuration Engine
+# -----------------------------------------------------------------------------
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG        v3.11.3
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
+# -----------------------------------------------------------------------------
 # 3. Parallax Static Library
 # -----------------------------------------------------------------------------
 file(GLOB_RECURSE PARALLAX_HEADERS CONFIGURE_DEPENDS "include/parallax/*.hpp")
@@ -86,6 +96,7 @@ target_include_directories(parallax PUBLIC
 target_link_libraries(parallax PUBLIC
     imgui
     lunasvg::lunasvg
+    nlohmann_json::nlohmann_json
     d3d11
     dxgi
     d3dcompiler
@@ -102,6 +113,9 @@ add_executable(parallax_demo_dx11
 target_link_libraries(parallax_demo_dx11 PRIVATE
     parallax
 )
+
+add_executable(test_headless tests/headless_test.cpp)
+target_link_libraries(test_headless PRIVATE parallax)
 
 # Copy icons and assets to the output directory after build
 add_custom_command(TARGET parallax_demo_dx11 POST_BUILD

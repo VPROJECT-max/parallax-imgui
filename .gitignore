@@ -23,3 +23,9 @@ Makefile
 Thumbs.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
+
+# Runtime demo files
+imgui.ini
+*.dat
+test_configs/
+configs/*.tmp

@@ -1,4 +1,5 @@
 #include "parallax/parallax.hpp"
+#include <imgui_internal.h>
 #include <windows.h>
 #include <string>
 #include <vector>
@@ -88,6 +89,42 @@ int RunDemo(HINSTANCE hInstance) {
     bool audioGroupExpanded = true;
     bool advancedGroupExpanded = false;
 
+    // Phase 4: Bind variables to JSON Configuration Engine
+    auto& cfg = parallax::config::ConfigManager::Get();
+    cfg.BindBool("visuals.box_esp", &boxEsp, true);
+    cfg.BindBool("visuals.snaplines", &snaplines, false);
+    cfg.BindBool("visuals.skeletons", &skeletons, true);
+    cfg.BindBool("visuals.glow_effect", &glowEffect, true);
+    cfg.BindBool("audio.sound_alerts", &soundAlerts, true);
+
+    cfg.BindColor("visuals.box_color", &boxColor, ImVec4(0.388f, 0.400f, 0.945f, 1.0f));
+    cfg.BindColor("visuals.snapline_color", &snaplineColor, ImVec4(0.937f, 0.267f, 0.267f, 0.90f));
+    cfg.BindColor("visuals.skeleton_color", &skeletonColor, ImVec4(0.95f, 0.95f, 0.95f, 1.0f));
+    cfg.BindColor("visuals.glow_color", &glowColor, ImVec4(0.133f, 0.773f, 0.369f, 0.90f));
+
+    cfg.BindKeybind("keys.box_key", &boxKey);
+    cfg.BindKeybind("keys.aim_key", &aimKey);
+    cfg.BindKeybind("keys.trigger_key", &triggerKey);
+    cfg.BindKeybind("keys.glow_key", &glowKey);
+
+    cfg.BindFloat("aim.fov", &fovValue, 90.0f);
+    cfg.BindFloat("aim.smoothing", &smoothingValue, 4.5f);
+    cfg.BindInt("aim.max_targets", &maxTargetCount, 6);
+    cfg.BindFloat("render.distance_min", &renderDistanceMin, 15.0f);
+    cfg.BindFloat("render.distance_max", &renderDistanceMax, 320.0f);
+    cfg.BindInt("network.ping_min", &pingRangeMin, 20);
+    cfg.BindInt("network.ping_max", &pingRangeMax, 120);
+
+    cfg.BindString("user.username", &testUsernameInput, "alex.mercer");
+    cfg.BindString("user.api_token", &testApiToken, "sk-live-94a82f0c11d");
+    cfg.BindMultiBool("visuals.indicators", &selectedElements);
+
+    cfg.BindBool("groups.visuals_expanded", &visualGroupExpanded, true);
+    cfg.BindBool("groups.audio_expanded", &audioGroupExpanded, true);
+    cfg.BindBool("groups.advanced_expanded", &advancedGroupExpanded, false);
+
+    bool showKeyModal = false;
+
     // 4. Main message and render loop
     host.RunMainLoop([&]() {
         // Update live keybind states
@@ -96,11 +133,20 @@ int RunDemo(HINSTANCE hInstance) {
         parallax::UpdateKeybindState(triggerKey);
         parallax::UpdateKeybindState(glowKey);
 
+        // Update auto-save and key system async validation
+        cfg.Update(ImGui::GetIO().DeltaTime);
+        parallax::auth::KeySystem::Get().Update();
+
         // Always render floating watermark status pill
         parallax::Watermark("PARALLAX v3.0", "Alex Mercer (Pro)", true, true);
 
         // Always render toast notifications
         parallax::RenderNotifications();
+
+        // Optional Key System Modal popup
+        if (showKeyModal) {
+            parallax::auth::KeySystem::Get().RenderModal(&showKeyModal);
+        }
 
         // Draw guidance text when menu is closed
         if (!menuOpen) {
@@ -133,7 +179,9 @@ int RunDemo(HINSTANCE hInstance) {
             if (parallax::NavTab("layout", "Presets & Sizing", activeMainTab == 2)) activeMainTab = 2;
             if (parallax::NavTab("type", "Typography", activeMainTab == 3)) activeMainTab = 3;
             if (parallax::NavTab("folder", "Collapsible", activeMainTab == 4)) activeMainTab = 4;
-            if (parallax::NavTab("image", "SVG Atlas", activeMainTab == 5)) activeMainTab = 5;
+            if (parallax::NavTab("database", "Configs", activeMainTab == 5)) activeMainTab = 5;
+            if (parallax::NavTab("lock", "Key System", activeMainTab == 6)) activeMainTab = 6;
+            if (parallax::NavTab("image", "SVG Atlas", activeMainTab == 7)) activeMainTab = 7;
 
             // User Profile Card at bottom of vertical sidebars
             if (navSide == parallax::NavSide::Left || navSide == parallax::NavSide::Right) {
@@ -175,19 +223,52 @@ int RunDemo(HINSTANCE hInstance) {
             ImGui::SetCursorScreenPos(contentPos);
             ImGui::BeginChild("##ParallaxMainContentRegion", contentSize, false, ImGuiWindowFlags_None);
 
-            // Smooth scrolling accumulation and spring interpolation
+            // Continuous exponential smooth scrolling with scrollbar drag synchronization
             static float s_targetScrollY = 0.0f;
-            if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows)) {
-                float wheel = ImGui::GetIO().MouseWheel;
-                if (wheel != 0.0f) {
-                    s_targetScrollY -= wheel * 48.0f * dpi;
-                }
+            static float s_currentScrollY = 0.0f;
+            static float s_scrollVelocity = 0.0f;
+            static int s_prevTab = -1;
+
+            if (s_prevTab != activeMainTab) {
+                s_prevTab = activeMainTab;
+                s_targetScrollY = 0.0f;
+                s_currentScrollY = 0.0f;
+                s_scrollVelocity = 0.0f;
+                ImGui::SetScrollY(0.0f);
             }
-            const float maxScroll = ImGui::GetScrollMaxY();
-            s_targetScrollY = std::clamp(s_targetScrollY, 0.0f, maxScroll);
-            float smoothScroll = parallax::SpringFloat(ImGui::GetID("##MainSmoothScroll"), s_targetScrollY, {260.0f, 26.0f, 1.0f});
-            if (std::abs(smoothScroll - s_targetScrollY) < 0.2f) smoothScroll = s_targetScrollY;
-            ImGui::SetScrollY(smoothScroll);
+
+            ImGuiWindow* curWin = ImGui::GetCurrentWindow();
+            bool isDraggingScrollbar = (ImGui::GetActiveID() == ImGui::GetWindowScrollbarID(curWin, ImGuiAxis_Y));
+            if (isDraggingScrollbar) {
+                s_targetScrollY = ImGui::GetScrollY();
+                s_currentScrollY = s_targetScrollY;
+                s_scrollVelocity = 0.0f;
+            } else {
+                if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && !ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId)) {
+                    float wheel = ImGui::GetIO().MouseWheel;
+                    if (wheel != 0.0f) {
+                        s_scrollVelocity -= wheel * 420.0f * dpi;
+                    }
+                }
+
+                float dt = ImGui::GetIO().DeltaTime;
+                if (dt <= 0.0f || dt > 0.1f) dt = 1.0f / 60.0f;
+
+                if (std::abs(s_scrollVelocity) > 0.1f) {
+                    s_targetScrollY += s_scrollVelocity * dt;
+                    s_scrollVelocity *= std::exp(-14.0f * dt);
+                } else {
+                    s_scrollVelocity = 0.0f;
+                }
+
+                const float maxScroll = ImGui::GetScrollMaxY();
+                s_targetScrollY = std::clamp(s_targetScrollY, 0.0f, maxScroll);
+                s_currentScrollY = std::lerp(s_currentScrollY, s_targetScrollY, 1.0f - std::exp(-22.0f * dt));
+                if (std::abs(s_currentScrollY - s_targetScrollY) < 0.3f) {
+                    s_currentScrollY = s_targetScrollY;
+                }
+                ImGui::SetScrollY(s_currentScrollY);
+            }
 
             // -----------------------------------------------------------------
             // Top Bar: Search Bar & Preset Controls
@@ -665,9 +746,124 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::EndGrid();
             }
             // -----------------------------------------------------------------
-            // Tab 5: SVG Icon Atlas (2,077 Icons)
+            // Tab 5: JSON Configuration Engine & Profile Manager
             // -----------------------------------------------------------------
             else if (activeMainTab == 5) {
+                cfg.RenderConfigTab();
+            }
+            // -----------------------------------------------------------------
+            // Tab 6: Developer Key System & Licensing
+            // -----------------------------------------------------------------
+            else if (activeMainTab == 6) {
+                auto& keySys = parallax::auth::KeySystem::Get();
+                parallax::BeginGrid(2, 14.0f);
+
+                // Column 1: Current License State & Identity
+                parallax::BeginGroupbox("Developer License Status", "shield");
+                ImGui::TextColored(colors.TextMuted, "Cryptographic runtime authorization and seat validation:");
+                ImGui::Spacing();
+
+                bool isAuth = keySys.IsAuthenticated();
+                if (isAuth) {
+                    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.04f, 0.22f, 0.10f, 0.40f));
+                    ImGui::PushStyleColor(ImGuiCol_Border, colors.Success);
+                    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding);
+                    ImGui::BeginChild("##AuthSuccessBox", ImVec2(-1.0f, 75.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
+                    
+                    parallax::PushFont(parallax::FontWeight::Bold);
+                    ImGui::TextColored(colors.Success, "STATUS: ACTIVE // AUTHENTICATED");
+                    parallax::PopFont();
+
+                    ImGui::TextColored(colors.TextPrimary, "Licensee: Alex Mercer (Individual Pro License)");
+                    ImGui::TextColored(colors.TextMuted, "Key: %s", keySys.GetEnteredKey().empty() ? "PRLX-2026-VIP" : keySys.GetEnteredKey().c_str());
+                    
+                    ImGui::EndChild();
+                    ImGui::PopStyleVar();
+                    ImGui::PopStyleColor(2);
+
+                    ImGui::Spacing();
+                    ImGui::Spacing();
+
+                    if (parallax::Button("Invalidate / Logout", "lock", parallax::ButtonVariant::Danger, ImVec2(-1.0f, 36.0f * dpi))) {
+                        keySys.Logout();
+                        parallax::Notify(parallax::NotificationLevel::Warning, "Logged Out", "Developer license invalidated.", 3.5f);
+                    }
+                } else {
+                    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.25f, 0.08f, 0.08f, 0.40f));
+                    ImGui::PushStyleColor(ImGuiCol_Border, colors.Danger);
+                    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding);
+                    ImGui::BeginChild("##AuthLockedBox", ImVec2(-1.0f, 65.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
+                    
+                    parallax::PushFont(parallax::FontWeight::Bold);
+                    ImGui::TextColored(colors.Danger, "STATUS: LOCKED // AUTH REQUIRED");
+                    parallax::PopFont();
+
+                    ImGui::TextColored(colors.TextMuted, "Enter valid developer credentials to unlock full library functionality.");
+                    
+                    ImGui::EndChild();
+                    ImGui::PopStyleVar();
+                    ImGui::PopStyleColor(2);
+
+                    ImGui::Spacing();
+                    ImGui::Spacing();
+
+                    if (parallax::Button("Open Key Authorization Modal", "unlock", parallax::ButtonVariant::Primary, ImVec2(-1.0f, 38.0f * dpi))) {
+                        showKeyModal = true;
+                    }
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextColored(colors.TextSecondary, "Hardware Binding & Cryptography:");
+                ImGui::BulletText("Non-blocking background validation (0 frame latency impact)");
+                ImGui::BulletText("Machine-bound SHA-256 license persistence");
+                ImGui::BulletText("Automatic silent authentication on startup");
+
+                parallax::EndGroupbox();
+
+                parallax::NextColumn();
+
+                // Column 2: Key System Controls & Verification Simulator
+                parallax::BeginGroupbox("Authorization Simulator", "terminal");
+                ImGui::TextColored(colors.TextMuted, "Test asynchronous verification with sample developer keys:");
+                ImGui::Spacing();
+
+                if (parallax::Button("Authorize with Demo VIP Key", "check", parallax::ButtonVariant::Secondary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    keySys.StartVerification("PRLX-2026-VIP");
+                    parallax::Notify(parallax::NotificationLevel::Info, "Verifying Key", "Validating PRLX-2026-VIP with server...", 2.5f);
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Authorize with Demo Pro Key", "check", parallax::ButtonVariant::Secondary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    keySys.StartVerification("PRLX-DEMO-PRO");
+                    parallax::Notify(parallax::NotificationLevel::Info, "Verifying Key", "Validating PRLX-DEMO-PRO with server...", 2.5f);
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Trigger Invalid Key Failure Test", "alert-triangle", parallax::ButtonVariant::Danger, ImVec2(-1.0f, 36.0f * dpi))) {
+                    keySys.StartVerification("INVALID-TEST-KEY-000");
+                    parallax::Notify(parallax::NotificationLevel::Danger, "Verification", "Testing rejection behavior with invalid key...", 3.0f);
+                }
+
+                ImGui::Spacing();
+                ImGui::Spacing();
+
+                if (parallax::Button("Launch Custom Modal Dialog", "external-link", parallax::ButtonVariant::Ghost, ImVec2(-1.0f, 34.0f * dpi))) {
+                    showKeyModal = true;
+                }
+
+                parallax::EndGroupbox();
+
+                parallax::EndGrid();
+            }
+            // -----------------------------------------------------------------
+            // Tab 7: SVG Icon Atlas (2,077 Icons)
+            // -----------------------------------------------------------------
+            else if (activeMainTab == 7) {
                 parallax::BeginGroupbox("On-Demand 2,077 SVG Icon Showcase (Dynamic Atlas)", "image");
                 ImGui::TextWrapped("Icons are rasterized on first use at current display DPI and packed into a single dynamic DirectX 11 Texture Atlas:");
                 ImGui::Spacing();

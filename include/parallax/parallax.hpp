@@ -29,6 +29,8 @@
 #include "parallax/widgets/input_text.hpp"
 #include "parallax/widgets/notification.hpp"
 #include "parallax/widgets/watermark.hpp"
+#include "parallax/auth/key_system.hpp"
+#include "parallax/config/config_system.hpp"
 
 #include <string>
 #include <vector>

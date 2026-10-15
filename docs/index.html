@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parallax UI Library — Documentation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-badge">P</div>
+      <div>
+        <div class="brand-title">PARALLAX</div>
+      </div>
+      <span class="version-pill">v1.0</span>
+    </div>
+
+    <nav class="nav-links">
+      <div class="nav-group-title">Getting Started</div>
+      <a href="#overview" class="nav-link active">Overview</a>
+      <a href="#architecture" class="nav-link">Architecture</a>
+      <a href="#quickstart" class="nav-link">CMake Quick Start</a>
+
+      <div class="nav-group-title">Core Systems</div>
+      <a href="#dx11-host" class="nav-link">DirectX 11 Host & Input</a>
+      <a href="#typing-safety" class="nav-link">Typing Safety (VK_RSHIFT)</a>
+      <a href="#animation-engine" class="nav-link">Animation & Spring Engine</a>
+      <a href="#svg-pipeline" class="nav-link">On-Demand SVG Atlas (2,077 Icons)</a>
+      <a href="#layout-engine" class="nav-link">Multi-Side Layout Engine</a>
+
+      <div class="nav-group-title">API Reference</div>
+      <a href="#immediate-api" class="nav-link">Immediate-Mode API</a>
+      <a href="#builder-api" class="nav-link">Declarative Builder API</a>
+
+      <div class="nav-group-title">Ecosystem</div>
+      <a href="#mcp-roadmap" class="nav-link">MCP Server Roadmap</a>
+    </nav>
+  </aside>
+
+  <!-- Main Documentation Content -->
+  <main class="main-wrapper">
+    <!-- Hero Header -->
+    <header class="header-hero">
+      <div class="hero-tag">DirectX 11 &bull; Dear ImGui &bull; C++20</div>
+      <h1 class="hero-title">Parallax UI Library</h1>
+      <p class="hero-desc">
+        A professional, high-performance C++20 UI/UX library engineered for DirectX 11 and Dear ImGui.
+        Strictly UI/UX only — zero cheat or memory functions. Built with calibrated aesthetics, harmonic micro-motion physics, and dynamic SVG asset packing.
+      </p>
+    </header>
+
+    <!-- Interactive Live Simulator -->
+    <section class="doc-section">
+      <h2 class="section-title">Live Layout & Motion Simulator</h2>
+      <p>Test Parallax's multi-dock layout engine and spring transitions directly in your browser:</p>
+
+      <div class="simulator-box">
+        <div class="sim-controls">
+          <span style="font-size: 13px; color: var(--text-muted); align-self: center;">Dock Side:</span>
+          <button class="sim-btn active" data-side="left">Left</button>
+          <button class="sim-btn" data-side="right">Right</button>
+          <button class="sim-btn" data-side="top">Top</button>
+          <button class="sim-btn" data-side="bottom">Bottom</button>
+
+          <span style="font-size: 13px; color: var(--text-muted); align-self: center; margin-left: 12px;">Size Tier:</span>
+          <button class="sim-btn" data-tier="compact">Compact (720x480)</button>
+          <button class="sim-btn active" data-tier="standard">Standard (900x600)</button>
+          <button class="sim-btn" data-tier="expanded">Expanded (1080x720)</button>
+
+          <button id="simToggleBtn" class="sim-btn" style="margin-left: auto; border-color: var(--accent); color: var(--accent-hover);">
+            Simulate Close (Insert / RShift)
+          </button>
+        </div>
+
+        <div class="sim-viewport">
+          <div id="mockWindow" class="mock-window" style="width: 520px; height: 340px;">
+            <div id="mockNav" class="mock-nav">
+              <div style="font-size: 11px; font-weight: 700; color: #fff; padding: 4px 8px; margin-bottom: 4px;">PARALLAX</div>
+              <div class="mock-nav-item active">&#9670; Security</div>
+              <div class="mock-nav-item">&#9672; Dashboard</div>
+              <div class="mock-nav-item">&#9672; Visuals</div>
+              <div class="mock-nav-item">&#9672; Engine</div>
+              <div style="margin-top: auto; padding: 6px 8px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted);">
+                Alex Mercer (Pro)
+              </div>
+            </div>
+            <div class="mock-content">
+              <div style="display: flex; gap: 8px;">
+                <div style="flex: 1; height: 26px; background: #191c26; border-radius: 4px; border: 1px solid var(--border); padding: 4px 8px; font-size: 11px; color: var(--text-muted);">Search...</div>
+                <div style="width: 26px; height: 26px; background: #191c26; border-radius: 4px; border: 1px solid var(--border);"></div>
+              </div>
+              <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; font-size: 12px;">
+                <span style="color: var(--accent-hover); font-weight: 600;">Overview</span>
+                <span style="color: var(--text-muted);">Docking</span>
+                <span style="color: var(--text-muted);">Physics</span>
+                <span style="color: var(--text-muted);">Icons</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1;">
+                <div style="background: #191c26; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 11px;">
+                  <strong style="color: #fff;">Typing Safety</strong>
+                  <div style="color: var(--text-muted); margin-top: 4px;">Right Shift is filtered when typing text inputs.</div>
+                </div>
+                <div style="background: #191c26; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 11px;">
+                  <strong style="color: #fff;">Spring Motion</strong>
+                  <div style="color: var(--text-muted); margin-top: 4px;">k=100, c=20 harmonic physics.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="quickstart" class="doc-section">
+      <h2 class="section-title">CMake Quick Start</h2>
+      <p>Targeting modern C++20 with zero manual dependency installation:</p>
+      <pre><code># CMakeLists.txt
+cmake_minimum_required(VERSION 3.20)
+project(MyParallaxApp LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_subdirectory(parallax-imgui)
+
+add_executable(MyApp main.cpp)
+target_link_libraries(MyApp PRIVATE parallax)</code></pre>
+    </section>
+
+    <!-- DirectX 11 Host & Typing Safety -->
+    <section id="dx11-host" class="doc-section">
+      <h2 class="section-title">DirectX 11 Host & Input Module</h2>
+      <p>
+        The <code>parallax::dx11::D3D11Host</code> module handles Win32 window message loops, swap chain recreation, and safe buffer resizing:
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Safe WM_SIZE Resizing</div>
+          <p>Releases render target views prior to <code>ResizeBuffers</code> and cleanly reconstructs views to prevent DXGI texture leaks or crashes.</p>
+        </div>
+        <div class="card" id="typing-safety">
+          <div class="card-title">Typing Safety (VK_RSHIFT)</div>
+          <p>When <code>ImGui::GetIO().WantTextInput</code> is active, <code>VK_RSHIFT</code> toggle events are filtered so capital typing functions without closing the menu.</p>
+        </div>
+      </div>
+      <pre><code>// Customizing toggle hotkeys
+parallax::AddToggleKey(VK_RSHIFT, /*ignoreWhenTyping=*/true);
+parallax::AddToggleKey(VK_INSERT, /*ignoreWhenTyping=*/false);</code></pre>
+    </section>
+
+    <!-- Animation & Easing Engine -->
+    <section id="animation-engine" class="doc-section">
+      <h2 class="section-title">Animation & Spring Engine</h2>
+      <p>Frame-rate independent animations indexed by <code>ImGuiID</code> with continuous delta-time integration:</p>
+      <pre><code>// Damped harmonic spring physics (k=100, c=20)
+float animVal = parallax::SpringFloat(ImGui::GetID("##MyWidget"), targetVal);
+
+// Cubic Bezier ease-out-quint animation
+float easeVal = parallax::AnimFloat(ImGui::GetID("##MyTabFade"), 1.0f, 0.25f, parallax::anim::EasingPreset::EaseOutQuint);
+
+// Global animation speed multiplier
+parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Fast); // Fast, Normal, Relaxed, Off (Reduced Motion)</code></pre>
+    </section>
+
+    <!-- On-Demand SVG Icon Pipeline -->
+    <section id="svg-pipeline" class="doc-section">
+      <h2 class="section-title">On-Demand 2,077 SVG Icon Pipeline</h2>
+      <p>
+        Powered by LunaSVG, requested icons are rasterized on-demand at native display DPI and packed into a dynamic DirectX 11 Texture Atlas.
+        Rendered as pure white alpha masks so Dear ImGui can tint them dynamically with subpixel antialiasing:
+      </p>
+      <pre><code>// Draw any of the 2,077 Lucide icons with dynamic tinting
+parallax::Icon("shield", ImVec2(24, 24), colors.Accent);
+parallax::Icon("activity", ImVec2(24, 24), ImVec4(0.2f, 0.8f, 0.4f, 1.0f));
+
+// Graceful missing icon fallback (embedded procedural shield)
+parallax::Icon("non_existent_icon"); // Never crashes</code></pre>
+    </section>
+
+    <!-- API Reference -->
+    <section id="immediate-api" class="doc-section">
+      <h2 class="section-title">Immediate-Mode Layout API</h2>
+      <pre><code>if (parallax::BeginWindow("Control Hub", &menuOpen)) {
+    parallax::BeginNavBar();
+    if (parallax::NavTab("shield", "Security", activeTab == 0)) activeTab = 0;
+    if (parallax::NavTab("sliders", "Settings", activeTab == 1)) activeTab = 1;
+    parallax::UserProfileCard(parallax::Context::Get().Profile);
+    parallax::EndNavBar();
+
+    parallax::BeginSubTabs();
+    if (parallax::SubTab("Overview", subTab == 0)) subTab = 0;
+    if (parallax::SubTab("Network", subTab == 1)) subTab = 1;
+    parallax::EndSubTabs();
+
+    parallax::BeginGrid(2, 14.0f);
+    if (parallax::BeginGroupbox("Firewall Rules", "lock")) {
+        ImGui::Checkbox("Enable Stealth Mode", &stealth);
+        parallax::EndGroupbox();
+    }
+    parallax::NextColumn();
+    if (parallax::BeginGroupbox("Diagnostics", "activity")) {
+        ImGui::Text("All systems operational.");
+        parallax::EndGroupbox();
+    }
+    parallax::EndGrid();
+
+    parallax::EndWindow();
+}</code></pre>
+    </section>
+
+    <!-- MCP Server Roadmap -->
+    <section id="mcp-roadmap" class="doc-section">
+      <h2 class="section-title">MCP Server Specification & Roadmap</h2>
+      <div class="callout">
+        <strong>Model Context Protocol (MCP) Integration:</strong>
+        Full specification is documented in <code>MCP_SERVER_SPEC.md</code>. In subsequent phases, <code>parallax-mcp</code> will connect AI pair programmers directly to live running DirectX 11 Parallax instances for live inspection, color token tuning, automated screenshot capture, and UI scaffolding.
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

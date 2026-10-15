@@ -5,21 +5,19 @@
 #include <deque>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
+#include <cmath>
 
 int RunDemo(HINSTANCE hInstance) {
     // 1. Initialize standalone DirectX 11 Host window with Immersive Dark Mode
     parallax::dx11::D3D11Host host;
-    if (!host.InitStandalone(hInstance, 1120, 740, L"Parallax UI DX11 - Phase 3 Custom UI/UX Showcase")) {
+    if (!host.InitStandalone(hInstance, 1180, 742, L"Parallax UI DX11 - Modern C++20 UI/UX Framework")) {
         MessageBoxW(nullptr, L"Failed to initialize DirectX 11 Host Window.", L"Error", MB_ICONERROR);
         return 1;
     }
 
     // 2. Initialize Parallax UI Library (Loads Inter Fonts, Metrics & SVG Atlas)
     parallax::Init(host.GetDevice(), host.GetContext());
-
-    // Configure defined default window size & min/max bounds
-    parallax::SetDefaultWindowSize(980.0f, 640.0f);
-    parallax::SetWindowSizeBounds(740.0f, 480.0f, 1920.0f, 1080.0f);
 
     // Initial welcome notification
     parallax::Notify(
@@ -137,32 +135,32 @@ int RunDemo(HINSTANCE hInstance) {
             if (parallax::NavTab("folder", "Collapsible", activeMainTab == 4)) activeMainTab = 4;
             if (parallax::NavTab("image", "SVG Atlas", activeMainTab == 5)) activeMainTab = 5;
 
-            // User Profile Card (only in vertical sidebars when not compact)
-            if ((navSide == parallax::NavSide::Left || navSide == parallax::NavSide::Right) && metrics.NavWidth > 100.0f) {
-                const float profileY = winPos.y + winSize.y - (metrics.ProfileCardHeight + 16.0f) * dpi;
-                float profileX = winPos.x + 8.0f * dpi;
-                if (navSide == parallax::NavSide::Right) {
-                    profileX = winPos.x + winSize.x - (metrics.NavWidth - 8.0f) * dpi;
-                }
+            // User Profile Card at bottom of vertical sidebars
+            if (navSide == parallax::NavSide::Left || navSide == parallax::NavSide::Right) {
+                const float curNavW = parallax::GetNavWidth() * dpi;
+                const float profileCardW = curNavW - 16.0f * dpi;
+                const float profileY = winPos.y + winSize.y - (metrics.ProfileCardHeight + 14.0f) * dpi;
+                float profileX = (navSide == parallax::NavSide::Right) ? (winPos.x + winSize.x - curNavW + 8.0f * dpi) : (winPos.x + 8.0f * dpi);
                 ImGui::SetCursorScreenPos(ImVec2(profileX, profileY));
-                parallax::UserProfileCard(parallax::Context::Get().Profile);
+                parallax::UserProfileCard(parallax::Context::Get().Profile, ImVec2(profileCardW, metrics.ProfileCardHeight * dpi));
             }
             parallax::EndNavBar();
 
             // -----------------------------------------------------------------
-            // Content Region Bounds Calculations
+            // Content Region Bounds Calculations (Dynamic Internal Allocation)
             // -----------------------------------------------------------------
+            const float dynamicNavW = parallax::GetNavWidth() * dpi;
             ImVec2 contentPos;
             ImVec2 contentSize;
 
             switch (navSide) {
                 case parallax::NavSide::Left:
-                    contentPos = ImVec2(winPos.x + metrics.NavWidth * dpi + 16.0f * dpi, winPos.y + 16.0f * dpi);
-                    contentSize = ImVec2(winSize.x - metrics.NavWidth * dpi - 32.0f * dpi, winSize.y - 32.0f * dpi);
+                    contentPos = ImVec2(winPos.x + dynamicNavW + 16.0f * dpi, winPos.y + 16.0f * dpi);
+                    contentSize = ImVec2(winSize.x - dynamicNavW - 32.0f * dpi, winSize.y - 32.0f * dpi);
                     break;
                 case parallax::NavSide::Right:
                     contentPos = ImVec2(winPos.x + 16.0f * dpi, winPos.y + 16.0f * dpi);
-                    contentSize = ImVec2(winSize.x - metrics.NavWidth * dpi - 32.0f * dpi, winSize.y - 32.0f * dpi);
+                    contentSize = ImVec2(winSize.x - dynamicNavW - 32.0f * dpi, winSize.y - 32.0f * dpi);
                     break;
                 case parallax::NavSide::Top:
                     contentPos = ImVec2(winPos.x + 16.0f * dpi, winPos.y + metrics.NavHeight * dpi + 16.0f * dpi);
@@ -175,7 +173,21 @@ int RunDemo(HINSTANCE hInstance) {
             }
 
             ImGui::SetCursorScreenPos(contentPos);
-            ImGui::BeginChild("##ParallaxMainContentRegion", contentSize, false, ImGuiWindowFlags_NoScrollbar);
+            ImGui::BeginChild("##ParallaxMainContentRegion", contentSize, false, ImGuiWindowFlags_None);
+
+            // Smooth scrolling accumulation and spring interpolation
+            static float s_targetScrollY = 0.0f;
+            if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows)) {
+                float wheel = ImGui::GetIO().MouseWheel;
+                if (wheel != 0.0f) {
+                    s_targetScrollY -= wheel * 48.0f * dpi;
+                }
+            }
+            const float maxScroll = ImGui::GetScrollMaxY();
+            s_targetScrollY = std::clamp(s_targetScrollY, 0.0f, maxScroll);
+            float smoothScroll = parallax::SpringFloat(ImGui::GetID("##MainSmoothScroll"), s_targetScrollY, {260.0f, 26.0f, 1.0f});
+            if (std::abs(smoothScroll - s_targetScrollY) < 0.2f) smoothScroll = s_targetScrollY;
+            ImGui::SetScrollY(smoothScroll);
 
             // -----------------------------------------------------------------
             // Top Bar: Search Bar & Preset Controls
@@ -461,33 +473,32 @@ int RunDemo(HINSTANCE hInstance) {
                 ImGui::Separator();
                 ImGui::Spacing();
 
-                ImGui::TextColored(colors.TextSecondary, "Manual Window Resizing Rules:");
-                ImGui::BulletText("Minimum Width: 740px, Minimum Height: 480px");
-                ImGui::BulletText("Maximum Width: 1920px, Maximum Height: 1080px");
-                ImGui::BulletText("Drag the bottom-right corner grip to resize");
-                ImGui::BulletText("All content columns reflow without text overlapping");
+                ImGui::TextColored(colors.TextSecondary, "Strict Fixed Dimensions — 1137 x 699:");
+                ImGui::BulletText("Fixed logical dimensions: Width: 1137px, Height: 699px");
+                ImGui::BulletText("Manual resizing and resize handles permanently disabled");
+                ImGui::BulletText("Menu repositioning via window drag fully preserved");
+                ImGui::BulletText("All content columns reflow deterministically");
 
                 parallax::EndGroupbox();
 
                 parallax::NextColumn();
 
-                // Column 2: Size Tiers & Global Motion Multiplier
-                parallax::BeginGroupbox("Dimensions & Motion Engine", "cpu");
-                ImGui::TextColored(colors.TextSecondary, "Window Size Preset Tiers:");
+                // Column 2: Sidebar Control & Motion Multiplier
+                parallax::BeginGroupbox("Sidebar Expansion & Motion Engine", "cpu");
+                ImGui::TextColored(colors.TextSecondary, "Sidebar State Control:");
                 ImGui::Spacing();
 
-                auto curTier = parallax::GetWindowSizeTier();
-                if (parallax::Button("Compact (720x480)", nullptr, curTier == parallax::WindowSizeTier::Compact ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
-                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Compact);
+                bool isExpanded = parallax::IsNavExpanded();
+                if (parallax::Button(isExpanded ? "Collapse Sidebar (68px)" : "Expand Sidebar (200px)",
+                    isExpanded ? "chevron-left" : "chevron-right",
+                    parallax::ButtonVariant::Primary,
+                    ImVec2(-1.0f, 32.0f * dpi)))
+                {
+                    parallax::ToggleNavExpanded();
                 }
-                ImGui::SameLine();
-                if (parallax::Button("Standard (900x600)", nullptr, curTier == parallax::WindowSizeTier::Standard ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
-                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Standard);
-                }
-                ImGui::SameLine();
-                if (parallax::Button("Expanded (1080x720)", nullptr, curTier == parallax::WindowSizeTier::Expanded ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
-                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Expanded);
-                }
+                parallax::PushFont(parallax::FontWeight::Caption);
+                ImGui::TextColored(colors.TextMuted, "Current Animated Width: %.1f px (Icons Centered when < 120px)", parallax::GetNavWidth());
+                parallax::PopFont();
 
                 ImGui::Spacing();
                 ImGui::Separator();

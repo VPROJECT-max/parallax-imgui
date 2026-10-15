@@ -159,16 +159,27 @@ bool ControlRow::Render() {
         rightOffset += kbW + 8.0f * dpi;
     }
 
-    // Left clickable trigger region (excluding secondary controls)
-    const float clickRegionW = std::max(bb.GetWidth() - rightOffset + switchW, 60.0f * dpi);
-    const ImRect toggleClickBb(bb.Min, ImVec2(bb.Min.x + clickRegionW, bb.Max.y));
+    // Calculate bounds of secondary controls so clicking the toggle doesn't interfere
+    float minSecondaryX = switchX;
+    if (m_colorVec4 || m_colorFloat) minSecondaryX = std::min(minSecondaryX, colorX);
+    if (m_keybind) minSecondaryX = std::min(minSecondaryX, kbX);
+
+    // Two clickable regions for the toggle: the label area and the switch itself
+    const ImRect labelClickBb(bb.Min, ImVec2(minSecondaryX - 4.0f * dpi, bb.Max.y));
+    const ImRect switchClickBb(ImVec2(switchX - 4.0f * dpi, bb.Min.y), ImVec2(bb.Max.x, bb.Max.y));
 
     bool hovered = false;
     bool held = false;
     bool pressed = false;
 
     if (!m_disabled) {
-        pressed = ImGui::ButtonBehavior(toggleClickBb, id, &hovered, &held);
+        ImVec2 mouse = ImGui::GetIO().MousePos;
+        bool inLabel = labelClickBb.Contains(mouse);
+        bool inSwitch = switchClickBb.Contains(mouse);
+        if (inLabel || inSwitch || ImGui::GetActiveID() == id) {
+            ImRect activeHitBb = inSwitch ? switchClickBb : labelClickBb;
+            pressed = ImGui::ButtonBehavior(activeHitBb, id, &hovered, &held);
+        }
     }
 
     if (pressed) {

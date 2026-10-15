@@ -95,6 +95,10 @@ bool UpdateKeybindState(Keybind& bind) {
     return bind.active;
 }
 
+static ImGuiID s_listeningWidgetId = 0;
+static bool s_justStartedListening = false;
+static BYTE s_prevKeyboardState[256] = {};
+
 bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     if (!bind) return false;
 
@@ -108,9 +112,6 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     if (window->SkipItems) return false;
 
     const ImGuiID id = window->GetID(str_id);
-
-    // Static / persistent listening state per widget ID
-    static ImGuiID s_listeningWidgetId = 0;
     const bool isListening = (s_listeningWidgetId == id);
 
     // Format display string e.g. "[ F ]" or "[ ... ]"
@@ -169,7 +170,20 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     char popupId[64];
     snprintf(popupId, sizeof(popupId), "##KBPopup_%s", str_id);
 
+    // Left-click directly triggers listening mode
     if (pressed) {
+        if (!isListening) {
+            s_listeningWidgetId = id;
+            s_justStartedListening = true;
+            ctx.Input().SetKeyCaptureActive(true);
+        } else {
+            s_listeningWidgetId = 0;
+            ctx.Input().SetKeyCaptureActive(false);
+        }
+    }
+
+    // Right-click opens mode / settings popup
+    if (hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
         ImGui::OpenPopup(popupId);
     }
 
@@ -179,43 +193,63 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     if (isListening) {
         ctx.Input().SetKeyCaptureActive(true);
 
-        // Check mouse buttons
-        const int mouseButtons[] = { VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2 };
-        for (int mb : mouseButtons) {
-            // Ignore left-click on the initial frame to prevent immediate capture of the click itself
-            if (mb == VK_LBUTTON && ImGui::IsMouseClicked(ImGuiMouseButton_Left)) continue;
-
-            if (GetAsyncKeyState(mb) & 0x8000) {
-                bind->vkey = mb;
-                s_listeningWidgetId = 0;
-                ctx.Input().SetKeyCaptureActive(false);
-                changed = true;
-                break;
-            }
-        }
-
-        // Check keyboard keys
-        if (isListening) {
-            for (int k = 0x08; k <= 0xFE; ++k) {
-                if (k == VK_ESCAPE) {
-                    // Escape cancels listening or clears
-                    s_listeningWidgetId = 0;
-                    ctx.Input().SetKeyCaptureActive(false);
-                    break;
-                }
-
-                if (GetAsyncKeyState(k) & 0x8000) {
-                    bind->vkey = k;
+        if (s_justStartedListening) {
+            // Snapshot current keyboard & mouse buttons so initial click isn't captured
+            GetKeyboardState(s_prevKeyboardState);
+            s_justStartedListening = false;
+        } else {
+            // Check mouse buttons
+            const int mouseButtons[] = { VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2 };
+            bool caught = false;
+            for (int mb : mouseButtons) {
+                const bool isDown = (GetAsyncKeyState(mb) & 0x8000) != 0;
+                const bool wasDown = (s_prevKeyboardState[mb] & 0x80) != 0;
+                if (isDown && !wasDown) {
+                    bind->vkey = mb;
                     s_listeningWidgetId = 0;
                     ctx.Input().SetKeyCaptureActive(false);
                     changed = true;
+                    caught = true;
                     break;
                 }
             }
+
+            // Check keyboard keys
+            if (!caught) {
+                for (int k = 0x08; k <= 0xFE; ++k) {
+                    if (k == VK_ESCAPE) {
+                        // Escape cancels listening without changing
+                        s_listeningWidgetId = 0;
+                        ctx.Input().SetKeyCaptureActive(false);
+                        break;
+                    }
+                    if (k == VK_DELETE || k == VK_BACK) {
+                        // Delete / Backspace clears the keybind
+                        bind->vkey = 0;
+                        bind->active = false;
+                        s_listeningWidgetId = 0;
+                        ctx.Input().SetKeyCaptureActive(false);
+                        changed = true;
+                        break;
+                    }
+
+                    const bool isDown = (GetAsyncKeyState(k) & 0x8000) != 0;
+                    const bool wasDown = (s_prevKeyboardState[k] & 0x80) != 0;
+                    if (isDown && !wasDown) {
+                        bind->vkey = k;
+                        s_listeningWidgetId = 0;
+                        ctx.Input().SetKeyCaptureActive(false);
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+
+            GetKeyboardState(s_prevKeyboardState);
         }
     }
 
-    // Anchored configuration popup
+    // Anchored configuration popup (opened via Right-Click or from popup button)
     ImGui::SetNextWindowSize(ImVec2(190.0f * dpi, 0.0f), ImGuiCond_Always);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f * dpi, 10.0f * dpi));
     ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, metrics.PopupRounding);
@@ -230,6 +264,7 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
         std::string captureBtnText = isListening ? "Press any key/button..." : ("Key: " + GetKeyName(bind->vkey));
         if (ImGui::Button(captureBtnText.c_str(), ImVec2(-1.0f, 26.0f * dpi))) {
             s_listeningWidgetId = id;
+            s_justStartedListening = true;
             ctx.Input().SetKeyCaptureActive(true);
         }
 

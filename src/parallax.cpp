@@ -132,6 +132,22 @@ bool NavTab(const char* icon, const char* label, bool selected, const char* badg
     return layout::NavBar::TabItem(icon, label, selected, badge);
 }
 
+float GetNavWidth() {
+    return layout::NavBar::GetNavWidth();
+}
+
+bool IsNavExpanded() {
+    return layout::NavBar::IsExpanded();
+}
+
+void SetNavExpanded(bool expanded) {
+    layout::NavBar::SetExpanded(expanded);
+}
+
+void ToggleNavExpanded() {
+    layout::NavBar::ToggleExpanded();
+}
+
 bool BeginSubTabs(SubTabPlacement placement) {
     return layout::SubTabs::Begin(placement);
 }

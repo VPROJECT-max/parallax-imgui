@@ -19,9 +19,17 @@ static std::string GetExecutableDir() {
 }
 
 std::string IconLoader::ResolveIconPath(std::string_view name) {
+    if (fs::exists(name)) {
+        return std::string(name);
+    }
+
     std::string filename(name);
     if (!filename.ends_with(".svg")) {
         filename += ".svg";
+    }
+
+    if (fs::exists(filename)) {
+        return filename;
     }
 
     std::string exeDir = GetExecutableDir();
@@ -29,9 +37,17 @@ std::string IconLoader::ResolveIconPath(std::string_view name) {
         "./icons/" + filename,
         "../icons/" + filename,
         "../../icons/" + filename,
+        "./assets/" + filename,
+        "../assets/" + filename,
+        "../../assets/" + filename,
         "./assets/icons/" + filename,
+        "./" + filename,
+        exeDir + "/" + filename,
         exeDir + "/icons/" + filename,
-        exeDir + "/../icons/" + filename
+        exeDir + "/assets/" + filename,
+        exeDir + "/../icons/" + filename,
+        exeDir + "/../assets/" + filename,
+        exeDir + "/../../" + filename
     };
 
     for (const auto& candidate : searchPaths) {
@@ -87,7 +103,7 @@ bool IconLoader::RasterizeSVG(
 
     if (svgData.empty()) {
         svgData = GetFallbackSVG();
-    } else {
+    } else if (!preserveColors) {
         svgData = NormalizeSvgContent(std::move(svgData));
     }
 

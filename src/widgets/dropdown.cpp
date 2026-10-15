@@ -47,7 +47,9 @@ bool Dropdown(
 
     // Header label above dropdown if provided
     if (label && label[0] != '#' && label[1] != '#') {
+        PushFont(FontWeight::Medium);
         ImGui::TextColored(colors.TextSecondary, "%s", label);
+        PopFont();
         ImGui::Spacing();
     }
 
@@ -105,7 +107,11 @@ bool Dropdown(
     drawList->AddText(textPos, ImColor(colors.TextPrimary), previewText.c_str());
 
     // Chevron Icon on right edge
-    auto chevronSub = ctx.Icons().GetIcon("chevron-down");
+    const char* chevName = isOpen ? "chevron-up" : "chevron-down";
+    auto chevronSub = ctx.Icons().GetIcon(chevName);
+    if (!chevronSub.valid || !chevronSub.srv) {
+        chevronSub = ctx.Icons().GetIcon("chevron-down");
+    }
     if (chevronSub.valid && chevronSub.srv) {
         const float chevDim = 14.0f * dpi;
         const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
@@ -120,8 +126,25 @@ bool Dropdown(
 
     bool changed = false;
 
-    // Dropdown list popup
-    ImGui::SetNextWindowPos(ImVec2(bb.Min.x, bb.Max.y + 4.0f * dpi));
+    // Upward opening calculation based on window bottom boundary
+    const float winBottom = window->ClipRect.Max.y;
+    const float screenH = ImGui::GetIO().DisplaySize.y;
+    const float bottomLimit = (winBottom > 0.0f && winBottom < screenH) ? winBottom : screenH;
+
+    const float listMaxH = 200.0f * dpi;
+    const float headerExtraH = (items.size() > 5) ? (40.0f * dpi) : 0.0f;
+    const float estimatedPopupH = std::min(static_cast<float>(items.size()) * 28.0f * dpi, listMaxH) + headerExtraH + 20.0f * dpi;
+
+    ImVec2 popupPos;
+    if (bb.Max.y + estimatedPopupH > bottomLimit - 12.0f * dpi && bb.Min.y - estimatedPopupH > 10.0f * dpi) {
+        // Position upwards above the control
+        popupPos = ImVec2(bb.Min.x, bb.Min.y - estimatedPopupH - 4.0f * dpi);
+    } else {
+        // Position downwards below the control
+        popupPos = ImVec2(bb.Min.x, bb.Max.y + 4.0f * dpi);
+    }
+
+    ImGui::SetNextWindowPos(popupPos, ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(width, 0.0f), ImGuiCond_Always);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f * dpi, 8.0f * dpi));
@@ -130,7 +153,6 @@ bool Dropdown(
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
 
     if (ImGui::BeginPopup(popupId, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize)) {
-        // Search filter for longer lists
         static char s_searchQuery[64] = "";
         if (items.size() > 5) {
             ImGui::SetNextItemWidth(-1.0f);
@@ -142,7 +164,7 @@ bool Dropdown(
             s_searchQuery[0] = '\0';
         }
 
-        const float maxHeight = std::min(static_cast<float>(items.size()) * 30.0f * dpi + 20.0f * dpi, 200.0f * dpi);
+        const float maxHeight = std::min(static_cast<float>(items.size()) * 30.0f * dpi + 10.0f * dpi, listMaxH);
         ImGui::BeginChild("##DDListScroll", ImVec2(-1.0f, maxHeight), false);
 
         for (int i = 0; i < static_cast<int>(items.size()); ++i) {
@@ -151,10 +173,10 @@ bool Dropdown(
             }
 
             const bool isSelected = (*selected_index == i);
-            char itemStrId[128];
-            snprintf(itemStrId, sizeof(itemStrId), "%s##DDItem_%d", items[i].c_str(), i);
+            char itemHiddenId[64];
+            snprintf(itemHiddenId, sizeof(itemHiddenId), "##DDItem_%d", i);
 
-            ImVec2 itemPos = ImGui::GetCursorScreenPos();
+            const ImVec2 itemPos = ImGui::GetCursorScreenPos();
             const float itemH = 26.0f * dpi;
 
             if (isSelected) {
@@ -162,7 +184,8 @@ bool Dropdown(
                 ImGui::PushStyleColor(ImGuiCol_Text, colors.Accent);
             }
 
-            if (ImGui::Selectable(itemStrId, isSelected, 0, ImVec2(0.0f, itemH))) {
+            // Selectable handles click, hover, and active state
+            if (ImGui::Selectable(itemHiddenId, isSelected, 0, ImVec2(0.0f, itemH))) {
                 *selected_index = i;
                 changed = true;
                 ImGui::CloseCurrentPopup();
@@ -172,21 +195,31 @@ bool Dropdown(
                 ImGui::PopStyleColor(2);
             }
 
-            // Draw item icon if available
+            ImDrawList* listDraw = ImGui::GetWindowDrawList();
+            float itemDrawX = itemPos.x + 8.0f * dpi;
+
+            // Draw item icon first without overlapping text
             if (i < static_cast<int>(item_icons.size()) && !item_icons[i].empty()) {
                 auto itemSub = ctx.Icons().GetIcon(item_icons[i]);
                 if (itemSub.valid && itemSub.srv) {
-                    ImDrawList* listDraw = ImGui::GetWindowDrawList();
                     const float itemIconDim = 14.0f * dpi;
                     listDraw->AddImage(
                         reinterpret_cast<ImTextureID>(itemSub.srv),
-                        ImVec2(itemPos.x + 4.0f * dpi, itemPos.y + (itemH - itemIconDim) * 0.5f),
-                        ImVec2(itemPos.x + 4.0f * dpi + itemIconDim, itemPos.y + (itemH + itemIconDim) * 0.5f),
+                        ImVec2(itemDrawX, itemPos.y + (itemH - itemIconDim) * 0.5f),
+                        ImVec2(itemDrawX + itemIconDim, itemPos.y + (itemH + itemIconDim) * 0.5f),
                         itemSub.uv0, itemSub.uv1,
                         ImColor(isSelected ? colors.Accent : colors.TextSecondary)
                     );
+                    itemDrawX += itemIconDim + 8.0f * dpi;
                 }
             }
+
+            // Draw item text clearly separated from the icon
+            listDraw->AddText(
+                ImVec2(itemDrawX, itemPos.y + (itemH - ImGui::GetFontSize()) * 0.5f),
+                ImColor(isSelected ? colors.Accent : colors.TextPrimary),
+                items[i].c_str()
+            );
         }
 
         ImGui::EndChild();
@@ -228,7 +261,9 @@ bool MultiDropdown(
     const float height = 30.0f * dpi;
 
     if (label && label[0] != '#' && label[1] != '#') {
+        PushFont(FontWeight::Medium);
         ImGui::TextColored(colors.TextSecondary, "%s", label);
+        PopFont();
         ImGui::Spacing();
     }
 
@@ -283,7 +318,11 @@ bool MultiDropdown(
     drawList->AddText(textPos, ImColor(colors.TextPrimary), previewText.c_str());
 
     // Chevron Icon on right edge
-    auto chevronSub = ctx.Icons().GetIcon("chevron-down");
+    const char* chevName = isOpen ? "chevron-up" : "chevron-down";
+    auto chevronSub = ctx.Icons().GetIcon(chevName);
+    if (!chevronSub.valid || !chevronSub.srv) {
+        chevronSub = ctx.Icons().GetIcon("chevron-down");
+    }
     if (chevronSub.valid && chevronSub.srv) {
         const float chevDim = 14.0f * dpi;
         const ImVec2 chevPos = ImVec2(bb.Max.x - chevDim - 10.0f * dpi, bb.Min.y + (height - chevDim) * 0.5f);
@@ -298,7 +337,23 @@ bool MultiDropdown(
 
     bool anyChanged = false;
 
-    ImGui::SetNextWindowPos(ImVec2(bb.Min.x, bb.Max.y + 4.0f * dpi));
+    // Upward opening calculation based on window bottom boundary
+    const float winBottom = window->ClipRect.Max.y;
+    const float screenH = ImGui::GetIO().DisplaySize.y;
+    const float bottomLimit = (winBottom > 0.0f && winBottom < screenH) ? winBottom : screenH;
+
+    const float listMaxH = 200.0f * dpi;
+    const float headerExtraH = 38.0f * dpi; // Select All / Clear All row
+    const float estimatedPopupH = std::min(static_cast<float>(items.size()) * 28.0f * dpi, listMaxH) + headerExtraH + 24.0f * dpi;
+
+    ImVec2 popupPos;
+    if (bb.Max.y + estimatedPopupH > bottomLimit - 12.0f * dpi && bb.Min.y - estimatedPopupH > 10.0f * dpi) {
+        popupPos = ImVec2(bb.Min.x, bb.Min.y - estimatedPopupH - 4.0f * dpi);
+    } else {
+        popupPos = ImVec2(bb.Min.x, bb.Max.y + 4.0f * dpi);
+    }
+
+    ImGui::SetNextWindowPos(popupPos, ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(width, 0.0f), ImGuiCond_Always);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f * dpi, 8.0f * dpi));
@@ -307,37 +362,96 @@ bool MultiDropdown(
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
 
     if (ImGui::BeginPopup(popupId, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize)) {
-        // Select All / Clear All Row
-        if (ImGui::SmallButton("Select All")) {
+        // Styled Select All / Clear All Buttons
+        ImGui::PushStyleColor(ImGuiCol_Button, colors.CardBg);
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors.CardHover);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors.AccentMuted);
+        ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, metrics.FrameRounding);
+
+        if (ImGui::Button("Select All", ImVec2(72.0f * dpi, 22.0f * dpi))) {
             std::fill(selected_states.begin(), selected_states.end(), true);
             anyChanged = true;
         }
-        ImGui::SameLine(0.0f, 8.0f * dpi);
-        if (ImGui::SmallButton("Clear All")) {
+        ImGui::SameLine(0.0f, 6.0f * dpi);
+        if (ImGui::Button("Clear All", ImVec2(72.0f * dpi, 22.0f * dpi))) {
             std::fill(selected_states.begin(), selected_states.end(), false);
             anyChanged = true;
         }
+
+        ImGui::PopStyleVar(2);
+        ImGui::PopStyleColor(4);
+
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        const float maxHeight = std::min(static_cast<float>(items.size()) * 28.0f * dpi + 20.0f * dpi, 200.0f * dpi);
+        const float maxHeight = std::min(static_cast<float>(items.size()) * 28.0f * dpi, listMaxH);
         ImGui::BeginChild("##MultiDDListScroll", ImVec2(-1.0f, maxHeight), false);
 
         for (size_t i = 0; i < items.size(); ++i) {
-            bool state = selected_states[i];
-            char checkLabel[128];
-            snprintf(checkLabel, sizeof(checkLabel), "%s##MDDItem_%zu", items[i].c_str(), i);
+            const bool state = selected_states[i];
+            char rowId[64];
+            snprintf(rowId, sizeof(rowId), "##MRow_%zu", i);
 
-            if (i < item_icons.size() && !item_icons[i].empty()) {
-                ctx.Icons().DrawIcon(item_icons[i].c_str(), ImVec2(14.0f * dpi, 14.0f * dpi), state ? colors.Accent : colors.TextMuted);
-                ImGui::SameLine(0.0f, 6.0f * dpi);
-            }
+            const ImVec2 rowPos = ImGui::GetCursorScreenPos();
+            const float itemH = 26.0f * dpi;
 
-            if (ImGui::Checkbox(checkLabel, &state)) {
-                selected_states[i] = state;
+            // Clickable row without closing popup
+            if (ImGui::Selectable(rowId, false, ImGuiSelectableFlags_DontClosePopups, ImVec2(0.0f, itemH))) {
+                selected_states[i] = !selected_states[i];
                 anyChanged = true;
             }
+
+            ImDrawList* listDraw = ImGui::GetWindowDrawList();
+
+            // Custom Checkbox geometry
+            const float boxDim = 16.0f * dpi;
+            const ImVec2 boxMin = ImVec2(rowPos.x + 4.0f * dpi, rowPos.y + (itemH - boxDim) * 0.5f);
+            const ImVec2 boxMax = ImVec2(boxMin.x + boxDim, boxMin.y + boxDim);
+
+            if (state) {
+                // Filled active checkbox
+                listDraw->AddRectFilled(boxMin, boxMax, ImColor(colors.Accent), 3.0f * dpi);
+                listDraw->AddRect(boxMin, boxMax, ImColor(colors.Accent), 3.0f * dpi, 0, 1.0f);
+
+                // White checkmark lines
+                const ImVec2 p1 = ImVec2(boxMin.x + 3.5f * dpi, boxMin.y + 8.0f * dpi);
+                const ImVec2 p2 = ImVec2(boxMin.x + 6.5f * dpi, boxMin.y + 11.5f * dpi);
+                const ImVec2 p3 = ImVec2(boxMin.x + 12.0f * dpi, boxMin.y + 4.5f * dpi);
+                listDraw->AddLine(p1, p2, IM_COL32(255, 255, 255, 255), 2.0f * dpi);
+                listDraw->AddLine(p2, p3, IM_COL32(255, 255, 255, 255), 2.0f * dpi);
+            } else {
+                // Empty inactive checkbox
+                listDraw->AddRectFilled(boxMin, boxMax, ImColor(colors.CardBg), 3.0f * dpi);
+                listDraw->AddRect(boxMin, boxMax, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
+            }
+
+            float textDrawX = boxMax.x + 8.0f * dpi;
+
+            // Draw item icon if present
+            if (i < item_icons.size() && !item_icons[i].empty()) {
+                auto itemSub = ctx.Icons().GetIcon(item_icons[i]);
+                if (itemSub.valid && itemSub.srv) {
+                    const float itemIconDim = 14.0f * dpi;
+                    listDraw->AddImage(
+                        reinterpret_cast<ImTextureID>(itemSub.srv),
+                        ImVec2(textDrawX, rowPos.y + (itemH - itemIconDim) * 0.5f),
+                        ImVec2(textDrawX + itemIconDim, rowPos.y + (itemH + itemIconDim) * 0.5f),
+                        itemSub.uv0, itemSub.uv1,
+                        ImColor(state ? colors.Accent : colors.TextSecondary)
+                    );
+                    textDrawX += itemIconDim + 6.0f * dpi;
+                }
+            }
+
+            // Draw item label
+            listDraw->AddText(
+                ImVec2(textDrawX, rowPos.y + (itemH - ImGui::GetFontSize()) * 0.5f),
+                ImColor(state ? colors.TextPrimary : colors.TextSecondary),
+                items[i].c_str()
+            );
         }
 
         ImGui::EndChild();

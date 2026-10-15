@@ -5,17 +5,22 @@
 namespace parallax {
 
 struct StyleColors {
-    ImVec4 WindowBg{0.047f, 0.051f, 0.067f, 0.98f};       // Deep Slate/Zinc #0C0D11
-    ImVec4 CardBg{0.078f, 0.086f, 0.114f, 1.00f};         // Surface Card #14161D
-    ImVec4 CardHover{0.098f, 0.106f, 0.137f, 1.00f};      // Hovered Card #191B23
-    ImVec4 HeaderBg{0.063f, 0.067f, 0.086f, 1.00f};       // Header / Nav #101116
+    // 5 Strongly Separated Visual Layers:
+    ImVec4 WindowBg{0.047f, 0.051f, 0.071f, 1.00f};       // Layer 1: Main Window #0C0D12
+    ImVec4 HeaderBg{0.067f, 0.075f, 0.106f, 1.00f};       // Layer 2: Nav Sidebar #11131B
+    ImVec4 ContentBg{0.078f, 0.090f, 0.133f, 1.00f};      // Layer 3: Content Workspace #141722
+    ImVec4 CardBg{0.106f, 0.118f, 0.169f, 1.00f};         // Layer 4: Groupbox Cards #1B1E2B
+    ImVec4 WidgetBg{0.133f, 0.149f, 0.220f, 1.00f};       // Layer 5: Interactive Widgets #222638
+    ImVec4 CardHover{0.145f, 0.161f, 0.235f, 1.00f};      // Hovered Card/Row #25293C
+    ImVec4 WidgetHover{0.165f, 0.184f, 0.267f, 1.00f};    // Hovered Widget #2A2F44
+
     ImVec4 Border{1.000f, 1.000f, 1.000f, 0.07f};         // 1px Subtle Border rgba(255,255,255,0.07)
-    ImVec4 BorderStrong{1.000f, 1.000f, 1.000f, 0.14f};   // Active/Hovered Border
+    ImVec4 BorderStrong{1.000f, 1.000f, 1.000f, 0.16f};   // Active/Hovered Border
 
     ImVec4 Accent{0.388f, 0.400f, 0.945f, 1.00f};         // Electric Indigo #6366F1
     ImVec4 AccentHover{0.486f, 0.498f, 0.980f, 1.00f};    // #7C7FFB
     ImVec4 AccentActive{0.310f, 0.322f, 0.855f, 1.00f};   // #4F52DA
-    ImVec4 AccentMuted{0.388f, 0.400f, 0.945f, 0.15f};    // 15% Accent Tint
+    ImVec4 AccentMuted{0.388f, 0.400f, 0.945f, 0.18f};    // 18% Accent Tint
 
     ImVec4 TextPrimary{0.953f, 0.957f, 0.965f, 1.00f};    // Zinc-100 #F3F4F6
     ImVec4 TextSecondary{0.612f, 0.639f, 0.686f, 1.00f};  // Zinc-400 #9CA3AF
@@ -31,7 +36,7 @@ struct StyleMetrics {
     float ChildRounding{8.0f};
     float FrameRounding{6.0f};
     float PopupRounding{6.0f};
-    float ScrollbarRounding{4.0f};
+    float ScrollbarRounding{3.0f};
     float GrabRounding{4.0f};
     float TabRounding{6.0f};
 

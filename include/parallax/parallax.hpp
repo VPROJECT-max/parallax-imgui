@@ -98,6 +98,10 @@ WindowSizeTier GetWindowSizeTier();
 bool BeginNavBar();
 void EndNavBar();
 bool NavTab(const char* icon, const char* label, bool selected, const char* badge = nullptr);
+float GetNavWidth();
+bool IsNavExpanded();
+void SetNavExpanded(bool expanded);
+void ToggleNavExpanded();
 
 bool BeginSubTabs(SubTabPlacement placement = SubTabPlacement::TopHorizontal);
 void EndSubTabs();

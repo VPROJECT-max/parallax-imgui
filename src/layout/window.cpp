@@ -13,38 +13,62 @@ static ImVec2 s_windowSize{0.0f, 0.0f};
 static float s_appliedScale{1.0f};
 static int s_vtxStartIndex{0};
 
+constexpr float PARALLAX_FIXED_WIDTH = 1137.0f;
+constexpr float PARALLAX_FIXED_HEIGHT = 699.0f;
+
 void WindowShell::SetDefaultSize(float width, float height) {
-    Context::Get().DefaultWindowSize = ImVec2(width, height);
+    (void)width;
+    (void)height;
+    // Dimensions strictly locked to 1137x699
+    Context::Get().DefaultWindowSize = ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
 ImVec2 WindowShell::GetDefaultSize() noexcept {
-    return Context::Get().DefaultWindowSize;
+    return ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
 void WindowShell::SetSizeBounds(float minWidth, float minHeight, float maxWidth, float maxHeight) {
-    Context::Get().MinWindowSize = ImVec2(minWidth, minHeight);
-    Context::Get().MaxWindowSize = ImVec2(maxWidth, maxHeight);
+    (void)minWidth; (void)minHeight; (void)maxWidth; (void)maxHeight;
+    // Dimensions strictly locked to 1137x699
+    Context::Get().MinWindowSize = ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
+    Context::Get().MaxWindowSize = ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
 ImVec2 WindowShell::GetMinBounds() noexcept {
-    return Context::Get().MinWindowSize;
+    return ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
 ImVec2 WindowShell::GetMaxBounds() noexcept {
-    return Context::Get().MaxWindowSize;
+    return ImVec2(PARALLAX_FIXED_WIDTH, PARALLAX_FIXED_HEIGHT);
 }
 
 bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraFlags) {
     Context& ctx = Context::Get();
-    ctx.Input().Update();
+
+    static bool s_lastKnownCallerState = true;
+    static bool s_hasInitializedCallerState = false;
 
     if (p_open) {
-        if (*p_open != ctx.Input().IsMenuOpen()) {
+        if (!s_hasInitializedCallerState) {
+            s_lastKnownCallerState = *p_open;
             ctx.Input().SetMenuOpen(*p_open);
+            s_hasInitializedCallerState = true;
+        } else if (*p_open != s_lastKnownCallerState) {
+            // The caller explicitly changed *p_open programmatically
+            ctx.Input().SetMenuOpen(*p_open);
+            s_lastKnownCallerState = *p_open;
         }
     }
 
+    // Process hotkeys (Right Shift / Insert)
+    ctx.Input().Update();
+
     bool requestOpen = ctx.Input().IsMenuOpen();
+    if (p_open) {
+        *p_open = requestOpen;
+        s_lastKnownCallerState = requestOpen;
+    }
+
     float alpha = 1.0f;
     float scale = 1.0f;
     bool shouldRender = true;
@@ -55,21 +79,17 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
     s_appliedScale = scale;
 
     if (!shouldRender) {
-        if (p_open) *p_open = false;
         return false;
     }
 
-    if (p_open) *p_open = requestOpen;
-
     const float dpi = ctx.GetDpiScale();
-    const ImVec2 defaultSize = ImVec2(ctx.DefaultWindowSize.x * dpi, ctx.DefaultWindowSize.y * dpi);
-    const ImVec2 minSize = ImVec2(ctx.MinWindowSize.x * dpi, ctx.MinWindowSize.y * dpi);
-    const ImVec2 maxSize = ImVec2(ctx.MaxWindowSize.x * dpi, ctx.MaxWindowSize.y * dpi);
+    const ImVec2 fixedSize = ImVec2(PARALLAX_FIXED_WIDTH * dpi, PARALLAX_FIXED_HEIGHT * dpi);
 
-    ImGui::SetNextWindowSize(defaultSize, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSizeConstraints(minSize, maxSize);
+    // Strictly enforce 1137x699 logical pixels at all times
+    ImGui::SetNextWindowSize(fixedSize, ImGuiCond_Always);
 
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse |
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoTitleBar |
                              ImGuiWindowFlags_NoScrollbar |
                              ImGuiWindowFlags_NoScrollWithMouse |
@@ -105,35 +125,6 @@ void WindowShell::End() {
         0,
         1.0f
     );
-
-    // Modern Corner Drag Resize Grip Indicator (Bottom-Right)
-    const float gripAreaSize = 20.0f * dpi;
-    const ImVec2 gripCorner(s_windowPos.x + s_windowSize.x, s_windowPos.y + s_windowSize.y);
-    const ImVec2 mousePos = ImGui::GetIO().MousePos;
-
-    const bool gripHovered = (mousePos.x >= gripCorner.x - gripAreaSize && mousePos.x <= gripCorner.x &&
-                              mousePos.y >= gripCorner.y - gripAreaSize && mousePos.y <= gripCorner.y);
-
-    const float targetGrip = gripHovered ? 1.0f : 0.0f;
-    const float animGrip = Context::Get().Anim().SpringFloat(ImGui::GetID("##CornerResizeGrip"), targetGrip, {140.0f, 20.0f, 1.0f});
-
-    const ImU32 gripCol = ImColor(
-        colors.BorderStrong.x + (colors.AccentHover.x - colors.BorderStrong.x) * animGrip,
-        colors.BorderStrong.y + (colors.AccentHover.y - colors.BorderStrong.y) * animGrip,
-        colors.BorderStrong.z + (colors.AccentHover.z - colors.BorderStrong.z) * animGrip,
-        0.30f + 0.60f * animGrip
-    );
-
-    // Draw three subtle ergonomic diagonal grip lines
-    for (int i = 1; i <= 3; ++i) {
-        const float offset = (static_cast<float>(i) * 4.0f + 3.0f) * dpi;
-        drawList->AddLine(
-            ImVec2(gripCorner.x - offset, gripCorner.y - 4.0f * dpi),
-            ImVec2(gripCorner.x - 4.0f * dpi, gripCorner.y - offset),
-            gripCol,
-            1.2f * dpi
-        );
-    }
 
     // Apply smooth scale transform to window vertices if in open/close transition
     if (s_appliedScale < 0.999f || s_appliedScale > 1.001f) {

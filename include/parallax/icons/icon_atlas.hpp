@@ -42,7 +42,10 @@ public:
     AtlasSubTexture GetIcon(std::string_view name, float dpiScale = 1.0f, bool preserveColors = false);
 
     // Convenience drawing helper
-    void DrawIcon(const char* name, const ImVec2& size = ImVec2(0.0f, 0.0f), const ImVec4& tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+    void DrawIcon(const char* name, const ImVec2& size = ImVec2(0.0f, 0.0f), const ImVec4& tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f), bool preserveColors = false);
+
+    // Direct drawing to any ImDrawList at an explicit screen position
+    void DrawIcon(ImDrawList* drawList, const char* name, const ImVec2& pos, const ImVec2& size, const ImVec4& tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f), bool preserveColors = false);
 
     ID3D11ShaderResourceView* GetSRV() const noexcept { return m_srv; }
     uint32_t GetWidth() const noexcept { return m_width; }

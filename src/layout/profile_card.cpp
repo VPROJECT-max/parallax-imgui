@@ -126,43 +126,77 @@ void UserProfileCard(const UserProfile& profile, const ImVec2& sizeArg) {
     drawList->AddRectFilled(bb.Min, bb.Max, ImColor(colors.CardBg), rounding);
     drawList->AddRect(bb.Min, bb.Max, ImColor(colors.Border), rounding, 0, 1.0f);
 
-    // Avatar Circle
-    const float avatarRadius = 18.0f * dpi;
-    const ImVec2 avatarCenter = ImVec2(bb.Min.x + 12.0f * dpi + avatarRadius, bb.Min.y + size.y * 0.5f);
-    drawList->AddCircleFilled(avatarCenter, avatarRadius, ImColor(colors.AccentMuted));
-    drawList->AddCircle(avatarCenter, avatarRadius, ImColor(colors.Border), 24, 1.0f);
+    const bool isCompact = (size.x < 100.0f * dpi);
 
-    // Icon inside Avatar
-    const float iconDim = 18.0f * dpi;
-    auto sub = ctx.Icons().GetIcon(profile.icon.empty() ? "user" : profile.icon.c_str());
-    if (sub.valid && sub.srv) {
-        drawList->AddImage(
-            reinterpret_cast<ImTextureID>(sub.srv),
-            ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f),
-            ImVec2(avatarCenter.x + iconDim * 0.5f, avatarCenter.y + iconDim * 0.5f),
-            sub.uv0, sub.uv1,
-            ImColor(colors.TextPrimary)
-        );
+    if (isCompact) {
+        // Centered Avatar Circle in collapsed mode
+        const float avatarRadius = 15.0f * dpi;
+        const ImVec2 avatarCenter = ImVec2(bb.Min.x + size.x * 0.5f, bb.Min.y + size.y * 0.5f);
+        drawList->AddCircleFilled(avatarCenter, avatarRadius, ImColor(colors.AccentMuted));
+        drawList->AddCircle(avatarCenter, avatarRadius, ImColor(colors.Border), 24, 1.0f);
+
+        // Icon inside Avatar
+        const float iconDim = 15.0f * dpi;
+        auto sub = ctx.Icons().GetIcon(profile.icon.empty() ? "user" : profile.icon.c_str());
+        if (sub.valid && sub.srv) {
+            drawList->AddImage(
+                reinterpret_cast<ImTextureID>(sub.srv),
+                ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f),
+                ImVec2(avatarCenter.x + iconDim * 0.5f, avatarCenter.y + iconDim * 0.5f),
+                sub.uv0, sub.uv1,
+                ImColor(colors.TextPrimary)
+            );
+        }
+
+        // Online Status Dot
+        if (profile.isOnline) {
+            const ImVec2 dotCenter = ImVec2(avatarCenter.x + avatarRadius * 0.70f, avatarCenter.y + avatarRadius * 0.70f);
+            drawList->AddCircleFilled(dotCenter, 3.5f * dpi, ImColor(profile.statusColor));
+            drawList->AddCircle(dotCenter, 3.5f * dpi, ImColor(colors.WindowBg), 12, 1.0f);
+        }
+
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip("%s\n%s", profile.username.c_str(), profile.subtitle.c_str());
+        }
+    } else {
+        // Full expanded profile card
+        const float avatarRadius = 18.0f * dpi;
+        const ImVec2 avatarCenter = ImVec2(bb.Min.x + 12.0f * dpi + avatarRadius, bb.Min.y + size.y * 0.5f);
+        drawList->AddCircleFilled(avatarCenter, avatarRadius, ImColor(colors.AccentMuted));
+        drawList->AddCircle(avatarCenter, avatarRadius, ImColor(colors.Border), 24, 1.0f);
+
+        // Icon inside Avatar
+        const float iconDim = 18.0f * dpi;
+        auto sub = ctx.Icons().GetIcon(profile.icon.empty() ? "user" : profile.icon.c_str());
+        if (sub.valid && sub.srv) {
+            drawList->AddImage(
+                reinterpret_cast<ImTextureID>(sub.srv),
+                ImVec2(avatarCenter.x - iconDim * 0.5f, avatarCenter.y - iconDim * 0.5f),
+                ImVec2(avatarCenter.x + iconDim * 0.5f, avatarCenter.y + iconDim * 0.5f),
+                sub.uv0, sub.uv1,
+                ImColor(colors.TextPrimary)
+            );
+        }
+
+        // Online Status Dot
+        if (profile.isOnline) {
+            const ImVec2 dotCenter = ImVec2(avatarCenter.x + avatarRadius * 0.70f, avatarCenter.y + avatarRadius * 0.70f);
+            drawList->AddCircleFilled(dotCenter, 4.0f * dpi, ImColor(profile.statusColor));
+            drawList->AddCircle(dotCenter, 4.0f * dpi, ImColor(colors.WindowBg), 12, 1.5f);
+        }
+
+        // Texts with typography hierarchy
+        const float textStartX = avatarCenter.x + avatarRadius + 10.0f * dpi;
+        const float textStartY = bb.Min.y + 11.0f * dpi;
+
+        PushFont(FontWeight::SemiBold);
+        drawList->AddText(ImVec2(textStartX, textStartY), ImColor(colors.TextPrimary), profile.username.c_str());
+        PopFont();
+
+        PushFont(FontWeight::Caption);
+        drawList->AddText(ImVec2(textStartX, textStartY + 18.0f * dpi), ImColor(colors.TextMuted), profile.subtitle.c_str());
+        PopFont();
     }
-
-    // Online Status Dot
-    if (profile.isOnline) {
-        const ImVec2 dotCenter = ImVec2(avatarCenter.x + avatarRadius * 0.70f, avatarCenter.y + avatarRadius * 0.70f);
-        drawList->AddCircleFilled(dotCenter, 4.0f * dpi, ImColor(profile.statusColor));
-        drawList->AddCircle(dotCenter, 4.0f * dpi, ImColor(colors.WindowBg), 12, 1.5f);
-    }
-
-    // Texts with typography hierarchy
-    const float textStartX = avatarCenter.x + avatarRadius + 10.0f * dpi;
-    const float textStartY = bb.Min.y + 11.0f * dpi;
-
-    PushFont(FontWeight::SemiBold);
-    drawList->AddText(ImVec2(textStartX, textStartY), ImColor(colors.TextPrimary), profile.username.c_str());
-    PopFont();
-
-    PushFont(FontWeight::Caption);
-    drawList->AddText(ImVec2(textStartX, textStartY + 18.0f * dpi), ImColor(colors.TextMuted), profile.subtitle.c_str());
-    PopFont();
 }
 
 void HeaderWidgets::WindowSizeSelector(WindowSizeTier& inOutTier) {

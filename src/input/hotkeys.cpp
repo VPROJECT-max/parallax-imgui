@@ -38,12 +38,18 @@ void InputHandler::Update() {
     const bool isTyping = ImGui::GetIO().WantTextInput;
 
     for (const auto& tk : m_toggleKeys) {
-        const SHORT keyState = GetAsyncKeyState(tk.vkey);
-        const bool isDown = (keyState & 0x8000) != 0;
+        bool isDown = false;
+        if (tk.vkey == VK_RSHIFT) {
+            isDown = ((GetAsyncKeyState(VK_RSHIFT) & 0x8000) != 0) ||
+                     (((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0) && ((GetKeyState(VK_RSHIFT) & 0x8000) != 0));
+        } else {
+            isDown = (GetAsyncKeyState(tk.vkey) & 0x8000) != 0;
+        }
+
         const bool wasDown = m_wasKeyDown[tk.vkey];
         m_wasKeyDown[tk.vkey] = isDown;
 
-        // Trigger on transition edge (key down)
+        // Trigger on transition edge (fresh key down)
         if (isDown && !wasDown) {
             // Typing safety check: ignore if user is currently typing in an ImGui text field
             if (tk.ignoreWhenTyping && isTyping) {

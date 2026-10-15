@@ -129,7 +129,7 @@ void NotificationManager::Render() {
         // Icon
         const float iconSize = 20.0f * dpi;
         const ImVec2 iconPos(minPos.x + 14.0f * dpi, minPos.y + (cardHeight - iconSize) * 0.5f);
-        ctx.Icons().DrawIcon(iconName, ImVec2(iconSize, iconSize), levelCol);
+        ctx.Icons().DrawIcon(drawList, iconName, iconPos, ImVec2(iconSize, iconSize), levelCol);
 
         // Title
         PushFont(FontWeight::SemiBold);

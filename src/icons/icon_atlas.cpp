@@ -233,14 +233,29 @@ AtlasSubTexture IconAtlas::GetIcon(std::string_view name, float dpiScale, bool p
     return subTex;
 }
 
-void IconAtlas::DrawIcon(const char* name, const ImVec2& size, const ImVec4& tint) {
-    AtlasSubTexture sub = GetIcon(name);
+void IconAtlas::DrawIcon(const char* name, const ImVec2& size, const ImVec4& tint, bool preserveColors) {
+    AtlasSubTexture sub = GetIcon(name, 1.0f, preserveColors);
     if (!sub.valid || !sub.srv) return;
 
     ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : sub.size;
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImGui::Dummy(renderSize);
     ImGui::GetWindowDrawList()->AddImage(
+        reinterpret_cast<ImTextureID>(sub.srv),
+        pos,
+        ImVec2(pos.x + renderSize.x, pos.y + renderSize.y),
+        sub.uv0, sub.uv1,
+        ImColor(tint)
+    );
+}
+
+void IconAtlas::DrawIcon(ImDrawList* drawList, const char* name, const ImVec2& pos, const ImVec2& size, const ImVec4& tint, bool preserveColors) {
+    if (!drawList) return;
+    AtlasSubTexture sub = GetIcon(name, 1.0f, preserveColors);
+    if (!sub.valid || !sub.srv) return;
+
+    ImVec2 renderSize = (size.x > 0.0f && size.y > 0.0f) ? size : sub.size;
+    drawList->AddImage(
         reinterpret_cast<ImTextureID>(sub.srv),
         pos,
         ImVec2(pos.x + renderSize.x, pos.y + renderSize.y),

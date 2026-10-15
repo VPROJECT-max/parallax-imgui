@@ -1,20 +1,23 @@
 #pragma once
 
 #include "parallax/core/types.hpp"
-#include "parallax/core/style.hpp"
 #include "parallax/core/context.hpp"
+#include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
+#include "parallax/anim/manager.hpp"
 #include "parallax/anim/easing.hpp"
 #include "parallax/anim/spring.hpp"
-#include "parallax/anim/manager.hpp"
 #include "parallax/icons/icon_atlas.hpp"
-#include "parallax/icons/icon_loader.hpp"
-#include "parallax/dx11/d3d11_host.hpp"
 #include "parallax/input/hotkeys.hpp"
 #include "parallax/layout/window.hpp"
 #include "parallax/layout/navbar.hpp"
 #include "parallax/layout/tabs.hpp"
 #include "parallax/layout/grid.hpp"
 #include "parallax/layout/profile_card.hpp"
+#include "parallax/layout/presets.hpp"
+#include "parallax/dx11/d3d11_host.hpp"
+
+// Phase 2 & 3 Custom Widgets
 #include "parallax/widgets/checkbox.hpp"
 #include "parallax/widgets/keybind.hpp"
 #include "parallax/widgets/color_picker.hpp"
@@ -22,16 +25,23 @@
 #include "parallax/widgets/slider.hpp"
 #include "parallax/widgets/collapsible_groupbox.hpp"
 #include "parallax/widgets/chain.hpp"
+#include "parallax/widgets/button.hpp"
+#include "parallax/widgets/input_text.hpp"
+#include "parallax/widgets/notification.hpp"
+#include "parallax/widgets/watermark.hpp"
 
-#include <vector>
 #include <string>
+#include <vector>
 #include <functional>
 #include <memory>
+
+struct ID3D11Device;
+struct ID3D11DeviceContext;
 
 namespace parallax {
 
 // -----------------------------------------------------------------------------
-// Core System Lifecycle
+// Core Initialization & Lifecycle
 // -----------------------------------------------------------------------------
 void Init(ID3D11Device* device, ID3D11DeviceContext* context);
 void Shutdown();
@@ -44,24 +54,24 @@ StyleMetrics& Metrics();
 void ApplyTheme();
 
 // -----------------------------------------------------------------------------
-// Animation Helpers
+// Animation Engine Wrappers
 // -----------------------------------------------------------------------------
 float AnimFloat(ImGuiID id, float target, float duration = 0.25f, anim::EasingPreset preset = anim::EasingPreset::EaseOutQuint);
-ImVec4 AnimColor(ImGuiID id, const ImVec4& target, float duration = 0.20f, anim::EasingPreset preset = anim::EasingPreset::EaseOutQuint);
-float SpringFloat(ImGuiID id, float target, const anim::SpringConfig& config = anim::SpringConfig{});
-ImVec2 SpringVec2(ImGuiID id, const ImVec2& target, const anim::SpringConfig& config = anim::SpringConfig{});
+ImVec4 AnimColor(ImGuiID id, const ImVec4& target, float duration = 0.25f, anim::EasingPreset preset = anim::EasingPreset::EaseOutQuint);
+float SpringFloat(ImGuiID id, float target, const anim::SpringConfig& config = {100.0f, 20.0f, 1.0f});
+ImVec2 SpringVec2(ImGuiID id, const ImVec2& target, const anim::SpringConfig& config = {100.0f, 20.0f, 1.0f});
 
 void SetSpeedMultiplier(SpeedMultiplier speed);
 SpeedMultiplier GetSpeedMultiplier();
 
 // -----------------------------------------------------------------------------
-// Icon Helpers
+// On-Demand SVG Icon Atlas API
 // -----------------------------------------------------------------------------
-void Icon(const char* name, const ImVec2& size = ImVec2(0.0f, 0.0f), const ImVec4& tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
+void Icon(const char* name, const ImVec2& size = ImVec2(20.0f, 20.0f), const ImVec4& tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 icons::AtlasSubTexture GetIcon(const char* name, float dpiScale = 1.0f, bool preserveColors = false);
 
 // -----------------------------------------------------------------------------
-// Input & Typing Safety
+// Hotkey & Menu Visibility Controls
 // -----------------------------------------------------------------------------
 bool IsMenuOpen();
 void SetMenuOpen(bool open);
@@ -70,10 +80,14 @@ void AddToggleKey(int vkey, bool ignoreWhenTyping = true);
 void ClearToggleKeys();
 
 // -----------------------------------------------------------------------------
-// Immediate-Mode Layout API
+// Layout & Shell Architecture
 // -----------------------------------------------------------------------------
 bool BeginWindow(const char* title, bool* p_open = nullptr, ImGuiWindowFlags flags = 0);
 void EndWindow();
+
+void SetDefaultWindowSize(float width, float height);
+ImVec2 GetDefaultWindowSize();
+void SetWindowSizeBounds(float minWidth, float minHeight, float maxWidth, float maxHeight);
 
 void SetNavSide(NavSide side);
 NavSide GetNavSide();
@@ -122,7 +136,7 @@ public:
         }
     }
 
-    // Phase 2 Declarative Widgets & Chaining
+    // Phase 2 & 3 Declarative Widgets & Chaining
     ControlRow Checkbox(const char* label, bool* p_value) {
         ControlRow row(label, p_value);
         row.Style(ToggleStyle::Checkbox);
@@ -133,6 +147,14 @@ public:
         ControlRow row(label, p_value);
         row.Style(ToggleStyle::PillSwitch);
         return row;
+    }
+
+    bool Button(const char* label, const char* icon = nullptr, ButtonVariant variant = ButtonVariant::Secondary, const ImVec2& size = ImVec2(0.0f, 0.0f)) {
+        return parallax::Button(label, icon, variant, size);
+    }
+
+    bool InputText(const char* label, std::string& text, const char* icon = nullptr, const char* placeholder = nullptr, float width = 0.0f, bool isPassword = false) {
+        return parallax::InputText(label, text, icon, placeholder, width, isPassword);
     }
 
     bool SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = "%.2f", float width = 0.0f, bool twoLine = false) {
@@ -162,6 +184,10 @@ public:
     bool Keybind(const char* label, parallax::Keybind* keybind) {
         return parallax::KeybindWidget(label, keybind);
     }
+
+    void Notify(NotificationLevel level, const std::string& title, const std::string& message, float duration = 4.0f) {
+        parallax::Notify(level, title, message, duration);
+    }
 };
 
 inline ControlRow Row(const char* label, bool* p_value) {
@@ -180,6 +206,11 @@ struct BuilderTab {
 class WindowBuilder {
 public:
     explicit WindowBuilder(std::string title) : m_title(std::move(title)) {}
+
+    WindowBuilder& WithPreset(LayoutPreset preset) noexcept {
+        parallax::SetLayoutPreset(preset);
+        return *this;
+    }
 
     WindowBuilder& WithNavSide(NavSide side) noexcept {
         m_navSide = side;
@@ -202,20 +233,48 @@ public:
         return *this;
     }
 
-    void Render(bool* p_open = nullptr);
+    void Render(bool* p_open = nullptr) {
+        if (!m_initializedDefaults) {
+            SetNavSide(m_navSide);
+            SetWindowSizeTier(m_sizeTier);
+            if (m_hasProfile) {
+                Context::Get().Profile = m_profile;
+            }
+            m_initializedDefaults = true;
+        }
+
+        if (BeginWindow(m_title.c_str(), p_open)) {
+            BeginNavBar();
+            for (size_t i = 0; i < m_tabs.size(); ++i) {
+                const auto& tab = m_tabs[i];
+                if (NavTab(tab.icon.c_str(), tab.label.c_str(), m_activeTab == static_cast<int>(i), tab.badge.empty() ? nullptr : tab.badge.c_str())) {
+                    m_activeTab = static_cast<int>(i);
+                }
+            }
+
+            if (GetNavSide() == NavSide::Left || GetNavSide() == NavSide::Right) {
+                UserProfileCard(Context::Get().Profile);
+            }
+            EndNavBar();
+
+            if (m_activeTab >= 0 && m_activeTab < static_cast<int>(m_tabs.size())) {
+                TabContext ctx;
+                m_tabs[m_activeTab].callback(ctx);
+            }
+
+            EndWindow();
+        }
+    }
 
 private:
     std::string m_title;
     NavSide m_navSide{NavSide::Left};
     WindowSizeTier m_sizeTier{WindowSizeTier::Standard};
-    UserProfile m_profile;
     bool m_hasProfile{false};
+    UserProfile m_profile;
     std::vector<BuilderTab> m_tabs;
-    int m_selectedTab{0};
+    int m_activeTab{0};
+    bool m_initializedDefaults{false};
 };
-
-inline WindowBuilder Window(std::string title) {
-    return WindowBuilder(std::move(title));
-}
 
 } // namespace parallax

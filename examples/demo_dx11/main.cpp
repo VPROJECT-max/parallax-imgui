@@ -7,21 +7,37 @@
 #include <iomanip>
 
 int RunDemo(HINSTANCE hInstance) {
-    // 1. Initialize standalone DirectX 11 Host window
+    // 1. Initialize standalone DirectX 11 Host window with Immersive Dark Mode
     parallax::dx11::D3D11Host host;
-    if (!host.InitStandalone(hInstance, 1280, 720, L"Parallax UI DX11 Demo - Phase 2 Showcase")) {
+    if (!host.InitStandalone(hInstance, 1120, 740, L"Parallax UI DX11 - Phase 3 Custom UI/UX Showcase")) {
         MessageBoxW(nullptr, L"Failed to initialize DirectX 11 Host Window.", L"Error", MB_ICONERROR);
         return 1;
     }
 
-    // 2. Initialize Parallax UI Library
+    // 2. Initialize Parallax UI Library (Loads Inter Fonts, Metrics & SVG Atlas)
     parallax::Init(host.GetDevice(), host.GetContext());
+
+    // Configure defined default window size & min/max bounds
+    parallax::SetDefaultWindowSize(980.0f, 640.0f);
+    parallax::SetWindowSizeBounds(740.0f, 480.0f, 1920.0f, 1080.0f);
+
+    // Initial welcome notification
+    parallax::Notify(
+        parallax::NotificationLevel::Success,
+        "Parallax v3.0 Active",
+        "Inter typography loaded, custom widgets & layout presets initialized.",
+        5.0f
+    );
 
     // 3. Demo application state
     bool menuOpen = true;
     int activeMainTab = 0;
     std::string searchQuery = "";
-    std::string typingTestInput = "Type capital letters with Right Shift here...";
+
+    // Text inputs state
+    std::string testSearchInput = "";
+    std::string testUsernameInput = "alex.mercer";
+    std::string testApiToken = "sk-live-94a82f0c11d";
 
     // Recent activity log for live interaction visual feedback
     std::deque<std::string> activityLog;
@@ -29,29 +45,29 @@ int RunDemo(HINSTANCE hInstance) {
         activityLog.push_front(msg);
         if (activityLog.size() > 8) activityLog.pop_back();
     };
-    logEvent("Parallax UI initialized successfully (DirectX 11 + ImGui).");
+    logEvent("System initialized with Inter font hierarchy and DirectX 11.");
 
-    // Phase 2: Chained Rows & Toggle State
+    // Phase 2 & 3: Chained Rows & Toggle State
     bool boxEsp = true;
     bool snaplines = false;
     bool skeletons = true;
     bool glowEffect = true;
-    bool disabledDemo = false;
     bool soundAlerts = true;
+    bool disabledDemo = false;
 
-    // Phase 2: Keybind State
+    // Keybind State
     parallax::Keybind boxKey{ 'B', parallax::KeybindMode::Toggle, false };
     parallax::Keybind aimKey{ VK_XBUTTON1, parallax::KeybindMode::Hold, false };
     parallax::Keybind triggerKey{ VK_SPACE, parallax::KeybindMode::AlwaysOn, true };
     parallax::Keybind glowKey{ 'G', parallax::KeybindMode::Toggle, false };
 
-    // Phase 2: Color Picker State
-    ImVec4 boxColor{ 0.38f, 0.58f, 0.98f, 1.0f };
-    ImVec4 snaplineColor{ 0.95f, 0.40f, 0.40f, 0.85f };
+    // Color Picker State
+    ImVec4 boxColor{ 0.388f, 0.400f, 0.945f, 1.0f };   // Electric Indigo #6366F1
+    ImVec4 snaplineColor{ 0.937f, 0.267f, 0.267f, 0.90f }; // Crimson #EF4444
     ImVec4 skeletonColor{ 0.95f, 0.95f, 0.95f, 1.0f };
-    ImVec4 glowColor{ 0.16f, 0.78f, 0.52f, 0.90f };
+    ImVec4 glowColor{ 0.133f, 0.773f, 0.369f, 0.90f }; // Emerald #22C55E
 
-    // Phase 2: Dropdown & Multi-Dropdown State
+    // Dropdown State
     std::vector<std::string> hitboxItems = { "Head Target", "Neck / Spine", "Upper Torso", "Lower Pelvis", "Closest Bone" };
     std::vector<std::string> hitboxIcons = { "target", "crosshair", "shield", "circle", "zap" };
     int selectedHitbox = 0;
@@ -60,21 +76,21 @@ int RunDemo(HINSTANCE hInstance) {
     std::vector<std::string> visualIcons = { "heart", "shield", "map-pin", "zap", "user", "navigation" };
     std::vector<bool> selectedElements = { true, true, true, false, true, false };
 
-    // Phase 2: Sliders & Range Sliders
+    // Sliders & Range Sliders
     float fovValue = 90.0f;
     float smoothingValue = 4.5f;
     int maxTargetCount = 6;
-    float renderDistanceMin = 10.0f;
+    float renderDistanceMin = 15.0f;
     float renderDistanceMax = 320.0f;
-    int pingRangeMin = 15;
-    int pingRangeMax = 110;
+    int pingRangeMin = 20;
+    int pingRangeMax = 120;
 
-    // Phase 2: Collapsible Groupbox States
+    // Collapsible Groupbox States
     bool visualGroupExpanded = true;
     bool audioGroupExpanded = true;
     bool advancedGroupExpanded = false;
 
-    // 4. Run main message and render loop
+    // 4. Main message and render loop
     host.RunMainLoop([&]() {
         // Update live keybind states
         parallax::UpdateKeybindState(boxKey);
@@ -82,37 +98,47 @@ int RunDemo(HINSTANCE hInstance) {
         parallax::UpdateKeybindState(triggerKey);
         parallax::UpdateKeybindState(glowKey);
 
-        // Draw background guidance text when menu is closed
+        // Always render floating watermark status pill
+        parallax::Watermark("PARALLAX v3.0", "Alex Mercer (Pro)", true, true);
+
+        // Always render toast notifications
+        parallax::RenderNotifications();
+
+        // Draw guidance text when menu is closed
         if (!menuOpen) {
-            ImGui::SetNextWindowPos(ImVec2(30.0f, 30.0f));
+            ImGui::SetNextWindowPos(ImVec2(30.0f, 60.0f));
             ImGui::Begin("##ParallaxBackgroundHint", nullptr,
                 ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize |
                 ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoMove);
-            ImGui::TextColored(ImVec4(0.6f, 0.65f, 0.75f, 0.9f), "Press [Right Shift] or [Insert] to open Parallax Menu");
+            parallax::PushFont(parallax::FontWeight::SemiBold);
+            ImGui::TextColored(ImVec4(0.6f, 0.65f, 0.75f, 0.9f), "Press [Right Shift] or [Insert] to open Parallax");
+            parallax::PopFont();
             ImGui::End();
         }
 
         // Render Parallax Window
-        if (parallax::BeginWindow("Parallax UI Hub", &menuOpen)) {
+        if (parallax::BeginWindow("Parallax Control System", &menuOpen)) {
             const float dpi = parallax::GetDpiScale();
             const auto& metrics = parallax::Metrics();
             const auto& colors = parallax::Colors();
             const ImVec2 winPos = ImGui::GetWindowPos();
             const ImVec2 winSize = ImGui::GetWindowSize();
             const auto navSide = parallax::GetNavSide();
+            const auto curPreset = parallax::GetLayoutPreset();
 
             // -----------------------------------------------------------------
             // Navigation Bar
             // -----------------------------------------------------------------
             parallax::BeginNavBar();
-            if (parallax::NavTab("sliders", "Chained Rows", activeMainTab == 0, "CHAIN")) activeMainTab = 0;
+            if (parallax::NavTab("sliders", "Widgets", activeMainTab == 0, "CUSTOM")) activeMainTab = 0;
             if (parallax::NavTab("layers", "Selectors", activeMainTab == 1)) activeMainTab = 1;
-            if (parallax::NavTab("folder", "Collapsible", activeMainTab == 2)) activeMainTab = 2;
-            if (parallax::NavTab("shield", "Safety & Core", activeMainTab == 3)) activeMainTab = 3;
-            if (parallax::NavTab("image", "Icon Atlas", activeMainTab == 4)) activeMainTab = 4;
+            if (parallax::NavTab("layout", "Presets & Sizing", activeMainTab == 2)) activeMainTab = 2;
+            if (parallax::NavTab("type", "Typography", activeMainTab == 3)) activeMainTab = 3;
+            if (parallax::NavTab("folder", "Collapsible", activeMainTab == 4)) activeMainTab = 4;
+            if (parallax::NavTab("image", "SVG Atlas", activeMainTab == 5)) activeMainTab = 5;
 
-            // User Profile Card in vertical layout docked at bottom
-            if (navSide == parallax::NavSide::Left || navSide == parallax::NavSide::Right) {
+            // User Profile Card (only in vertical sidebars when not compact)
+            if ((navSide == parallax::NavSide::Left || navSide == parallax::NavSide::Right) && metrics.NavWidth > 100.0f) {
                 const float profileY = winPos.y + winSize.y - (metrics.ProfileCardHeight + 16.0f) * dpi;
                 float profileX = winPos.x + 8.0f * dpi;
                 if (navSide == parallax::NavSide::Right) {
@@ -124,7 +150,7 @@ int RunDemo(HINSTANCE hInstance) {
             parallax::EndNavBar();
 
             // -----------------------------------------------------------------
-            // Content Area Layout Calculations
+            // Content Region Bounds Calculations
             // -----------------------------------------------------------------
             ImVec2 contentPos;
             ImVec2 contentSize;
@@ -152,38 +178,90 @@ int RunDemo(HINSTANCE hInstance) {
             ImGui::BeginChild("##ParallaxMainContentRegion", contentSize, false, ImGuiWindowFlags_NoScrollbar);
 
             // -----------------------------------------------------------------
-            // Top Bar: Search Bar & Header Controls
+            // Top Bar: Search Bar & Preset Controls
             // -----------------------------------------------------------------
             ImGui::BeginGroup();
-            parallax::SearchBar(searchQuery, "Search widgets, options, keybinds...", 250.0f * dpi);
+            parallax::SearchBar(searchQuery, "Search modules, options, settings...", 260.0f * dpi);
             ImGui::SameLine(0.0f, 16.0f * dpi);
 
-            ImGui::TextColored(colors.TextMuted, "Dock:");
-            ImGui::SameLine(0.0f, 6.0f * dpi);
-            auto curSide = parallax::GetNavSide();
-            parallax::layout::HeaderWidgets::NavSideSelector(curSide);
-            parallax::SetNavSide(curSide);
+            parallax::PushFont(parallax::FontWeight::Caption);
+            ImGui::TextColored(colors.TextMuted, "Preset: %s", parallax::GetLayoutPresetName(curPreset));
+            parallax::PopFont();
 
-            ImGui::SameLine(0.0f, 16.0f * dpi);
-            ImGui::TextColored(colors.TextMuted, "Size:");
-            ImGui::SameLine(0.0f, 6.0f * dpi);
-            auto curTier = parallax::GetWindowSizeTier();
-            parallax::layout::HeaderWidgets::WindowSizeSelector(curTier);
-            parallax::SetWindowSizeTier(curTier);
+            ImGui::SameLine(0.0f, 20.0f * dpi);
+            parallax::PushFont(parallax::FontWeight::Caption);
+            ImGui::TextColored(colors.TextMuted, "Dimensions: %.0fx%.0f", winSize.x, winSize.y);
+            parallax::PopFont();
             ImGui::EndGroup();
 
             ImGui::Spacing();
             ImGui::Spacing();
 
             // -----------------------------------------------------------------
-            // Tab 0: Chained Rows (Declarative API Showcase)
+            // Tab 0: Custom Widgets (Buttons, Inputs, Chained Rows)
             // -----------------------------------------------------------------
             if (activeMainTab == 0) {
                 parallax::BeginGrid(2, 14.0f);
 
-                // Column 1: Declarative Chained Rows
+                // Column 1: Custom Buttons & Text Inputs
+                parallax::BeginGroupbox("Custom Button Family & Text Inputs", "zap");
+                ImGui::TextColored(colors.TextMuted, "Tactile button variants with spring hover/active recoil:");
+                ImGui::Spacing();
+
+                // Custom Buttons
+                if (parallax::Button("Deploy Security Module", "shield", parallax::ButtonVariant::Primary, ImVec2(-1.0f, 38.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Success, "Security Module Deployed", "All kernel shields and memory watchdogs active.", 4.0f);
+                    logEvent("Button clicked: Deploy Security Module");
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Synchronize Cloud Settings", "refresh-cw", parallax::ButtonVariant::Secondary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Info, "Profile Synchronized", "Downloaded remote configuration profile.", 3.5f);
+                    logEvent("Button clicked: Synchronize Cloud Settings");
+                }
+
+                ImGui::Spacing();
+
+                // Danger & Ghost buttons in one row
+                const float halfW = (ImGui::GetContentRegionAvail().x - 10.0f * dpi) * 0.5f;
+                if (parallax::Button("Purge Cache", "trash-2", parallax::ButtonVariant::Danger, ImVec2(halfW, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Danger, "Cache Purged", "Temporary memory buffers and icons cleared.", 4.0f);
+                    logEvent("Button clicked: Purge Cache");
+                }
+                ImGui::SameLine(0.0f, 10.0f * dpi);
+                if (parallax::Button("Open Docs", "external-link", parallax::ButtonVariant::Ghost, ImVec2(halfW, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Warning, "Documentation", "Opened local HTML documentation in docs/.", 3.0f);
+                    logEvent("Button clicked: Open Docs");
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextColored(colors.TextSecondary, "Custom Styled Text Inputs:");
+                ImGui::Spacing();
+
+                // Input with search icon
+                parallax::InputText("Query Filter", testSearchInput, "search", "Filter target entities...", -1.0f);
+
+                ImGui::Spacing();
+
+                // Input with user icon
+                parallax::InputText("Operator Handle", testUsernameInput, "user", "Enter username...", -1.0f);
+
+                ImGui::Spacing();
+
+                // Password masked input with lock icon
+                parallax::InputText("Authorization Key", testApiToken, "lock", "Enter API key...", -1.0f, true);
+
+                parallax::EndGroupbox();
+
+                parallax::NextColumn();
+
+                // Column 2: Declarative Chained Rows
                 parallax::BeginGroupbox("Declarative Chained Settings", "sliders");
-                ImGui::TextColored(colors.TextMuted, "Rayfield-style chained controls in a single unified row:");
+                ImGui::TextColored(colors.TextMuted, "Custom-designed rows with icons, keybinds, and color swatches:");
                 ImGui::Spacing();
 
                 // 1. Pill Switch with Icon, Description, Tooltip, Keybind, Color Picker, and OnChange
@@ -194,27 +272,26 @@ int RunDemo(HINSTANCE hInstance) {
                     .Keybind(&boxKey)
                     .Color(&boxColor)
                     .OnChange([&](bool val) {
-                        logEvent(std::string("Bounding Box toggled: ") + (val ? "ENABLED" : "DISABLED"));
+                        logEvent(std::string("Bounding Box: ") + (val ? "ENABLED" : "DISABLED"));
                     });
 
                 // 2. Checkbox with Icon, Keybind, Color, Description
                 parallax::Row("Snaplines", &snaplines)
                     .Style(parallax::ToggleStyle::Checkbox)
                     .Icon("navigation")
-                    .Description("Draw directional guidance line from crosshair")
-                    .Tooltip("Line drawn directly to target anchor point")
+                    .Description("Draw directional trajectory line to target")
                     .Color(&snaplineColor)
                     .OnChange([&](bool val) {
-                        logEvent(std::string("Snaplines toggled: ") + (val ? "ENABLED" : "DISABLED"));
+                        logEvent(std::string("Snaplines: ") + (val ? "ENABLED" : "DISABLED"));
                     });
 
                 // 3. Skeletons with Keybind and Color
-                parallax::Row("Skeleton Bones", &skeletons)
+                parallax::Row("Skeleton Joint Bones", &skeletons)
                     .Icon("activity")
                     .Description("Overlay anatomical skeletal joint structures")
                     .Color(&skeletonColor)
                     .OnChange([&](bool val) {
-                        logEvent(std::string("Skeletons toggled: ") + (val ? "ENABLED" : "DISABLED"));
+                        logEvent(std::string("Skeletons: ") + (val ? "ENABLED" : "DISABLED"));
                     });
 
                 // 4. Glow Effect with Keybind & Color
@@ -224,52 +301,27 @@ int RunDemo(HINSTANCE hInstance) {
                     .Keybind(&glowKey)
                     .Color(&glowColor)
                     .OnChange([&](bool val) {
-                        logEvent(std::string("Outer Glow toggled: ") + (val ? "ENABLED" : "DISABLED"));
+                        logEvent(std::string("Outer Glow: ") + (val ? "ENABLED" : "DISABLED"));
                     });
 
                 // 5. Disabled State Row Showcase
-                parallax::Row("Anti-Aliased Depth (Locked)", &disabledDemo)
+                parallax::Row("Hardware Depth Pass (Locked)", &disabledDemo)
                     .Icon("lock")
-                    .Description("Hardware feature unavailable on this rendering pass")
+                    .Description("Requires DirectX 12 or Vulkan compute backend")
                     .Disabled(true);
-
-                parallax::EndGroupbox();
-
-                parallax::NextColumn();
-
-                // Column 2: Keybind State & Live Activity Stream
-                parallax::BeginGroupbox("Live Keybind Status", "keyboard");
-                ImGui::TextColored(colors.TextMuted, "Evaluated in real-time with Hold/Toggle/AlwaysOn modes:");
-                ImGui::Spacing();
-
-                auto displayKeyStatus = [&](const char* name, const parallax::Keybind& bind) {
-                    ImGui::TextColored(colors.TextSecondary, "%s:", name);
-                    ImGui::SameLine(160.0f * dpi);
-                    ImGui::TextColored(colors.Accent, "[%s]", parallax::GetKeyName(bind.vkey).c_str());
-                    ImGui::SameLine(240.0f * dpi);
-                    const char* modeStr = bind.mode == parallax::KeybindMode::Hold ? "Hold" :
-                                          bind.mode == parallax::KeybindMode::Toggle ? "Toggle" : "AlwaysOn";
-                    ImGui::TextColored(colors.TextMuted, "(%s)", modeStr);
-                    ImGui::SameLine(330.0f * dpi);
-                    ImGui::TextColored(bind.active ? colors.Success : colors.TextMuted,
-                        bind.active ? "● ACTIVE" : "○ INACTIVE");
-                };
-
-                displayKeyStatus("Bounding Box Key", boxKey);
-                displayKeyStatus("Aim Assist Trigger", aimKey);
-                displayKeyStatus("Triggerbot Hold", triggerKey);
-                displayKeyStatus("Outer Glow Key", glowKey);
 
                 ImGui::Spacing();
                 ImGui::Separator();
                 ImGui::Spacing();
 
-                ImGui::TextColored(colors.TextSecondary, "Interactive Activity Stream:");
+                ImGui::TextColored(colors.TextSecondary, "Recent Event Stream:");
                 ImGui::Spacing();
 
-                ImGui::BeginChild("##DemoActivityLog", ImVec2(0.0f, 130.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
+                ImGui::BeginChild("##DemoActivityLog", ImVec2(0.0f, 100.0f * dpi), true, ImGuiWindowFlags_NoScrollbar);
                 for (const auto& logMsg : activityLog) {
+                    parallax::PushFont(parallax::FontWeight::Caption);
                     ImGui::TextColored(colors.TextMuted, "• %s", logMsg.c_str());
+                    parallax::PopFont();
                 }
                 ImGui::EndChild();
 
@@ -283,9 +335,9 @@ int RunDemo(HINSTANCE hInstance) {
             else if (activeMainTab == 1) {
                 parallax::BeginGrid(2, 14.0f);
 
-                // Column 1: Smooth Sliders & Dual-Thumb Range Sliders
-                parallax::BeginGroupbox("Smooth Spring Sliders", "sliders");
-                ImGui::TextColored(colors.TextMuted, "Frame-rate independent spring thumb animation & floating tooltips:");
+                // Column 1: Smooth Spring Sliders & Range Sliders
+                parallax::BeginGroupbox("Tactile Sliders & Range Sliders", "sliders");
+                ImGui::TextColored(colors.TextMuted, "Custom tracks, spring thumb interpolation & floating tooltips:");
                 ImGui::Spacing();
 
                 // Float Slider
@@ -321,13 +373,13 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::NextColumn();
 
                 // Column 2: Single & Multi-Select Dropdowns
-                parallax::BeginGroupbox("Dropdown Selectors", "layers");
-                ImGui::TextColored(colors.TextMuted, "Search filtering, SVG icons, and selection badges:");
+                parallax::BeginGroupbox("Searchable Dropdown Selectors", "layers");
+                ImGui::TextColored(colors.TextMuted, "Custom popups, search filtering, icons, and selection badges:");
                 ImGui::Spacing();
 
                 // Single Select Dropdown
                 if (parallax::Dropdown("Target Hitbox", hitboxItems, &selectedHitbox, hitboxIcons)) {
-                    logEvent(std::string("Hitbox changed to: ") + hitboxItems[selectedHitbox]);
+                    logEvent(std::string("Hitbox selected: ") + hitboxItems[selectedHitbox]);
                 }
 
                 ImGui::Spacing();
@@ -335,36 +387,219 @@ int RunDemo(HINSTANCE hInstance) {
 
                 // Searchable Multi-Select Dropdown
                 if (parallax::MultiDropdown("Active ESP Indicators", visualElements, selectedElements, visualIcons)) {
-                    int activeCount = 0;
-                    for (bool b : selectedElements) if (b) activeCount++;
-                    logEvent(std::string("Active ESP Indicators updated: ") + std::to_string(activeCount) + " enabled");
+                    int count = 0;
+                    for (bool b : selectedElements) if (b) count++;
+                    logEvent(std::string("ESP Indicators updated: ") + std::to_string(count) + " enabled");
                 }
 
                 ImGui::Spacing();
                 ImGui::Separator();
                 ImGui::Spacing();
 
-                ImGui::TextColored(colors.TextMuted, "Standalone Color Swatch:");
+                ImGui::TextColored(colors.TextSecondary, "Precision Color Picker Swatch:");
                 ImGui::Spacing();
-                ImGui::Text("Interface Theme Accent:");
+                ImGui::Text("Interface Accent Color:");
                 ImGui::SameLine(180.0f * dpi);
-                static ImVec4 customThemeColor{ 0.38f, 0.58f, 0.98f, 1.0f };
-                parallax::ColorPicker("##StandaloneAccentColor", &customThemeColor, true);
+                static ImVec4 customAccent{ 0.388f, 0.400f, 0.945f, 1.0f };
+                parallax::ColorPicker("##CustomAccentColor", &customAccent, true);
 
                 ImGui::SameLine(220.0f * dpi);
-                ImGui::TextColored(customThemeColor, "HEX: #%02X%02X%02X",
-                    (int)(customThemeColor.x * 255.0f),
-                    (int)(customThemeColor.y * 255.0f),
-                    (int)(customThemeColor.z * 255.0f));
+                parallax::PushFont(parallax::FontWeight::Caption);
+                ImGui::TextColored(customAccent, "HEX: #%02X%02X%02X",
+                    (int)(customAccent.x * 255.0f),
+                    (int)(customAccent.y * 255.0f),
+                    (int)(customAccent.z * 255.0f));
+                parallax::PopFont();
 
                 parallax::EndGroupbox();
 
                 parallax::EndGrid();
             }
             // -----------------------------------------------------------------
-            // Tab 2: Collapsible Groupboxes
+            // Tab 2: Layout Presets & Resizing Engine
             // -----------------------------------------------------------------
             else if (activeMainTab == 2) {
+                parallax::BeginGrid(2, 14.0f);
+
+                // Column 1: Live Layout Preset Switcher
+                parallax::BeginGroupbox("Game-Category Layout Presets", "layout");
+                ImGui::TextWrapped("Switch between three production-grade layout presets at runtime:");
+                ImGui::Spacing();
+
+                // 1. Modern Sidebar
+                if (parallax::Button("Modern Sidebar (Spacious 200px Left Bar)", "sidebar",
+                    curPreset == parallax::LayoutPreset::ModernSidebar ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary,
+                    ImVec2(-1.0f, 38.0f * dpi)))
+                {
+                    parallax::SetLayoutPreset(parallax::LayoutPreset::ModernSidebar);
+                    parallax::Notify(parallax::NotificationLevel::Info, "Preset Changed", "Switched to Modern Sidebar layout.", 3.0f);
+                }
+
+                ImGui::Spacing();
+
+                // 2. Compact Tactical
+                if (parallax::Button("Compact Tactical (Dense 68px Icon Dock)", "crosshair",
+                    curPreset == parallax::LayoutPreset::CompactTactical ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary,
+                    ImVec2(-1.0f, 38.0f * dpi)))
+                {
+                    parallax::SetLayoutPreset(parallax::LayoutPreset::CompactTactical);
+                    parallax::Notify(parallax::NotificationLevel::Info, "Preset Changed", "Switched to Compact Tactical layout.", 3.0f);
+                }
+
+                ImGui::Spacing();
+
+                // 3. Minimal Tabbed
+                if (parallax::Button("Minimal Tabbed (Clean Top Horizontal Bar)", "maximize-2",
+                    curPreset == parallax::LayoutPreset::MinimalTabbed ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary,
+                    ImVec2(-1.0f, 38.0f * dpi)))
+                {
+                    parallax::SetLayoutPreset(parallax::LayoutPreset::MinimalTabbed);
+                    parallax::Notify(parallax::NotificationLevel::Info, "Preset Changed", "Switched to Minimal Tabbed layout.", 3.0f);
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextColored(colors.TextSecondary, "Manual Window Resizing Rules:");
+                ImGui::BulletText("Minimum Width: 740px, Minimum Height: 480px");
+                ImGui::BulletText("Maximum Width: 1920px, Maximum Height: 1080px");
+                ImGui::BulletText("Drag the bottom-right corner grip to resize");
+                ImGui::BulletText("All content columns reflow without text overlapping");
+
+                parallax::EndGroupbox();
+
+                parallax::NextColumn();
+
+                // Column 2: Size Tiers & Global Motion Multiplier
+                parallax::BeginGroupbox("Dimensions & Motion Engine", "cpu");
+                ImGui::TextColored(colors.TextSecondary, "Window Size Preset Tiers:");
+                ImGui::Spacing();
+
+                auto curTier = parallax::GetWindowSizeTier();
+                if (parallax::Button("Compact (720x480)", nullptr, curTier == parallax::WindowSizeTier::Compact ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
+                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Compact);
+                }
+                ImGui::SameLine();
+                if (parallax::Button("Standard (900x600)", nullptr, curTier == parallax::WindowSizeTier::Standard ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
+                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Standard);
+                }
+                ImGui::SameLine();
+                if (parallax::Button("Expanded (1080x720)", nullptr, curTier == parallax::WindowSizeTier::Expanded ? parallax::ButtonVariant::Primary : parallax::ButtonVariant::Secondary)) {
+                    parallax::SetWindowSizeTier(parallax::WindowSizeTier::Expanded);
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextColored(colors.TextSecondary, "Global Animation Speed Multiplier:");
+                auto speed = parallax::GetSpeedMultiplier();
+                if (ImGui::RadioButton("Fast (1.5x)", speed == parallax::SpeedMultiplier::Fast)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Fast);
+                ImGui::SameLine();
+                if (ImGui::RadioButton("Normal (1.0x)", speed == parallax::SpeedMultiplier::Normal)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Normal);
+                ImGui::SameLine();
+                if (ImGui::RadioButton("Relaxed (0.7x)", speed == parallax::SpeedMultiplier::Relaxed)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Relaxed);
+                ImGui::SameLine();
+                if (ImGui::RadioButton("Off", speed == parallax::SpeedMultiplier::Off)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Off);
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextColored(colors.TextSecondary, "Harmonic Spring Motion Tester (k=100, c=20):");
+                static float testSliderTarget = 65.0f;
+                parallax::SliderFloat("Target Spring Value", &testSliderTarget, 0.0f, 100.0f, "%.1f");
+
+                float currentSpringVal = parallax::SpringFloat(ImGui::GetID("##DemoSpringVal"), testSliderTarget, {100.0f, 20.0f, 1.0f});
+                ImGui::ProgressBar(currentSpringVal / 100.0f, ImVec2(-1.0f, 18.0f * dpi), "");
+                parallax::PushFont(parallax::FontWeight::Caption);
+                ImGui::TextColored(colors.TextMuted, "Physically Settled Position: %.2f", currentSpringVal);
+                parallax::PopFont();
+
+                parallax::EndGroupbox();
+
+                parallax::EndGrid();
+            }
+            // -----------------------------------------------------------------
+            // Tab 3: Typography Hierarchy & Toast Testbench
+            // -----------------------------------------------------------------
+            else if (activeMainTab == 3) {
+                parallax::BeginGrid(2, 14.0f);
+
+                // Column 1: Typography System Hierarchy
+                parallax::BeginGroupbox("Inter Font Weight Hierarchy", "type");
+                ImGui::TextColored(colors.TextMuted, "Licensed Inter TrueType font loaded at native display DPI:");
+                ImGui::Spacing();
+
+                parallax::PushFont(parallax::FontWeight::Title);
+                ImGui::TextColored(colors.TextPrimary, "Title (22px Inter Bold)");
+                parallax::PopFont();
+
+                parallax::PushFont(parallax::FontWeight::Bold);
+                ImGui::TextColored(colors.TextPrimary, "Section Heading (18.5px Inter Bold)");
+                parallax::PopFont();
+
+                parallax::PushFont(parallax::FontWeight::SemiBold);
+                ImGui::TextColored(colors.TextPrimary, "Card Header (16.5px Inter SemiBold)");
+                parallax::PopFont();
+
+                parallax::PushFont(parallax::FontWeight::Medium);
+                ImGui::TextColored(colors.TextSecondary, "Control Label / Button (15px Inter Medium)");
+                parallax::PopFont();
+
+                parallax::PushFont(parallax::FontWeight::Regular);
+                ImGui::TextColored(colors.TextSecondary, "Body & Form Text (14.5px Inter Regular)");
+                parallax::PopFont();
+
+                parallax::PushFont(parallax::FontWeight::Caption);
+                ImGui::TextColored(colors.TextMuted, "Description & Metadata (12.5px Inter Caption)");
+                parallax::PopFont();
+
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                ImGui::TextWrapped("All typography is anti-aliased with high-precision subpixel rasterization and scales crisply with display DPI.");
+                parallax::EndGroupbox();
+
+                parallax::NextColumn();
+
+                // Column 2: Toast Notification Testbench
+                parallax::BeginGroupbox("Toast Notification Testbench", "bell");
+                ImGui::TextColored(colors.TextMuted, "Trigger spring-animated toast notifications with progress bars:");
+                ImGui::Spacing();
+
+                if (parallax::Button("Trigger Success Notification", "check", parallax::ButtonVariant::Primary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Success, "Operation Completed", "All memory buffers validated and written.", 4.0f);
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Trigger Info Notification", "bell", parallax::ButtonVariant::Secondary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Info, "New Update Available", "Parallax v3.1 update ready for installation.", 4.5f);
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Trigger Warning Notification", "alert-triangle", parallax::ButtonVariant::Secondary, ImVec2(-1.0f, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Warning, "High GPU Workload", "Frame render latency exceeded 16.6ms threshold.", 4.0f);
+                }
+
+                ImGui::Spacing();
+
+                if (parallax::Button("Trigger Danger Notification", "alert-circle", parallax::ButtonVariant::Danger, ImVec2(-1.0f, 36.0f * dpi))) {
+                    parallax::Notify(parallax::NotificationLevel::Danger, "Access Denied", "Kernel handle failed validation check.", 5.0f);
+                }
+
+                parallax::EndGroupbox();
+
+                parallax::EndGrid();
+            }
+            // -----------------------------------------------------------------
+            // Tab 4: Collapsible Groupboxes
+            // -----------------------------------------------------------------
+            else if (activeMainTab == 4) {
                 parallax::BeginGrid(2, 14.0f);
 
                 // Column 1: Centered Header & Divider Groupbox
@@ -387,7 +622,7 @@ int RunDemo(HINSTANCE hInstance) {
                     ImGui::Spacing();
 
                     parallax::Row("Hit Confirmation Beep", &soundAlerts).Style(parallax::ToggleStyle::PillSwitch);
-                    static float soundVolume = 75.0f;
+                    static float soundVolume = 80.0f;
                     parallax::SliderFloat("Feedback Volume", &soundVolume, 0.0f, 100.0f, "%.0f%%");
 
                     parallax::EndCollapsibleGroupbox();
@@ -396,7 +631,7 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::NextColumn();
 
                 // Column 2: Left-Aligned Header with Icon
-                if (parallax::BeginCollapsibleGroupbox("Advanced Computation Engine", &advancedGroupExpanded, "cpu", 0.0f, false)) {
+                if (parallax::BeginCollapsibleGroupbox("Predictive Trajectory Engine", &advancedGroupExpanded, "cpu", 0.0f, false)) {
                     ImGui::TextColored(colors.TextMuted, "High-precision calculations and predictive trajectory solver.");
                     ImGui::Spacing();
 
@@ -408,8 +643,8 @@ int RunDemo(HINSTANCE hInstance) {
                     parallax::EndCollapsibleGroupbox();
                 }
 
-                parallax::BeginGroupbox("Layout Grid Guide", "layers");
-                ImGui::TextWrapped("Parallax responsive grid automatically partitions available content width into equal columns with synchronized spacing.");
+                parallax::BeginGroupbox("Responsive Layout Guidelines", "layers");
+                ImGui::TextWrapped("The responsive grid automatically partitions available content space into equal columns with synchronized spacing.");
                 ImGui::Spacing();
                 ImGui::BulletText("Single Column (1): Full-width detailed forms");
                 ImGui::BulletText("Two Columns (2): Optimal settings & property inspection");
@@ -419,82 +654,9 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::EndGrid();
             }
             // -----------------------------------------------------------------
-            // Tab 3: Safety & Core Architecture
+            // Tab 5: SVG Icon Atlas (2,077 Icons)
             // -----------------------------------------------------------------
-            else if (activeMainTab == 3) {
-                parallax::BeginGrid(2, 14.0f);
-
-                // Column 1: Typing Safety & Key Capture Safety
-                parallax::BeginGroupbox("Input Safety & Protected Hotkeys", "keyboard");
-                ImGui::TextWrapped("Test typing safety below: focus the input text box and type using Right Shift. Notice the menu remains safely open!");
-                ImGui::Spacing();
-
-                char inputBuf[128];
-                strncpy_s(inputBuf, sizeof(inputBuf), typingTestInput.c_str(), _TRUNCATE);
-                ImGui::SetNextItemWidth(-1.0f);
-                if (ImGui::InputText("##TypingSafetyTest", inputBuf, sizeof(inputBuf))) {
-                    typingTestInput = inputBuf;
-                }
-                ImGui::Spacing();
-
-                bool wantText = ImGui::GetIO().WantTextInput;
-                ImGui::TextColored(wantText ? colors.Success : colors.TextMuted,
-                    "ImGui WantTextInput: %s (Right Shift is %s)",
-                    wantText ? "ACTIVE" : "INACTIVE",
-                    wantText ? "SUPPRESSED (Typing Protected)" : "ARMED");
-
-                ImGui::Spacing();
-                ImGui::Separator();
-                ImGui::Spacing();
-
-                ImGui::TextColored(colors.TextSecondary, "Configured Menu Toggle Hotkeys:");
-                ImGui::BulletText("Right Shift (VK_RSHIFT) - Typing-protected");
-                ImGui::BulletText("Insert (VK_INSERT) - Always active fallback");
-                ImGui::BulletText("Keybind Capture - Suppresses menu toggle while binding keys");
-                parallax::EndGroupbox();
-
-                parallax::NextColumn();
-
-                // Column 2: Core Architecture & Harmonic Spring Engine
-                parallax::BeginGroupbox("Core Architecture & Motion", "cpu");
-                ImGui::TextColored(colors.TextSecondary, "DirectX 11 Device: Feature Level 11.0 Hardware");
-                ImGui::TextColored(colors.TextSecondary, "DPI Scale: %.2fx", dpi);
-                ImGui::TextColored(colors.TextSecondary, "Framerate: %.1f FPS (%.2f ms)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
-
-                ImGui::Spacing();
-                ImGui::Separator();
-                ImGui::Spacing();
-
-                ImGui::TextColored(colors.TextSecondary, "Global Animation Speed Multiplier:");
-                auto speed = parallax::GetSpeedMultiplier();
-                if (ImGui::RadioButton("Fast (1.5x)", speed == parallax::SpeedMultiplier::Fast)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Fast);
-                ImGui::SameLine();
-                if (ImGui::RadioButton("Normal (1.0x)", speed == parallax::SpeedMultiplier::Normal)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Normal);
-                ImGui::SameLine();
-                if (ImGui::RadioButton("Relaxed (0.7x)", speed == parallax::SpeedMultiplier::Relaxed)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Relaxed);
-                ImGui::SameLine();
-                if (ImGui::RadioButton("Off", speed == parallax::SpeedMultiplier::Off)) parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Off);
-
-                ImGui::Spacing();
-                ImGui::Separator();
-                ImGui::Spacing();
-
-                ImGui::TextColored(colors.TextSecondary, "Interactive Harmonic Spring Tester:");
-                static float testSliderTarget = 50.0f;
-                parallax::SliderFloat("Target Position", &testSliderTarget, 0.0f, 100.0f, "%.1f");
-
-                float currentSpringVal = parallax::SpringFloat(ImGui::GetID("##DemoSpringPhysicsVal"), testSliderTarget, {100.0f, 20.0f, 1.0f});
-                ImGui::ProgressBar(currentSpringVal / 100.0f, ImVec2(-1.0f, 18.0f * dpi), "");
-                ImGui::TextColored(colors.TextMuted, "Settled Physics Position: %.2f", currentSpringVal);
-
-                parallax::EndGroupbox();
-
-                parallax::EndGrid();
-            }
-            // -----------------------------------------------------------------
-            // Tab 4: SVG Icon Atlas
-            // -----------------------------------------------------------------
-            else if (activeMainTab == 4) {
+            else if (activeMainTab == 5) {
                 parallax::BeginGroupbox("On-Demand 2,077 SVG Icon Showcase (Dynamic Atlas)", "image");
                 ImGui::TextWrapped("Icons are rasterized on first use at current display DPI and packed into a single dynamic DirectX 11 Texture Atlas:");
                 ImGui::Spacing();
@@ -510,7 +672,9 @@ int RunDemo(HINSTANCE hInstance) {
                     if (i % 8 != 0) ImGui::SameLine(0.0f, 18.0f * dpi);
                     ImGui::BeginGroup();
                     parallax::Icon(showcaseIcons[i], ImVec2(24.0f * dpi, 24.0f * dpi), colors.Accent);
+                    parallax::PushFont(parallax::FontWeight::Caption);
                     ImGui::TextColored(colors.TextMuted, "%s", showcaseIcons[i]);
+                    parallax::PopFont();
                     ImGui::EndGroup();
                 }
 

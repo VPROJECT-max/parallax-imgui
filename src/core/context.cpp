@@ -1,5 +1,6 @@
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/anim/manager.hpp"
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/input/hotkeys.hpp"
@@ -28,6 +29,8 @@ Context& Context::Get() noexcept {
 
 void Context::Initialize(ID3D11Device* device, ID3D11DeviceContext* context) {
     if (m_initialized) return;
+
+    Typography::Get().Initialize(m_dpiScale);
 
     if (device && context) {
         m_icons->Initialize(device, context);

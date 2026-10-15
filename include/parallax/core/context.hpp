@@ -34,6 +34,12 @@ public:
     SubTabPlacement CurrentSubTabPlacement{SubTabPlacement::TopHorizontal};
     WindowSizeTier CurrentSizeTier{WindowSizeTier::Standard};
     SpeedMultiplier CurrentSpeedMultiplier{SpeedMultiplier::Normal};
+    int CurrentLayoutPresetIndex{0}; // 0 = ModernSidebar, 1 = CompactTactical, 2 = MinimalTabbed
+
+    // Configurable window size defaults and limits
+    ImVec2 DefaultWindowSize{960.0f, 620.0f};
+    ImVec2 MinWindowSize{740.0f, 480.0f};
+    ImVec2 MaxWindowSize{1920.0f, 1080.0f};
 
     std::string SearchQuery;
     UserProfile Profile;

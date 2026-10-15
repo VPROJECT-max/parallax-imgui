@@ -1,8 +1,10 @@
 #include "parallax/widgets/chain.hpp"
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/anim/manager.hpp"
+#include "parallax/anim/spring.hpp"
 #include <imgui_internal.h>
 #include <algorithm>
 #include <utility>
@@ -211,11 +213,15 @@ bool ControlRow::Render() {
 
     ImVec4 labelCol = m_disabled ? colors.TextMuted : colors.TextPrimary;
     const float labelY = hasDesc ? (bb.Min.y + 4.0f * dpi) : (bb.Min.y + (rowHeight - ImGui::GetFontSize()) * 0.5f);
+    PushFont(FontWeight::Medium);
     drawList->AddText(ImVec2(textX, labelY), ImColor(labelCol), m_label);
+    PopFont();
 
     if (hasDesc) {
         const float descY = labelY + ImGui::GetFontSize() + 2.0f * dpi;
+        PushFont(FontWeight::Caption);
         drawList->AddText(ImVec2(textX, descY), ImColor(colors.TextMuted), m_description);
+        PopFont();
     }
 
     // Render Chained Secondary Widgets:

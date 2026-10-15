@@ -793,3 +793,338 @@ code {
 .callout strong {
   color: #fff;
 }
+
+/* ========================================================================= */
+/* Phase 3 UI Overhaul Additions                                             */
+/* ========================================================================= */
+
+/* Phase 3 Button System */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.parallax-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans);
+  outline: none;
+  user-select: none;
+}
+
+.parallax-btn:active {
+  transform: scale(0.96);
+}
+
+.parallax-btn-primary {
+  background: linear-gradient(135deg, var(--accent), #4f46e5);
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+}
+
+.parallax-btn-primary:hover {
+  background: linear-gradient(135deg, var(--accent-hover), #4338ca);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px);
+}
+
+.parallax-btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+
+.parallax-btn-secondary:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.parallax-btn-danger {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.parallax-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+  transform: translateY(-1px);
+}
+
+.parallax-btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.parallax-btn-ghost:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* Custom Text Input */
+.parallax-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.parallax-input-container .input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.parallax-custom-input {
+  width: 100%;
+  padding: 8px 36px 8px 38px;
+  background: #10121b;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.parallax-custom-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22);
+}
+
+.parallax-input-container .input-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-input-container .input-clear-btn:hover {
+  color: #fff;
+}
+
+/* Toast Notifications Container & Items */
+.toast-preview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.parallax-toast {
+  position: relative;
+  background: rgba(20, 22, 31, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 12px 16px 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.parallax-toast.dismissing {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
+}
+
+.toast-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.toast-message {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.toast-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  transition: width 0.05s linear;
+}
+
+.toast-info .toast-progress-bar { background: var(--accent); }
+.toast-success .toast-progress-bar { background: var(--success); }
+.toast-warning .toast-progress-bar { background: var(--warning); }
+.toast-error .toast-progress-bar { background: var(--danger); }
+
+.toast-info { border-left: 3px solid var(--accent); }
+.toast-success { border-left: 3px solid var(--success); }
+.toast-warning { border-left: 3px solid var(--warning); }
+.toast-error { border-left: 3px solid var(--danger); }
+
+/* Watermark Status Pill */
+.watermark-demo-box {
+  padding: 16px;
+  background: #0f111a;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-watermark-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(18, 20, 29, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+}
+
+.status-dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.watermark-title {
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.watermark-stat {
+  font-family: var(--font-mono);
+  color: var(--accent-hover);
+  background: rgba(99, 102, 241, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.watermark-time {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* Preset Simulator Modifications */
+.mock-window.preset-compact-tactical .mock-nav {
+  width: 60px !important;
+  padding: 8px 4px !important;
+  align-items: center;
+}
+
+.mock-window.preset-compact-tactical .mock-nav .mock-nav-item {
+  font-size: 0 !important;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.mock-window.preset-compact-tactical .mock-nav .mock-nav-item::before {
+  content: '🛡️';
+  font-size: 14px;
+}
+
+.mock-window.preset-compact-tactical .mock-nav div[style*="Alex Mercer"] {
+  display: none !important;
+}
+
+.mock-window.preset-minimal-tabbed {
+  flex-direction: column !important;
+}
+
+.mock-window.preset-minimal-tabbed .mock-nav {
+  width: 100% !important;
+  height: 42px !important;
+  flex-direction: row !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.mock-window.preset-minimal-tabbed .mock-nav div[style*="Alex Mercer"] {
+  margin-left: auto !important;
+  margin-top: 0 !important;
+  border-top: none !important;
+  border-left: 1px solid var(--border) !important;
+}
+
+/* Diagonal Corner Resize Grip Simulation */
+.mock-window-resize-grip {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.mock-window:hover .mock-window-resize-grip {
+  opacity: 1;
+}
+

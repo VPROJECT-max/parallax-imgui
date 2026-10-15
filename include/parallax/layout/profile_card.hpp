@@ -2,6 +2,7 @@
 
 #include "parallax/core/types.hpp"
 #include <imgui.h>
+#include <string>
 
 namespace parallax::layout {
 
@@ -12,5 +13,7 @@ public:
     static void WindowSizeSelector(WindowSizeTier& inOutTier);
     static void NavSideSelector(NavSide& inOutSide);
 };
+
+void UserProfileCard(const UserProfile& profile, const ImVec2& size = ImVec2(0.0f, 0.0f));
 
 } // namespace parallax::layout

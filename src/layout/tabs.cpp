@@ -1,6 +1,7 @@
 #include "parallax/layout/tabs.hpp"
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/anim/manager.hpp"
 #include <imgui_internal.h>
 #include <algorithm>
@@ -37,6 +38,7 @@ bool SubTabs::Item(const char* label, bool selected) {
     ImGuiWindow* window = ImGui::GetCurrentWindow();
     if (window->SkipItems) return false;
 
+    PushFont(FontWeight::Medium);
     const ImGuiID id = window->GetID(label);
     const ImVec2 labelSize = ImGui::CalcTextSize(label, nullptr, true);
     const ImVec2 size = ImVec2(labelSize.x + 20.0f * dpi, 32.0f * dpi);
@@ -45,7 +47,10 @@ bool SubTabs::Item(const char* label, bool selected) {
     const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
 
     ImGui::ItemSize(bb);
-    if (!ImGui::ItemAdd(bb, id)) return false;
+    if (!ImGui::ItemAdd(bb, id)) {
+        PopFont();
+        return false;
+    }
 
     bool hovered = false;
     bool held = false;
@@ -62,6 +67,7 @@ bool SubTabs::Item(const char* label, bool selected) {
     ImVec4 textCol = selected ? colors.TextPrimary : (hovered ? colors.TextPrimary : colors.TextSecondary);
     ImVec2 textPos = ImVec2(bb.Min.x + 10.0f * dpi, bb.Min.y + (size.y - ImGui::GetFontSize()) * 0.5f);
     drawList->AddText(textPos, ImColor(textCol), label);
+    PopFont();
 
     if (s_placement == SubTabPlacement::TopHorizontal || s_placement == SubTabPlacement::BottomHorizontal) {
         ImGui::SameLine(0.0f, 8.0f * dpi);

@@ -263,7 +263,124 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // -------------------------------------------------------------------------
-    // 3. Smooth Navigation Anchor Scrolling
+    // 3. Phase 3 Interactive Elements (Buttons, Inputs, Toasts, Presets)
+    // -------------------------------------------------------------------------
+
+    // Layout Presets in Simulator
+    const presetButtons = document.querySelectorAll('[data-preset]');
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            presetButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const preset = btn.getAttribute('data-preset');
+
+            mockWindow.classList.remove('preset-compact-tactical', 'preset-minimal-tabbed');
+
+            if (preset === 'compact') {
+                mockWindow.classList.add('preset-compact-tactical');
+                currentTier = 'compact';
+                currentSide = 'left';
+            } else if (preset === 'minimal') {
+                mockWindow.classList.add('preset-minimal-tabbed');
+                currentTier = 'standard';
+                currentSide = 'top';
+            } else {
+                currentTier = 'standard';
+                currentSide = 'left';
+            }
+
+            // Sync side & tier button active states
+            sideButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-side') === currentSide));
+            tierButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tier') === currentTier));
+
+            updateSimulator();
+        });
+    });
+
+    // Custom Input Field Interaction
+    const demoInput = document.getElementById('demo-search-input');
+    const demoClearBtn = document.getElementById('demo-clear-btn');
+    if (demoInput && demoClearBtn) {
+        demoInput.addEventListener('input', () => {
+            demoClearBtn.style.display = demoInput.value.length > 0 ? 'flex' : 'none';
+        });
+
+        demoClearBtn.addEventListener('click', () => {
+            demoInput.value = '';
+            demoClearBtn.style.display = 'none';
+            demoInput.focus();
+        });
+    }
+
+    // Live Toast Notifications Engine
+    const toastContainer = document.getElementById('toast-preview-stack');
+
+    function spawnToast(title, message, level = 'info', durationMs = 3500) {
+        if (!toastContainer) return;
+
+        const toast = document.createElement('div');
+        toast.className = `parallax-toast toast-${level}`;
+
+        let iconSvg = '';
+        if (level === 'success') {
+            iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+        } else if (level === 'warning') {
+            iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        } else if (level === 'error') {
+            iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+        } else {
+            iconSvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+        }
+
+        toast.innerHTML = `
+            <div class="toast-header">
+                ${iconSvg}
+                <span class="toast-title">${title}</span>
+            </div>
+            <div class="toast-message">${message}</div>
+            <div class="toast-progress-bar" style="width: 100%;"></div>
+        `;
+
+        toastContainer.appendChild(toast);
+
+        const startTime = Date.now();
+        const progressBar = toast.querySelector('.toast-progress-bar');
+
+        const interval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, 1 - (elapsed / durationMs));
+            if (progressBar) progressBar.style.width = `${remaining * 100}%`;
+
+            if (elapsed >= durationMs) {
+                clearInterval(interval);
+                toast.classList.add('dismissing');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 300);
+            }
+        }, 30);
+    }
+
+    const btnInfo = document.getElementById('btn-toast-info');
+    const btnSuccess = document.getElementById('btn-toast-success');
+    const btnWarning = document.getElementById('btn-toast-warning');
+    const btnError = document.getElementById('btn-toast-error');
+
+    if (btnInfo) btnInfo.addEventListener('click', () => spawnToast('Configuration Saved', 'User layout preferences written to disk.', 'info', 3000));
+    if (btnSuccess) btnSuccess.addEventListener('click', () => spawnToast('Connected', 'DirectX 11 swap chain initialized at 144 FPS.', 'success', 3500));
+    if (btnWarning) btnWarning.addEventListener('click', () => spawnToast('High Latency', 'Frame presentation delay exceeds 16.6ms threshold.', 'warning', 4000));
+    if (btnError) btnError.addEventListener('click', () => spawnToast('Device Removed', 'DXGI_ERROR_DEVICE_RESET detected, recreating RTVs.', 'error', 4500));
+
+    // Custom Buttons Click Feedback
+    const demoPrimaryBtn = document.getElementById('demo-primary-btn');
+    if (demoPrimaryBtn) {
+        demoPrimaryBtn.addEventListener('click', () => {
+            spawnToast('Action Triggered', 'Primary button clicked with spring recoil animation.', 'info', 2500);
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. Smooth Navigation Anchor Scrolling
     // -------------------------------------------------------------------------
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
@@ -280,3 +397,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+

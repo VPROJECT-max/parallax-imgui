@@ -1,4 +1,5 @@
 #include "parallax/dx11/d3d11_host.hpp"
+#include <dwmapi.h>
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
 #include <backends/imgui_impl_dx11.h>
@@ -32,19 +33,31 @@ bool D3D11Host::InitStandalone(HINSTANCE hInstance, int width, int height, const
     RECT wr = {0, 0, static_cast<LONG>(m_width), static_cast<LONG>(m_height)};
     AdjustWindowRect(&wr, WS_OVERLAPPEDWINDOW, FALSE);
 
+    const int screenW = GetSystemMetrics(SM_CXSCREEN);
+    const int screenH = GetSystemMetrics(SM_CYSCREEN);
+    const int winW = wr.right - wr.left;
+    const int winH = wr.bottom - wr.top;
+    const int posX = (screenW > winW) ? (screenW - winW) / 2 : CW_USEDEFAULT;
+    const int posY = (screenH > winH) ? (screenH - winH) / 2 : CW_USEDEFAULT;
+
     m_hwnd = CreateWindowExW(
         0,
         wc.lpszClassName,
         title ? title : L"Parallax UI DX11 Host",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT,
-        wr.right - wr.left, wr.bottom - wr.top,
+        posX, posY,
+        winW, winH,
         nullptr, nullptr,
         m_hInstance,
         this
     );
 
     if (!m_hwnd) return false;
+
+    // Enable Windows 10/11 Immersive Dark Mode for Title Bar & Window Frame
+    BOOL useDarkMode = TRUE;
+    DwmSetWindowAttribute(m_hwnd, 20 /* DWMWA_USE_IMMERSIVE_DARK_MODE */, &useDarkMode, sizeof(useDarkMode));
+    DwmSetWindowAttribute(m_hwnd, 19 /* Windows 10 older build fallback */, &useDarkMode, sizeof(useDarkMode));
 
     if (!CreateDeviceAndSwapChain(m_hwnd, m_width, m_height)) {
         DestroyWindow(m_hwnd);

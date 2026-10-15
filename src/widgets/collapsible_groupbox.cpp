@@ -1,6 +1,7 @@
 #include "parallax/widgets/collapsible_groupbox.hpp"
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/anim/manager.hpp"
 #include "parallax/layout/grid.hpp"

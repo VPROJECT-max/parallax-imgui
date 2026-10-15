@@ -2,6 +2,7 @@
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
 #include "parallax/anim/manager.hpp"
+#include "parallax/anim/spring.hpp"
 #include "parallax/input/hotkeys.hpp"
 #include <algorithm>
 
@@ -11,6 +12,27 @@ static ImVec2 s_windowPos{0.0f, 0.0f};
 static ImVec2 s_windowSize{0.0f, 0.0f};
 static float s_appliedScale{1.0f};
 static int s_vtxStartIndex{0};
+
+void WindowShell::SetDefaultSize(float width, float height) {
+    Context::Get().DefaultWindowSize = ImVec2(width, height);
+}
+
+ImVec2 WindowShell::GetDefaultSize() noexcept {
+    return Context::Get().DefaultWindowSize;
+}
+
+void WindowShell::SetSizeBounds(float minWidth, float minHeight, float maxWidth, float maxHeight) {
+    Context::Get().MinWindowSize = ImVec2(minWidth, minHeight);
+    Context::Get().MaxWindowSize = ImVec2(maxWidth, maxHeight);
+}
+
+ImVec2 WindowShell::GetMinBounds() noexcept {
+    return Context::Get().MinWindowSize;
+}
+
+ImVec2 WindowShell::GetMaxBounds() noexcept {
+    return Context::Get().MaxWindowSize;
+}
 
 bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraFlags) {
     Context& ctx = Context::Get();
@@ -39,15 +61,13 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
 
     if (p_open) *p_open = requestOpen;
 
-    // Smooth tier animated resizing
     const float dpi = ctx.GetDpiScale();
-    const ImVec2 rawDims = WindowTierDimensions::GetDimensions(ctx.CurrentSizeTier);
-    const ImVec2 targetDimensions = ImVec2(rawDims.x * dpi, rawDims.y * dpi);
-    const ImVec2 animatedSize = ctx.Anim().SpringVec2(ImGui::GetID("##ParallaxShellSize"), targetDimensions);
+    const ImVec2 defaultSize = ImVec2(ctx.DefaultWindowSize.x * dpi, ctx.DefaultWindowSize.y * dpi);
+    const ImVec2 minSize = ImVec2(ctx.MinWindowSize.x * dpi, ctx.MinWindowSize.y * dpi);
+    const ImVec2 maxSize = ImVec2(ctx.MaxWindowSize.x * dpi, ctx.MaxWindowSize.y * dpi);
 
-    const ImVec2 minBounds = WindowTierDimensions::MinBounds;
-    ImGui::SetNextWindowSize(animatedSize, ImGuiCond_Appearing);
-    ImGui::SetNextWindowSizeConstraints(ImVec2(minBounds.x * dpi, minBounds.y * dpi), ImVec2(2560.0f, 1440.0f));
+    ImGui::SetNextWindowSize(defaultSize, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSizeConstraints(minSize, maxSize);
 
     ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse |
                              ImGuiWindowFlags_NoTitleBar |
@@ -56,9 +76,10 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
                              extraFlags;
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, StyleManager::Get().Metrics().WindowRounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, StyleManager::Get().Metrics().WindowRounding * dpi);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
     ImGui::PushStyleColor(ImGuiCol_Border, StyleManager::Get().Colors().Border);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, StyleManager::Get().Colors().WindowBg);
 
     bool opened = ImGui::Begin(title, nullptr, flags);
 
@@ -71,19 +92,50 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
 
 void WindowShell::End() {
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    ImGuiStyle& style = ImGui::GetStyle();
+    const float dpi = Context::Get().GetDpiScale();
+    const auto& colors = StyleManager::Get().Colors();
+    const float rounding = StyleManager::Get().Metrics().WindowRounding * dpi;
 
     // Subtle 1px structural outer border
     drawList->AddRect(
         s_windowPos,
         ImVec2(s_windowPos.x + s_windowSize.x, s_windowPos.y + s_windowSize.y),
-        ImColor(StyleManager::Get().Colors().Border),
-        style.WindowRounding,
+        ImColor(colors.Border),
+        rounding,
         0,
         1.0f
     );
 
-    // Apply smooth scale transform to window vertices if in transition
+    // Modern Corner Drag Resize Grip Indicator (Bottom-Right)
+    const float gripAreaSize = 20.0f * dpi;
+    const ImVec2 gripCorner(s_windowPos.x + s_windowSize.x, s_windowPos.y + s_windowSize.y);
+    const ImVec2 mousePos = ImGui::GetIO().MousePos;
+
+    const bool gripHovered = (mousePos.x >= gripCorner.x - gripAreaSize && mousePos.x <= gripCorner.x &&
+                              mousePos.y >= gripCorner.y - gripAreaSize && mousePos.y <= gripCorner.y);
+
+    const float targetGrip = gripHovered ? 1.0f : 0.0f;
+    const float animGrip = Context::Get().Anim().SpringFloat(ImGui::GetID("##CornerResizeGrip"), targetGrip, {140.0f, 20.0f, 1.0f});
+
+    const ImU32 gripCol = ImColor(
+        colors.BorderStrong.x + (colors.AccentHover.x - colors.BorderStrong.x) * animGrip,
+        colors.BorderStrong.y + (colors.AccentHover.y - colors.BorderStrong.y) * animGrip,
+        colors.BorderStrong.z + (colors.AccentHover.z - colors.BorderStrong.z) * animGrip,
+        0.30f + 0.60f * animGrip
+    );
+
+    // Draw three subtle ergonomic diagonal grip lines
+    for (int i = 1; i <= 3; ++i) {
+        const float offset = (static_cast<float>(i) * 4.0f + 3.0f) * dpi;
+        drawList->AddLine(
+            ImVec2(gripCorner.x - offset, gripCorner.y - 4.0f * dpi),
+            ImVec2(gripCorner.x - 4.0f * dpi, gripCorner.y - offset),
+            gripCol,
+            1.2f * dpi
+        );
+    }
+
+    // Apply smooth scale transform to window vertices if in open/close transition
     if (s_appliedScale < 0.999f || s_appliedScale > 1.001f) {
         const ImVec2 center = ImVec2(
             s_windowPos.x + s_windowSize.x * 0.5f,
@@ -98,8 +150,8 @@ void WindowShell::End() {
     }
 
     ImGui::End();
-    ImGui::PopStyleColor(); // Border
-    ImGui::PopStyleVar(3);  // WindowBorderSize, WindowRounding, Alpha
+    ImGui::PopStyleColor(2); // WindowBg, Border
+    ImGui::PopStyleVar(3);   // WindowBorderSize, WindowRounding, Alpha
 }
 
 ImVec2 WindowShell::GetContentPosition() noexcept {

@@ -89,6 +89,7 @@ target_link_libraries(parallax PUBLIC
     d3d11
     dxgi
     d3dcompiler
+    dwmapi
 )
 
 # -----------------------------------------------------------------------------
@@ -102,10 +103,13 @@ target_link_libraries(parallax_demo_dx11 PRIVATE
     parallax
 )
 
-# Copy icons to the output directory after build
+# Copy icons and assets to the output directory after build
 add_custom_command(TARGET parallax_demo_dx11 POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/icons"
         "$<TARGET_FILE_DIR:parallax_demo_dx11>/icons"
-    COMMENT "Copying 2,077 SVG icons to output directory"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:parallax_demo_dx11>/assets"
+    COMMENT "Copying 2,077 SVG icons and assets to output directory"
 )

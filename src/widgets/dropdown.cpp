@@ -1,6 +1,7 @@
 #include "parallax/widgets/dropdown.hpp"
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/anim/manager.hpp"
 #include <imgui_internal.h>

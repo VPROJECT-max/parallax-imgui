@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parallax UI Library — Phase 2 Documentation</title>
+  <title>Parallax UI Library — Phase 3 Custom UI/UX Overhaul</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -18,7 +18,7 @@
       <div>
         <div class="brand-title">PARALLAX</div>
       </div>
-      <span class="version-pill">v2.0</span>
+      <span class="version-pill">v3.0</span>
     </div>
 
     <nav class="nav-links">
@@ -27,8 +27,16 @@
       <a href="#quickstart" class="nav-link">CMake Quick Start</a>
 
       <div class="nav-group-title">Interactive Playgrounds</div>
-      <a href="#widget-playground" class="nav-link">Phase 2 Widget Showcase</a>
-      <a href="#layout-simulator" class="nav-link">Layout & Motion Simulator</a>
+      <a href="#widget-playground" class="nav-link">Phase 3 Custom UI Showcase</a>
+      <a href="#layout-simulator" class="nav-link">Layout Presets & Resizing Simulator</a>
+
+      <div class="nav-group-title">Phase 3: Custom UI/UX Overhaul</div>
+      <a href="#typography-engine" class="nav-link">Typography Engine (Inter) <span class="badge badge-chain">NEW</span></a>
+      <a href="#custom-buttons" class="nav-link">Custom Button Family</a>
+      <a href="#custom-inputs" class="nav-link">Custom Text Inputs & Search</a>
+      <a href="#toast-notifications" class="nav-link">Toast Notification System</a>
+      <a href="#watermark-system" class="nav-link">Watermark Status Pill</a>
+      <a href="#layout-presets-engine" class="nav-link">Layout Presets & Resizing Engine</a>
 
       <div class="nav-group-title">Phase 2: Chained Widgets</div>
       <a href="#chaining-api" class="nav-link">Declarative Chaining API <span class="badge badge-chain">RAYFIELD</span></a>
@@ -58,20 +66,97 @@
       <h1 class="hero-title">Parallax UI Library</h1>
       <p class="hero-desc">
         A professional, high-performance C++20 UI/UX library engineered for DirectX 11 and Dear ImGui.
-        Strictly UI/UX only — zero cheat or memory functions. Phase 2 introduces a Rayfield-inspired declarative chaining syntax,
-        compact inline keybinds, spring-animated sliders, searchable multi-dropdowns, and collapsible groupboxes.
+        Strictly UI/UX only — zero cheat or memory functions. <strong>Phase 3 delivers a complete custom UI/UX overhaul</strong>:
+        eliminating the recognizable Dear ImGui bitmap styling with the <strong>Inter</strong> typography system, custom button variants,
+        floating watermark, toast notification engine, search inputs with focus glows, and 3 game-category layout presets with responsive resizing.
       </p>
     </header>
 
-    <!-- Phase 2 Widget Playground -->
+    <!-- Phase 3 Custom UI & Widget Playground -->
     <section class="doc-section" id="widget-playground">
       <h2 class="section-title">
-        Phase 2 Interactive Widget Showcase
+        Phase 3 Custom UI & Widget Showcase
         <span class="badge badge-new">LIVE BROWSER TEST</span>
       </h2>
-      <p>Test the tactile behavior, state changes, and spring micro-interactions of the Phase 2 controls:</p>
+      <p>Test the custom tactile controls, spring recoil animations, live toast triggers, and Inter typography in your browser:</p>
 
       <div class="widget-playground">
+        <!-- Row 1: Phase 3 New Custom Controls -->
+        <div class="grid-2" style="margin-bottom: 20px;">
+          <!-- Custom Buttons & Text Input -->
+          <div class="parallax-groupbox">
+            <div class="parallax-groupbox-header"><span>Custom Buttons & Text Inputs (Phase 3)</span></div>
+            
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+              Spring hover scaling, active recoil, and custom draw-list geometry:
+            </p>
+            <div class="btn-row">
+              <button class="parallax-btn parallax-btn-primary" id="demo-primary-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                Primary
+              </button>
+              <button class="parallax-btn parallax-btn-secondary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Secondary
+              </button>
+              <button class="parallax-btn parallax-btn-danger">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                Danger
+              </button>
+              <button class="parallax-btn parallax-btn-ghost">Ghost</button>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-muted); margin: 12px 0 6px;">
+              Custom Input with prefix icon, clear button, and focus accent glow:
+            </p>
+            <div class="parallax-input-container">
+              <span class="input-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <input type="text" class="parallax-custom-input" id="demo-search-input" placeholder="Search feature, keybind, or weapon..." value="Aimbot Smoothing">
+              <button class="input-clear-btn" id="demo-clear-btn" style="display: flex;">✕</button>
+            </div>
+
+            <div style="margin-top: 14px;">
+              <span class="row-desc" style="display: block; margin-bottom: 6px;">Watermark Status Pill Preview:</span>
+              <div class="watermark-demo-box">
+                <div class="parallax-watermark-pill">
+                  <div class="status-dot-pulse"></div>
+                  <span class="watermark-title">PARALLAX</span>
+                  <span class="watermark-stat">144.0 FPS</span>
+                  <span class="watermark-time">6.94 ms</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast Notification Spawner -->
+          <div class="parallax-groupbox">
+            <div class="parallax-groupbox-header"><span>Toast Notification Engine (Phase 3)</span></div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+              Trigger spring-animated toast alerts with auto-dismiss progress bars:
+            </p>
+            <div class="btn-row">
+              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-info" style="font-size: 12px; padding: 6px 12px;">Spawn Info</button>
+              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-success" style="font-size: 12px; padding: 6px 12px; border-color: rgba(34,197,94,0.4); color: #86efac;">Spawn Success</button>
+              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-warning" style="font-size: 12px; padding: 6px 12px; border-color: rgba(245,158,11,0.4); color: #fde047;">Spawn Warning</button>
+              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-error" style="font-size: 12px; padding: 6px 12px; border-color: rgba(239,68,68,0.4); color: #fca5a5;">Spawn Error</button>
+            </div>
+
+            <div class="toast-preview-stack" id="toast-preview-stack">
+              <!-- Initial Toast Sample -->
+              <div class="parallax-toast toast-success">
+                <div class="toast-header">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span class="toast-title">Profile Loaded</span>
+                </div>
+                <div class="toast-message">Legit-Competitive preset synchronized from local cloud.</div>
+                <div class="toast-progress-bar" style="width: 70%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="grid-2">
           <!-- Column 1: Chained Rows -->
           <div>
@@ -217,6 +302,175 @@
       </div>
     </section>
 
+    <!-- Phase 3: Typography Engine (Inter) -->
+    <section id="typography-engine" class="doc-section">
+      <h2 class="section-title">
+        Typography Engine & Inter Font Hierarchy
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        Parallax completely replaces Dear ImGui's default bitmap font with the modern, high-legibility <strong>Inter</strong> font family.
+        Fonts are rasterized on-demand for display DPI scaling with automatic fallback to Windows Segoe UI:
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">Inter Hierarchy</div>
+          <p>Structured weights: <code>Regular</code> (14px), <code>Medium</code> (14px), <code>SemiBold</code> (14px), <code>Bold</code> (15px), <code>Title</code> (18px), and <code>Caption</code> (11px).</p>
+        </div>
+        <div class="card">
+          <div class="card-title">DPI Auto-Scaling</div>
+          <p>Ratios adjust glyph rasterization dynamically. Calling <code>RebuildFonts(dpiScale)</code> hot-reloads the DirectX 11 GPU texture atlas without restarting.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Scoped Font RAII</div>
+          <p>Convenient helper <code>parallax::ScopedFont</code> automatically pops font upon exiting scope, preventing ImGui font stack mismatches.</p>
+        </div>
+      </div>
+      <pre><code>// Initialize typography engine during DirectX 11 startup:
+parallax::Typography::Init(1.0f);
+
+// In rendering code:
+{
+    parallax::ScopedFont font(parallax::FontWeight::Bold);
+    ImGui::Text("Crisp Inter Typography");
+}
+// Or manual push/pop:
+parallax::Typography::PushFont(parallax::FontWeight::Title);
+ImGui::Text("Executive Summary");
+parallax::Typography::PopFont();</code></pre>
+    </section>
+
+    <!-- Phase 3: Custom Button Family -->
+    <section id="custom-buttons" class="doc-section">
+      <h2 class="section-title">
+        Custom Button Family & Micro-Interactions
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        Designed from the ground up to eliminate default ImGui beveling. Buttons feature spring-animated hover scales, tactile active recoils, and custom gradient accents:
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Primary & Secondary</div>
+          <p><strong>Primary:</strong> Radiant accent fill with subtle glow shadow.<br><strong>Secondary:</strong> Dark card surface with soft 1px border highlight.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Danger & Ghost</div>
+          <p><strong>Danger:</strong> Crimson warning tint for destructive actions.<br><strong>Ghost:</strong> Zero border transparent surface for low-friction toolbars.</p>
+        </div>
+      </div>
+      <pre><code>// Primary button with SVG icon:
+if (parallax::Button("Launch Session", "play", parallax::ButtonVariant::Primary, ImVec2(160, 36))) {
+    // Action triggered
+}
+
+// Danger confirmation button:
+if (parallax::Button("Reset Profiles", "trash", parallax::ButtonVariant::Danger)) {
+    // Destructive action
+}</code></pre>
+    </section>
+
+    <!-- Phase 3: Custom Text Inputs & Search -->
+    <section id="custom-inputs" class="doc-section">
+      <h2 class="section-title">
+        Custom Text Inputs & Search
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        Text and search fields feature animated focus accent glows, integrated prefix icons, and interactive one-click clear buttons:
+      </p>
+      <pre><code>static char searchBuf[128] = "Default Search";
+
+// Custom search input with prefix SVG icon and one-click clear button:
+parallax::InputText("##GlobalSearch", searchBuf, sizeof(searchBuf), "search", /*isPassword=*/false, /*showClearButton=*/true);
+
+// Password masked input:
+static char passwordBuf[64] = "";
+parallax::InputText("##ApiKey", passwordBuf, sizeof(passwordBuf), "key", /*isPassword=*/true);</code></pre>
+    </section>
+
+    <!-- Phase 3: Toast Notification System -->
+    <section id="toast-notifications" class="doc-section">
+      <h2 class="section-title">
+        Toast Notification System
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        A thread-safe, frame-rate independent toast alert engine with spring slide-in transitions and automatic countdown progress bars:
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">4 Notification Levels</div>
+          <p>Supports <code>Info</code>, <code>Success</code>, <code>Warning</code>, and <code>Error</code> with level-specific icons and border accents.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Auto-Dismiss Countdown</div>
+          <p>Smoothly animates progress line along bottom edge and auto-expires based on configured duration in seconds.</p>
+        </div>
+      </div>
+      <pre><code>// Spawning notifications from any thread or callback:
+parallax::Notify("Profile Saved", "User configuration written to disk.", parallax::NotificationLevel::Success, 3.5f);
+parallax::Notify("DXGI Reset", "Recreating swap chain render targets.", parallax::NotificationLevel::Warning, 4.0f);
+
+// Inside your main frame loop (typically at the very end of Present):
+parallax::RenderNotifications();</code></pre>
+    </section>
+
+    <!-- Phase 3: Watermark Status Pill -->
+    <section id="watermark-system" class="doc-section">
+      <h2 class="section-title">
+        Floating Watermark Status Pill
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        A sleek, floating HUD watermark featuring a pulsing live status dot, application title, live FPS counter, and frame time:
+      </p>
+      <pre><code>// Render floating status pill at top-right or custom screen coordinates:
+parallax::Watermark("PARALLAX", "TK", /*showFps=*/true, /*showFrameTime=*/true, /*bgAlpha=*/0.92f);</code></pre>
+    </section>
+
+    <!-- Phase 3: Layout Presets & Resizing Engine -->
+    <section id="layout-presets-engine" class="doc-section">
+      <h2 class="section-title">
+        Layout Presets & Resizing Engine
+        <span class="badge badge-chain">PHASE 3</span>
+      </h2>
+      <p>
+        Parallax provides 3 game-category layout presets engineered for different screen densities and tactical scenarios:
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">ModernSidebar</div>
+          <p>200px left sidebar with integrated user profile card, search input, and full category text labels. Ideal for extensive configuration suites.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">CompactTactical</div>
+          <p>68px icon-only dock designed for compact HUD overlays, tactical shooters, and high-DPI esports displays.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">MinimalTabbed</div>
+          <p>Horizontal top tab bar with zero sidebar, maximizing usable horizontal space for dense telemetry and tables.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>10 Critical Resizing Rules:</strong>
+        Parallax enforces a default size of <strong>980&times;640</strong>, hard min bounds of <strong>740&times;480</strong>, and max bounds of <strong>1920&times;1080</strong>.
+        Features responsive column reflow, automated text ellipsis, bounded popups, and an ergonomic bottom-right diagonal drag grip.
+      </div>
+      <pre><code>// Apply preset to active window configuration:
+parallax::ApplyLayoutPreset(myWindowConfig, parallax::LayoutPreset::ModernSidebar);
+
+// Window constraints & corner grip:
+parallax::Window("Main Menu", &isOpen)
+    .DefaultSize(980, 640)
+    .MinSize(740, 480)
+    .MaxSize(1920, 1080)
+    .Preset(parallax::LayoutPreset::ModernSidebar)
+    .Render([&]() {
+        // Your content here — responds seamlessly to resizing
+    });</code></pre>
+    </section>
+
     <!-- Declarative Chaining API -->
     <section id="chaining-api" class="doc-section">
       <h2 class="section-title">
@@ -349,11 +603,11 @@ if (parallax::BeginCollapsibleGroupbox("Visual Overlays", &isExpanded, "eye", /*
 
     <!-- Live Layout & Motion Simulator -->
     <section class="doc-section" id="layout-simulator">
-      <h2 class="section-title">Layout & Motion Simulator</h2>
-      <p>Test Parallax's multi-dock layout engine and spring transitions directly in your browser:</p>
+      <h2 class="section-title">Layout Presets & Resizing Simulator</h2>
+      <p>Test Parallax's game-category layout presets, multi-dock layout engine, and spring transitions directly in your browser:</p>
 
       <div class="simulator-box">
-        <div class="sim-controls">
+        <div class="sim-controls" style="flex-wrap: wrap;">
           <span style="font-size: 13px; color: var(--text-muted); align-self: center;">Dock Side:</span>
           <button class="sim-btn active" data-side="left">Left</button>
           <button class="sim-btn" data-side="right">Right</button>
@@ -368,10 +622,18 @@ if (parallax::BeginCollapsibleGroupbox("Visual Overlays", &isExpanded, "eye", /*
           <button id="simToggleBtn" class="sim-btn" style="margin-left: auto; border-color: var(--accent); color: var(--accent-hover);">
             Simulate Close (Insert / RShift)
           </button>
+
+          <!-- Phase 3 Layout Presets -->
+          <div style="display: flex; gap: 8px; align-items: center; width: 100%; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06);">
+            <span style="font-size: 13px; color: var(--text-muted);">Presets (Phase 3):</span>
+            <button class="sim-btn active" data-preset="modern">Modern Sidebar (200px)</button>
+            <button class="sim-btn" data-preset="compact">Compact Tactical (68px)</button>
+            <button class="sim-btn" data-preset="minimal">Minimal Tabbed (Top)</button>
+          </div>
         </div>
 
         <div class="sim-viewport">
-          <div id="mockWindow" class="mock-window" style="width: 520px; height: 340px;">
+          <div id="mockWindow" class="mock-window" style="width: 520px; height: 340px; position: relative;">
             <div id="mockNav" class="mock-nav">
               <div style="font-size: 11px; font-weight: 700; color: #fff; padding: 4px 8px; margin-bottom: 4px;">PARALLAX</div>
               <div class="mock-nav-item active">&#9670; Chained Rows</div>
@@ -403,6 +665,11 @@ if (parallax::BeginCollapsibleGroupbox("Visual Overlays", &isExpanded, "eye", /*
                   <div style="color: var(--text-muted); margin-top: 4px;">k=100, c=20 harmonic physics.</div>
                 </div>
               </div>
+            </div>
+
+            <!-- Ergonomic Corner Resize Grip -->
+            <div class="mock-window-resize-grip" title="Ergonomic Diagonal Resize Grip">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><line x1="8" y1="1" x2="1" y2="8" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/><line x1="9" y1="5" x2="5" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/></svg>
             </div>
           </div>
         </div>

@@ -12,6 +12,13 @@ public:
 
     static ImVec2 GetContentPosition() noexcept;
     static ImVec2 GetContentSize() noexcept;
+
+    static void SetDefaultSize(float width, float height);
+    static ImVec2 GetDefaultSize() noexcept;
+
+    static void SetSizeBounds(float minWidth, float minHeight, float maxWidth, float maxHeight);
+    static ImVec2 GetMinBounds() noexcept;
+    static ImVec2 GetMaxBounds() noexcept;
 };
 
 } // namespace parallax::layout

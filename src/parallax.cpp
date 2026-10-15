@@ -92,6 +92,18 @@ void EndWindow() {
     layout::WindowShell::End();
 }
 
+void SetDefaultWindowSize(float width, float height) {
+    layout::WindowShell::SetDefaultSize(width, height);
+}
+
+ImVec2 GetDefaultWindowSize() {
+    return layout::WindowShell::GetDefaultSize();
+}
+
+void SetWindowSizeBounds(float minWidth, float minHeight, float maxWidth, float maxHeight) {
+    layout::WindowShell::SetSizeBounds(minWidth, minHeight, maxWidth, maxHeight);
+}
+
 void SetNavSide(NavSide side) {
     Context::Get().CurrentNavSide = side;
 }
@@ -157,76 +169,7 @@ bool SearchBar(std::string& inOutQuery, const char* placeholder, float width) {
 }
 
 void UserProfileCard(const UserProfile& profile, const ImVec2& size) {
-    layout::HeaderWidgets::ProfileCard(profile, size);
-}
-
-void WindowBuilder::Render(bool* p_open) {
-    SetNavSide(m_navSide);
-    SetWindowSizeTier(m_sizeTier);
-
-    if (BeginWindow(m_title.c_str(), p_open)) {
-        const float dpi = GetDpiScale();
-        const auto& metrics = StyleManager::Get().Metrics();
-        const ImVec2 winPos = ImGui::GetWindowPos();
-        const ImVec2 winSize = ImGui::GetWindowSize();
-
-        BeginNavBar();
-        for (int i = 0; i < static_cast<int>(m_tabs.size()); ++i) {
-            const auto& tab = m_tabs[i];
-            const char* badge = tab.badge.empty() ? nullptr : tab.badge.c_str();
-            if (NavTab(tab.icon.c_str(), tab.label.c_str(), m_selectedTab == i, badge)) {
-                m_selectedTab = i;
-            }
-        }
-
-        // Render profile card slot in vertical layout at bottom
-        if (m_hasProfile && (m_navSide == NavSide::Left || m_navSide == NavSide::Right)) {
-            const float profileY = winPos.y + winSize.y - (metrics.ProfileCardHeight + 16.0f) * dpi;
-            float profileX = winPos.x + 8.0f * dpi;
-            if (m_navSide == NavSide::Right) {
-                profileX = winPos.x + winSize.x - (metrics.NavWidth - 8.0f) * dpi;
-            }
-            ImGui::SetCursorScreenPos(ImVec2(profileX, profileY));
-            UserProfileCard(m_profile);
-        }
-        EndNavBar();
-
-        // Calculate content area bounds based on docking side
-        ImVec2 contentPos;
-        ImVec2 contentSize;
-
-        switch (m_navSide) {
-            case NavSide::Left:
-                contentPos = ImVec2(winPos.x + metrics.NavWidth * dpi + 16.0f * dpi, winPos.y + 16.0f * dpi);
-                contentSize = ImVec2(winSize.x - metrics.NavWidth * dpi - 32.0f * dpi, winSize.y - 32.0f * dpi);
-                break;
-            case NavSide::Right:
-                contentPos = ImVec2(winPos.x + 16.0f * dpi, winPos.y + 16.0f * dpi);
-                contentSize = ImVec2(winSize.x - metrics.NavWidth * dpi - 32.0f * dpi, winSize.y - 32.0f * dpi);
-                break;
-            case NavSide::Top:
-                contentPos = ImVec2(winPos.x + 16.0f * dpi, winPos.y + metrics.NavHeight * dpi + 16.0f * dpi);
-                contentSize = ImVec2(winSize.x - 32.0f * dpi, winSize.y - metrics.NavHeight * dpi - 32.0f * dpi);
-                break;
-            case NavSide::Bottom:
-                contentPos = ImVec2(winPos.x + 16.0f * dpi, winPos.y + 16.0f * dpi);
-                contentSize = ImVec2(winSize.x - 32.0f * dpi, winSize.y - metrics.NavHeight * dpi - 32.0f * dpi);
-                break;
-        }
-
-        ImGui::SetCursorScreenPos(contentPos);
-        ImGui::BeginChild("##ParallaxContentRegion", contentSize, false, ImGuiWindowFlags_NoScrollbar);
-
-        if (m_selectedTab >= 0 && m_selectedTab < static_cast<int>(m_tabs.size())) {
-            TabContext tabCtx;
-            if (m_tabs[m_selectedTab].callback) {
-                m_tabs[m_selectedTab].callback(tabCtx);
-            }
-        }
-
-        ImGui::EndChild();
-        EndWindow();
-    }
+    layout::UserProfileCard(profile, size);
 }
 
 } // namespace parallax

@@ -32,8 +32,12 @@ public:
     using OnToggleCallback = std::function<void(bool open)>;
     void SetOnToggleCallback(OnToggleCallback callback) { m_onToggle = std::move(callback); }
 
+    void SetKeyCaptureActive(bool active) noexcept { m_keyCaptureActive = active; }
+    bool IsKeyCaptureActive() const noexcept { return m_keyCaptureActive; }
+
 private:
     bool m_menuOpen{true};
+    bool m_keyCaptureActive{false};
     std::vector<ToggleKey> m_toggleKeys;
     std::unordered_map<int, bool> m_wasKeyDown;
     OnToggleCallback m_onToggle;

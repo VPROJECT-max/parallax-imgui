@@ -31,6 +31,10 @@ void InputHandler::ClearToggleKeys() {
 }
 
 void InputHandler::Update() {
+    if (m_keyCaptureActive) {
+        return;
+    }
+
     const bool isTyping = ImGui::GetIO().WantTextInput;
 
     for (const auto& tk : m_toggleKeys) {

@@ -15,6 +15,13 @@
 #include "parallax/layout/tabs.hpp"
 #include "parallax/layout/grid.hpp"
 #include "parallax/layout/profile_card.hpp"
+#include "parallax/widgets/checkbox.hpp"
+#include "parallax/widgets/keybind.hpp"
+#include "parallax/widgets/color_picker.hpp"
+#include "parallax/widgets/dropdown.hpp"
+#include "parallax/widgets/slider.hpp"
+#include "parallax/widgets/collapsible_groupbox.hpp"
+#include "parallax/widgets/chain.hpp"
 
 #include <vector>
 #include <string>
@@ -107,7 +114,59 @@ public:
             parallax::EndGroupbox();
         }
     }
+
+    void CollapsibleGroupbox(const char* title, bool* p_expanded, std::function<void()> content, const char* icon = nullptr, float defaultHeight = 0.0f, bool centered = true) {
+        if (parallax::BeginCollapsibleGroupbox(title, p_expanded, icon, defaultHeight, centered)) {
+            if (content) content();
+            parallax::EndCollapsibleGroupbox();
+        }
+    }
+
+    // Phase 2 Declarative Widgets & Chaining
+    ControlRow Checkbox(const char* label, bool* p_value) {
+        ControlRow row(label, p_value);
+        row.Style(ToggleStyle::Checkbox);
+        return row;
+    }
+
+    ControlRow Toggle(const char* label, bool* p_value) {
+        ControlRow row(label, p_value);
+        row.Style(ToggleStyle::PillSwitch);
+        return row;
+    }
+
+    bool SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = "%.2f", float width = 0.0f, bool twoLine = false) {
+        return parallax::SliderFloat(label, v, v_min, v_max, format, width, twoLine);
+    }
+
+    bool SliderInt(const char* label, int* v, int v_min, int v_max, const char* format = "%d", float width = 0.0f, bool twoLine = false) {
+        return parallax::SliderInt(label, v, v_min, v_max, format, width, twoLine);
+    }
+
+    bool RangeSlider(const char* label, float* v_min, float* v_max, float min_limit, float max_limit, const char* format = "%.2f", float width = 0.0f) {
+        return parallax::RangeSliderFloat(label, v_min, v_max, min_limit, max_limit, format, width);
+    }
+
+    bool Dropdown(const char* label, const std::vector<std::string>& items, int* selected_index, const std::vector<std::string>& item_icons = {}, float width = 0.0f) {
+        return parallax::Dropdown(label, items, selected_index, item_icons, width);
+    }
+
+    bool MultiDropdown(const char* label, const std::vector<std::string>& items, std::vector<bool>& selected_states, const std::vector<std::string>& item_icons = {}, float width = 0.0f) {
+        return parallax::MultiDropdown(label, items, selected_states, item_icons, width);
+    }
+
+    bool Color(const char* label, ImVec4* color, bool hasAlpha = true) {
+        return parallax::ColorPicker(label, color, hasAlpha);
+    }
+
+    bool Keybind(const char* label, parallax::Keybind* keybind) {
+        return parallax::KeybindWidget(label, keybind);
+    }
 };
+
+inline ControlRow Row(const char* label, bool* p_value) {
+    return ControlRow(label, p_value);
+}
 
 using TabRenderCallback = std::function<void(TabContext& ctx)>;
 

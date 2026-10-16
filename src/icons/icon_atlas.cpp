@@ -192,8 +192,9 @@ AtlasSubTexture IconAtlas::GetIcon(std::string_view name, float dpiScale, bool p
         return AtlasSubTexture{};
     }
 
-    // Rasterize at current DPI scale (crisp at 100%, 150%, 200% scaling)
-    const uint32_t targetPx = std::clamp(static_cast<uint32_t>(std::round(24.0f * (dpiScale > 0.1f ? dpiScale : 1.0f))), 16u, 128u);
+    // Rasterize at current DPI scale (crisp at 100%, 150%, 200% scaling, extra resolution for detailed logos)
+    const float baseSize = (preserveColors || name == "logo") ? 64.0f : 24.0f;
+    const uint32_t targetPx = std::clamp(static_cast<uint32_t>(std::round(baseSize * (dpiScale > 0.1f ? dpiScale : 1.0f))), 16u, 256u);
 
     std::vector<uint8_t> pixels;
     if (!IconLoader::RasterizeSVG(name, targetPx, targetPx, preserveColors, pixels)) {

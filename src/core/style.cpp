@@ -93,26 +93,30 @@ StyleManager& StyleManager::Get() noexcept {
 
 const char* StyleManager::GetThemeName(ThemeMode mode) noexcept {
     switch (mode) {
-        case ThemeMode::Dark:  return "Graphite (Dark)";
-        case ThemeMode::Light: return "Porcelain (Light)";
+        case ThemeMode::Amoled: return "AMOLED (Black)";
+        case ThemeMode::Dark:   return "Graphite (Dark)";
+        case ThemeMode::Light:  return "Porcelain (Light)";
     }
-    return "Graphite (Dark)";
+    return "AMOLED (Black)";
 }
 
 const char* StyleManager::GetAccentPresetName(AccentPreset preset) noexcept {
     switch (preset) {
+        case AccentPreset::Parallax:   return "Parallax Violet";
         case AccentPreset::Sage:       return "Muted Sage";
         case AccentPreset::Monochrome: return "Monochrome";
         case AccentPreset::Copper:     return "Desaturated Copper";
         case AccentPreset::SteelBlue:  return "Subtle Steel Blue";
         case AccentPreset::Custom:     return "Custom";
     }
-    return "Muted Sage";
+    return "Parallax Violet";
 }
 
 ImVec4 StyleManager::GetAccentPreviewColor(AccentPreset preset, ThemeMode mode, const ImVec4& customAccent) noexcept {
     const bool light = (mode == ThemeMode::Light);
     switch (preset) {
+        case AccentPreset::Parallax:
+            return ImVec4(153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.00f); // #9998F6
         case AccentPreset::Sage:
             return light ? ImVec4(0.306f, 0.478f, 0.388f, 1.00f)   // #4E7A63
                          : ImVec4(0.471f, 0.631f, 0.545f, 1.00f);  // #78A18B
@@ -137,13 +141,42 @@ ImVec4 StyleManager::GetAccentPreviewColor(AccentPreset preset, ThemeMode mode, 
             return base;
         }
     }
-    return ImVec4(0.471f, 0.631f, 0.545f, 1.00f);
+    return ImVec4(153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.00f);
 }
 
 StyleColors StyleManager::BuildPalette(ThemeMode mode, AccentPreset preset, const ImVec4& customAccent) noexcept {
     StyleColors c;
 
-    if (mode == ThemeMode::Dark) {
+    if (mode == ThemeMode::Amoled) {
+        // Pure Black AMOLED (#000000)
+        c.WindowBg       = ImVec4(0.000f, 0.000f, 0.000f, 1.00f); // #000000
+        c.HeaderBg       = ImVec4(0.020f, 0.020f, 0.027f, 1.00f); // #050507
+        c.ContentBg      = ImVec4(0.039f, 0.043f, 0.055f, 1.00f); // #0A0B0E
+        c.CardBg         = ImVec4(0.059f, 0.063f, 0.082f, 1.00f); // #0F1015
+        c.CardHeaderBg   = ImVec4(0.078f, 0.086f, 0.110f, 1.00f); // #14161C
+        c.WidgetBg       = ImVec4(0.078f, 0.086f, 0.110f, 1.00f); // #14161C
+        c.CardHover      = ImVec4(0.086f, 0.098f, 0.133f, 1.00f); // #161922
+        c.WidgetHover    = ImVec4(0.110f, 0.122f, 0.157f, 1.00f); // #1C1F28
+        c.WidgetActive   = ImVec4(0.149f, 0.169f, 0.220f, 1.00f); // #262B38
+        c.PopupBg        = ImVec4(0.043f, 0.047f, 0.063f, 0.98f); // #0B0C10
+
+        c.BorderSubtle   = ImVec4(1.000f, 1.000f, 1.000f, 0.05f);
+        c.Border         = ImVec4(1.000f, 1.000f, 1.000f, 0.08f);
+        c.BorderStrong   = ImVec4(1.000f, 1.000f, 1.000f, 0.16f);
+        c.Shadow         = ImVec4(0.000f, 0.000f, 0.000f, 0.65f);
+        c.OverlayDim     = ImVec4(0.000f, 0.000f, 0.000f, 0.85f);
+
+        c.TextPrimary    = ImVec4(0.961f, 0.965f, 0.980f, 1.00f); // #F5F6FA
+        c.TextSecondary  = ImVec4(0.620f, 0.620f, 0.698f, 1.00f); // #9E9EB2
+        c.TextMuted      = ImVec4(0.333f, 0.337f, 0.416f, 1.00f); // #55566A
+
+        c.ToggleThumbOff = ImVec4(0.620f, 0.620f, 0.698f, 1.00f);
+        c.ToggleThumbOn  = ImVec4(1.000f, 1.000f, 1.000f, 1.00f);
+
+        c.Success        = ImVec4(0.310f, 0.659f, 0.471f, 1.00f); // #4FA878
+        c.Warning        = ImVec4(0.831f, 0.608f, 0.294f, 1.00f); // #D49B4B
+        c.Danger         = ImVec4(0.788f, 0.337f, 0.337f, 1.00f); // #C95656
+    } else if (mode == ThemeMode::Dark) {
         // Dark Theme — Graphite
         c.WindowBg       = ImVec4(0.051f, 0.059f, 0.071f, 1.00f); // #0D0F12
         c.HeaderBg       = ImVec4(0.067f, 0.078f, 0.094f, 1.00f); // #111418
@@ -252,7 +285,13 @@ void StyleManager::SetTheme(ThemeMode mode, bool animate) {
 }
 
 void StyleManager::ToggleTheme(bool animate) {
-    SetTheme(m_theme == ThemeMode::Dark ? ThemeMode::Light : ThemeMode::Dark, animate);
+    if (m_theme == ThemeMode::Amoled) {
+        SetTheme(ThemeMode::Dark, animate);
+    } else if (m_theme == ThemeMode::Dark) {
+        SetTheme(ThemeMode::Light, animate);
+    } else {
+        SetTheme(ThemeMode::Amoled, animate);
+    }
 }
 
 void StyleManager::SetAccentPreset(AccentPreset preset, bool animate) {

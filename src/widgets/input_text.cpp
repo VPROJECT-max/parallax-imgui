@@ -173,7 +173,9 @@ bool InputText(
     ImGui::PopStyleColor(5);
     ImGui::PopItemWidth();
 
-    ImGui::SetCursorScreenPos(nextCursorPos);
+    window->DC.CursorPos = nextCursorPos;
+    window->DC.CursorMaxPos = ImMax(window->DC.CursorMaxPos, frameBb.Max);
+    window->DC.IsSetPos = false;
     return valueChanged;
 }
 

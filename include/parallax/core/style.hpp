@@ -25,11 +25,11 @@ struct StyleColors {
     ImVec4 Shadow{0.000f, 0.000f, 0.000f, 0.48f};         // Elevation Drop Shadow
     ImVec4 OverlayDim{0.024f, 0.031f, 0.043f, 0.72f};     // Modal Backdrop Dimming
 
-    // Restraint-First Accent System (Default: Muted Sage #78A18B):
-    ImVec4 Accent{0.471f, 0.631f, 0.545f, 1.00f};         // Primary Accent (#78A18B)
-    ImVec4 AccentHover{0.545f, 0.702f, 0.620f, 1.00f};    // Hovered Accent (#8BB39E)
-    ImVec4 AccentActive{0.392f, 0.549f, 0.467f, 1.00f};   // Active Accent (#648C77)
-    ImVec4 AccentMuted{0.471f, 0.631f, 0.545f, 0.18f};    // Translucent Accent Fill
+    // Primary Brand Accent System (Default: #9998F6 / RGB 153, 152, 246):
+    ImVec4 Accent{153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.00f};         // Primary Accent (#9998F6)
+    ImVec4 AccentHover{175.0f / 255.0f, 174.0f / 255.0f, 250.0f / 255.0f, 1.00f};    // Hovered Accent
+    ImVec4 AccentActive{135.0f / 255.0f, 134.0f / 255.0f, 235.0f / 255.0f, 1.00f};   // Active Accent
+    ImVec4 AccentMuted{153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 0.18f};    // Translucent Accent Fill
 
     // Typography Hierarchy:
     ImVec4 TextPrimary{0.925f, 0.937f, 0.957f, 1.00f};    // Primary Readable Text (#ECEFF4)
@@ -107,13 +107,14 @@ public:
     const StyleMetrics& Metrics() const noexcept { return m_metrics; }
     StyleMetrics& Metrics() noexcept { return m_metrics; }
 
-    // Theme Management (Dark = Graphite, Light = Porcelain)
+    // Theme Management (Amoled = Pure Black, Dark = Graphite, Light = Porcelain)
     void SetTheme(ThemeMode mode, bool animate = true);
     ThemeMode GetTheme() const noexcept { return m_theme; }
     void ToggleTheme(bool animate = true);
     bool IsLightTheme() const noexcept { return m_theme == ThemeMode::Light; }
+    bool IsAmoledTheme() const noexcept { return m_theme == ThemeMode::Amoled; }
 
-    // Accent Management (Sage, Monochrome, Copper, SteelBlue, Custom)
+    // Accent Management (Parallax #9998F6, Sage, Monochrome, Copper, SteelBlue, Custom)
     void SetAccentPreset(AccentPreset preset, bool animate = true);
     AccentPreset GetAccentPreset() const noexcept { return m_accentPreset; }
 
@@ -128,7 +129,7 @@ public:
     static StyleColors BuildPalette(ThemeMode mode, AccentPreset preset, const ImVec4& customAccent) noexcept;
     static const char* GetThemeName(ThemeMode mode) noexcept;
     static const char* GetAccentPresetName(AccentPreset preset) noexcept;
-    static ImVec4 GetAccentPreviewColor(AccentPreset preset, ThemeMode mode, const ImVec4& customAccent = ImVec4(0.471f, 0.631f, 0.545f, 1.0f)) noexcept;
+    static ImVec4 GetAccentPreviewColor(AccentPreset preset, ThemeMode mode, const ImVec4& customAccent = ImVec4(153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.0f)) noexcept;
 
     void ApplyToImGui();
 
@@ -137,9 +138,9 @@ private:
 
     void StartOrSnapTransition(const StyleColors& newTarget, bool animate);
 
-    ThemeMode m_theme{ThemeMode::Dark};
-    AccentPreset m_accentPreset{AccentPreset::Sage};
-    ImVec4 m_customAccent{0.471f, 0.631f, 0.545f, 1.00f};
+    ThemeMode m_theme{ThemeMode::Amoled};
+    AccentPreset m_accentPreset{AccentPreset::Parallax};
+    ImVec4 m_customAccent{153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.00f};
 
     StyleColors m_colors;
     StyleColors m_startColors;

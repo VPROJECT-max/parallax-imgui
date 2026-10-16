@@ -135,11 +135,18 @@ bool IconLoader::RasterizeSVG(
             const uint8_t a = rowSrc[x * 4 + 3];
 
             if (preserveColors) {
-                // Swapped to standard RGBA for DirectX 11
-                rowDst[x * 4 + 0] = r;
-                rowDst[x * 4 + 1] = g;
-                rowDst[x * 4 + 2] = b;
-                rowDst[x * 4 + 3] = a;
+                // Swapped to standard RGBA for DirectX 11 and un-premultiplied for straight alpha blending
+                if (a > 0 && a < 255) {
+                    rowDst[x * 4 + 0] = static_cast<uint8_t>(std::min(255u, (static_cast<uint32_t>(r) * 255u + (a / 2)) / a));
+                    rowDst[x * 4 + 1] = static_cast<uint8_t>(std::min(255u, (static_cast<uint32_t>(g) * 255u + (a / 2)) / a));
+                    rowDst[x * 4 + 2] = static_cast<uint8_t>(std::min(255u, (static_cast<uint32_t>(b) * 255u + (a / 2)) / a));
+                    rowDst[x * 4 + 3] = a;
+                } else {
+                    rowDst[x * 4 + 0] = r;
+                    rowDst[x * 4 + 1] = g;
+                    rowDst[x * 4 + 2] = b;
+                    rowDst[x * 4 + 3] = a;
+                }
             } else {
                 // Alpha mask: pure white RGB with opacity in alpha
                 // Coverage captures stroke antialiasing flawlessly

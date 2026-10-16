@@ -24,7 +24,15 @@ std::string GetKeyName(int vkey);
 // Evaluates whether the keybind is currently triggered / active
 bool UpdateKeybindState(Keybind& bind);
 
+// Testing and headless input simulation helpers
+void SimulateKeyState(int vkey, bool isDown);
+void ClearSimulatedKeys();
+
 // Inline keybind button widget with anchored configuration popup
 bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size = ImVec2(0.0f, 0.0f));
 
+// First-class row containing label, description, and right-aligned keybind button
+bool KeybindRow(const char* label, const char* description, Keybind* bind);
+
 } // namespace parallax
+

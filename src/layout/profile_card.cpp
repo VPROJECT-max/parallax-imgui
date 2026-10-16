@@ -74,6 +74,7 @@ bool HeaderWidgets::SearchBar(std::string& inOutQuery, const char* placeholder, 
             changed = true;
         }
         ImGui::SetCursorScreenPos(restorePos);
+        ImGui::GetCurrentWindow()->DC.IsSetPos = false;
     }
 
     ImGui::PopStyleColor(3);
@@ -266,7 +267,7 @@ bool HeaderWidgets::ThemeSwitcher(const char* label) {
 
     const ImGuiID id = window->GetID(label ? label : "##ParallaxThemeSwitcher");
     const float availW = ImGui::GetContentRegionAvail().x;
-    const float totalW = (availW > 120.0f * dpi) ? availW : 240.0f * dpi;
+    const float totalW = (availW > 180.0f * dpi) ? availW : 270.0f * dpi;
     const float totalH = 34.0f * dpi;
 
     const ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -279,13 +280,13 @@ bool HeaderWidgets::ThemeSwitcher(const char* label) {
     bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held);
     bool changed = false;
 
-    const float halfW = totalW * 0.5f;
+    const float segW = totalW / 3.0f;
     const float mouseX = ImGui::GetIO().MousePos.x;
 
     if (pressed) {
-        ThemeMode targetMode = (mouseX >= bb.Min.x + halfW) ? ThemeMode::Light : ThemeMode::Dark;
+        int seg = std::clamp(static_cast<int>((mouseX - bb.Min.x) / segW), 0, 2);
+        ThemeMode targetMode = static_cast<ThemeMode>(seg);
         if (targetMode == styleMgr.GetTheme()) {
-            // Clicking anywhere toggles if they clicked the already-active half
             styleMgr.ToggleTheme();
         } else {
             styleMgr.SetTheme(targetMode);
@@ -293,8 +294,9 @@ bool HeaderWidgets::ThemeSwitcher(const char* label) {
         changed = true;
     }
 
-    const bool isLight = styleMgr.IsLightTheme();
-    const float slideT = ctx.Anim().SpringFloat(id ^ 0x71E3Eu, isLight ? 1.0f : 0.0f, {240.0f, 24.0f, 1.0f});
+    const ThemeMode curTheme = styleMgr.GetTheme();
+    const float targetT = static_cast<float>(static_cast<int>(curTheme));
+    const float slideT = ctx.Anim().SpringFloat(id ^ 0x71E3Eu, targetT, {240.0f, 24.0f, 1.0f});
     const float rounding = metrics.FrameRounding * dpi;
 
     // Outer recessed track
@@ -303,63 +305,50 @@ bool HeaderWidgets::ThemeSwitcher(const char* label) {
 
     // Animated sliding active pill
     const float pad = 3.0f * dpi;
-    const float pillW = halfW - pad * 1.5f;
-    const float pillX = bb.Min.x + pad + slideT * (totalW - pillW - pad * 2.0f);
+    const float pillW = segW - pad * 2.0f;
+    const float pillX = bb.Min.x + pad + slideT * segW;
     const ImVec2 pillMin(pillX, bb.Min.y + pad);
     const ImVec2 pillMax(pillX + pillW, bb.Max.y - pad);
 
     drawList->AddRectFilled(pillMin, pillMax, ImColor(colors.AccentMuted), rounding - 1.5f * dpi);
     drawList->AddRect(pillMin, pillMax, ImColor(colors.Accent), rounding - 1.5f * dpi, 0, 1.0f);
 
-    // Left Option: Graphite (Dark)
-    {
-        PushFont(FontWeight::Medium);
-        const char* darkText = "Graphite (Dark)";
-        const ImVec2 tSize = ImGui::CalcTextSize(darkText);
-        const float iconDim = 14.0f * dpi;
-        const float groupW = iconDim + 6.0f * dpi + tSize.x;
-        const float startX = bb.Min.x + (halfW - groupW) * 0.5f;
-        const ImVec4 itemCol = !isLight ? colors.TextPrimary : colors.TextSecondary;
-        const ImVec4 icCol = !isLight ? colors.Accent : colors.TextMuted;
+    struct ThemeOption {
+        ThemeMode mode;
+        const char* name;
+        const char* icon;
+    };
+    const ThemeOption options[3] = {
+        { ThemeMode::Amoled, "AMOLED", "circle" },
+        { ThemeMode::Dark,   "Graphite", "moon" },
+        { ThemeMode::Light,  "Porcelain", "sun" }
+    };
+
+    PushFont(FontWeight::Medium);
+    for (int i = 0; i < 3; ++i) {
+        const float segStartX = bb.Min.x + i * segW;
+        const bool isSelected = (curTheme == options[i].mode);
+        const ImVec4 itemCol = isSelected ? colors.TextPrimary : colors.TextSecondary;
+        const ImVec4 icCol = isSelected ? colors.Accent : colors.TextMuted;
+
+        const ImVec2 tSize = ImGui::CalcTextSize(options[i].name);
+        const float iconDim = 13.0f * dpi;
+        const float groupW = iconDim + 5.0f * dpi + tSize.x;
+        const float startX = segStartX + (segW - groupW) * 0.5f;
 
         ctx.Icons().DrawIcon(
-            drawList, "moon",
+            drawList, options[i].icon,
             ImVec2(startX, bb.Min.y + (totalH - iconDim) * 0.5f),
             ImVec2(iconDim, iconDim),
             icCol
         );
         drawList->AddText(
-            ImVec2(startX + iconDim + 6.0f * dpi, bb.Min.y + (totalH - tSize.y) * 0.5f),
+            ImVec2(startX + iconDim + 5.0f * dpi, bb.Min.y + (totalH - tSize.y) * 0.5f),
             ImColor(itemCol),
-            darkText
+            options[i].name
         );
-        PopFont();
     }
-
-    // Right Option: Porcelain (Light)
-    {
-        PushFont(FontWeight::Medium);
-        const char* lightText = "Porcelain (Light)";
-        const ImVec2 tSize = ImGui::CalcTextSize(lightText);
-        const float iconDim = 14.0f * dpi;
-        const float groupW = iconDim + 6.0f * dpi + tSize.x;
-        const float startX = bb.Min.x + halfW + (halfW - groupW) * 0.5f;
-        const ImVec4 itemCol = isLight ? colors.TextPrimary : colors.TextSecondary;
-        const ImVec4 icCol = isLight ? colors.Accent : colors.TextMuted;
-
-        ctx.Icons().DrawIcon(
-            drawList, "sun",
-            ImVec2(startX, bb.Min.y + (totalH - iconDim) * 0.5f),
-            ImVec2(iconDim, iconDim),
-            icCol
-        );
-        drawList->AddText(
-            ImVec2(startX + iconDim + 6.0f * dpi, bb.Min.y + (totalH - tSize.y) * 0.5f),
-            ImColor(itemCol),
-            lightText
-        );
-        PopFont();
-    }
+    PopFont();
 
     return changed;
 }
@@ -388,24 +377,24 @@ bool HeaderWidgets::AccentSelector(const char* label, bool showCustomPicker) {
         ImVec4 previewColor;
     };
 
-    const bool isLight = styleMgr.IsLightTheme();
-    const PresetDef presets[] = {
-        { AccentPreset::Sage,       "Sage",       isLight ? ImVec4(0.32f, 0.52f, 0.42f, 1.0f) : ImVec4(0.471f, 0.631f, 0.545f, 1.0f) },
-        { AccentPreset::Monochrome, "Graphite",   isLight ? ImVec4(0.24f, 0.26f, 0.30f, 1.0f) : ImVec4(0.76f, 0.78f, 0.82f, 1.0f)  },
-        { AccentPreset::Copper,     "Copper",     isLight ? ImVec4(0.68f, 0.42f, 0.30f, 1.0f) : ImVec4(0.769f, 0.541f, 0.416f, 1.0f) },
-        { AccentPreset::SteelBlue,  "Steel Blue", isLight ? ImVec4(0.29f, 0.45f, 0.60f, 1.0f) : ImVec4(0.431f, 0.569f, 0.690f, 1.0f) }
+    const PresetDef presets[5] = {
+        { AccentPreset::Parallax,   "Parallax",   ImVec4(153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.0f) },
+        { AccentPreset::Sage,       "Sage",       styleMgr.IsLightTheme() ? ImVec4(0.32f, 0.52f, 0.42f, 1.0f) : ImVec4(0.471f, 0.631f, 0.545f, 1.0f) },
+        { AccentPreset::Monochrome, "Graphite",   styleMgr.IsLightTheme() ? ImVec4(0.24f, 0.26f, 0.30f, 1.0f) : ImVec4(0.76f, 0.78f, 0.82f, 1.0f)  },
+        { AccentPreset::Copper,     "Copper",     styleMgr.IsLightTheme() ? ImVec4(0.68f, 0.42f, 0.30f, 1.0f) : ImVec4(0.769f, 0.541f, 0.416f, 1.0f) },
+        { AccentPreset::SteelBlue,  "Steel Blue", styleMgr.IsLightTheme() ? ImVec4(0.29f, 0.45f, 0.60f, 1.0f) : ImVec4(0.431f, 0.569f, 0.690f, 1.0f) }
     };
 
     bool changed = false;
     const AccentPreset currentPreset = styleMgr.GetAccentPreset();
     const float availW = ImGui::GetContentRegionAvail().x;
     const float gap = 6.0f * dpi;
-    const float pillW = std::max(60.0f * dpi, (availW - gap * 3.0f) * 0.25f);
+    const float pillW = std::max(52.0f * dpi, (availW - gap * 4.0f) * 0.20f);
     const float pillH = 30.0f * dpi;
     const float rounding = metrics.FrameRounding * dpi;
 
     PushFont(FontWeight::Caption);
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
         if (i > 0) ImGui::SameLine(0.0f, gap);
 
         const ImVec2 pPos = ImGui::GetCursorScreenPos();
@@ -437,14 +426,14 @@ bool HeaderWidgets::AccentSelector(const char* label, bool showCustomPicker) {
 
         // Swatch dot
         const float dotR = 5.0f * dpi;
-        const ImVec2 dotCenter(pBb.Min.x + 12.0f * dpi, pBb.Min.y + pillH * 0.5f);
+        const ImVec2 dotCenter(pBb.Min.x + 10.0f * dpi, pBb.Min.y + pillH * 0.5f);
         drawList->AddCircleFilled(dotCenter, dotR, ImColor(presets[i].previewColor), 16);
         drawList->AddCircle(dotCenter, dotR, ImColor(colors.BorderStrong), 16, 1.0f);
 
         // Preset label
         const float th = ImGui::GetFontSize();
         drawList->AddText(
-            ImVec2(dotCenter.x + dotR + 6.0f * dpi, pBb.Min.y + (pillH - th) * 0.5f),
+            ImVec2(dotCenter.x + dotR + 5.0f * dpi, pBb.Min.y + (pillH - th) * 0.5f),
             ImColor(isSelected ? colors.TextPrimary : colors.TextSecondary),
             presets[i].name
         );

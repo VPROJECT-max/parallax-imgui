@@ -308,11 +308,11 @@ bool ConfigManager::LoadProfile(const std::string& profileName) {
                 }
             }
             if (th.contains("accent_preset") && th["accent_preset"].is_number_integer()) {
-                int ap = std::clamp(th["accent_preset"].get<int>(), 0, 4);
+                int ap = std::clamp(th["accent_preset"].get<int>(), 0, 5);
                 styleMgr.SetAccentPreset(static_cast<AccentPreset>(ap), true);
             }
             if (th.contains("mode") && th["mode"].is_number_integer()) {
-                int tm = std::clamp(th["mode"].get<int>(), 0, 1);
+                int tm = std::clamp(th["mode"].get<int>(), 0, 2);
                 styleMgr.SetTheme(static_cast<ThemeMode>(tm), true);
             }
         }
@@ -425,8 +425,8 @@ void ConfigManager::ResetToDefaults() {
                 break;
         }
     }
-    StyleManager::Get().SetTheme(ThemeMode::Dark, true);
-    StyleManager::Get().SetAccentPreset(AccentPreset::Sage, true);
+    StyleManager::Get().SetTheme(ThemeMode::Amoled, true);
+    StyleManager::Get().SetAccentPreset(AccentPreset::Parallax, true);
     m_isDirty = true;
 }
 

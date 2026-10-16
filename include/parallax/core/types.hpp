@@ -7,9 +7,9 @@
 #include <imgui.h>
 
 #define PARALLAX_VERSION_MAJOR 1
-#define PARALLAX_VERSION_MINOR 1
+#define PARALLAX_VERSION_MINOR 2
 #define PARALLAX_VERSION_PATCH 0
-#define PARALLAX_VERSION_STRING "1.1.0"
+#define PARALLAX_VERSION_STRING "1.2.0"
 
 namespace parallax {
 
@@ -19,12 +19,14 @@ inline constexpr int kVersionPatch = PARALLAX_VERSION_PATCH;
 inline constexpr std::string_view kVersionString = PARALLAX_VERSION_STRING;
 
 enum class ThemeMode : uint8_t {
-    Dark = 0,   // Graphite (Default)
-    Light       // Porcelain
+    Amoled = 0, // Pure Black AMOLED (#000000 - Default)
+    Dark,       // Graphite Dark
+    Light       // Porcelain Light
 };
 
 enum class AccentPreset : uint8_t {
-    Sage = 0,       // Muted Sage (#78A18B) - Default
+    Parallax = 0,   // Exact Primary Accent (#9998F6) - Default
+    Sage,           // Muted Sage (#78A18B)
     Monochrome,     // Monochrome / Graphite
     Copper,         // Desaturated Copper
     SteelBlue,      // Subtle Steel Blue

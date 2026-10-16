@@ -1,6 +1,7 @@
 #include "parallax/widgets/keybind.hpp"
 #include "parallax/core/context.hpp"
 #include "parallax/core/style.hpp"
+#include "parallax/core/typography.hpp"
 #include "parallax/input/hotkeys.hpp"
 #include "parallax/anim/manager.hpp"
 #include "parallax/icons/icon_atlas.hpp"
@@ -66,7 +67,25 @@ std::string GetKeyName(int vkey) {
     return "KEY_" + std::to_string(vkey);
 }
 
-static std::unordered_map<int, bool> s_keybindPrevDown;
+static std::unordered_map<int, bool> s_simulatedKeys;
+static std::unordered_map<const Keybind*, bool> s_bindPrevDown;
+
+void SimulateKeyState(int vkey, bool isDown) {
+    s_simulatedKeys[vkey] = isDown;
+}
+
+void ClearSimulatedKeys() {
+    s_simulatedKeys.clear();
+    s_bindPrevDown.clear();
+}
+
+static bool IsKeyActiveInternal(int vkey) {
+    auto it = s_simulatedKeys.find(vkey);
+    if (it != s_simulatedKeys.end()) {
+        return it->second;
+    }
+    return (GetAsyncKeyState(vkey) & 0x8000) != 0;
+}
 
 bool UpdateKeybindState(Keybind& bind) {
     if (bind.mode == KeybindMode::AlwaysOn) {
@@ -79,10 +98,14 @@ bool UpdateKeybindState(Keybind& bind) {
         return false;
     }
 
-    const SHORT state = GetAsyncKeyState(bind.vkey);
-    const bool isDown = (state & 0x8000) != 0;
-    const bool wasDown = s_keybindPrevDown[bind.vkey];
-    s_keybindPrevDown[bind.vkey] = isDown;
+    // When global key capture is active, suppress state toggling
+    if (Context::Get().Input().IsKeyCaptureActive()) {
+        return bind.active;
+    }
+
+    const bool isDown = IsKeyActiveInternal(bind.vkey);
+    const bool wasDown = s_bindPrevDown[&bind];
+    s_bindPrevDown[&bind] = isDown;
 
     if (bind.mode == KeybindMode::Hold) {
         bind.active = isDown;
@@ -327,6 +350,65 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
 
     ImGui::PopStyleColor(2);
     ImGui::PopStyleVar(2);
+
+    return changed;
+}
+
+bool KeybindRow(const char* label, const char* description, Keybind* bind) {
+    if (!bind) return false;
+
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
+    if (window->SkipItems) return false;
+
+    Context& ctx = Context::Get();
+    const float dpi = ctx.GetDpiScale();
+    const auto& colors = StyleManager::Get().Colors();
+
+    const float availW = ImGui::GetContentRegionAvail().x;
+    const bool hasDesc = (description && description[0] != '\0');
+    const float rowH = hasDesc ? (38.0f * dpi) : (28.0f * dpi);
+
+    const ImVec2 pos = window->DC.CursorPos;
+    const ImRect bb(pos, ImVec2(pos.x + availW, pos.y + rowH));
+    const ImGuiID id = window->GetID(label);
+
+    ImGui::ItemSize(bb);
+    if (!ImGui::ItemAdd(bb, id)) return false;
+
+    const ImVec2 nextRowCursor = ImGui::GetCursorScreenPos();
+    ImDrawList* drawList = window->DrawList;
+
+    // Label and description
+    PushFont(FontWeight::Medium);
+    const float labelH = ImGui::GetFontSize();
+    float textY = pos.y + (hasDesc ? (3.0f * dpi) : ((rowH - labelH) * 0.5f));
+    const char* labelEnd = ImGui::FindRenderedTextEnd(label);
+    drawList->AddText(nullptr, 0.0f, ImVec2(pos.x, textY), ImColor(colors.TextPrimary), label, labelEnd);
+    PopFont();
+
+    if (hasDesc) {
+        PushFont(FontWeight::Caption);
+        const float descH = ImGui::GetFontSize();
+        const float descY = pos.y + rowH - descH - 3.0f * dpi;
+        const char* descEnd = ImGui::FindRenderedTextEnd(description);
+        drawList->AddText(nullptr, 0.0f, ImVec2(pos.x, descY), ImColor(colors.TextMuted), description, descEnd);
+        PopFont();
+    }
+
+    // Right-aligned Keybind widget
+    const float kbW = 68.0f * dpi;
+    const float kbH = 22.0f * dpi;
+    const float kbX = pos.x + availW - kbW;
+    const float kbY = pos.y + (rowH - kbH) * 0.5f;
+
+    ImGui::SetCursorScreenPos(ImVec2(kbX, kbY));
+    char kbIdStr[64];
+    snprintf(kbIdStr, sizeof(kbIdStr), "##RowKB_%08X", id);
+    bool changed = KeybindWidget(kbIdStr, bind, ImVec2(kbW, kbH));
+
+    window->DC.CursorPos = nextRowCursor;
+    window->DC.CursorMaxPos = ImMax(window->DC.CursorMaxPos, bb.Max);
+    window->DC.IsSetPos = false;
 
     return changed;
 }

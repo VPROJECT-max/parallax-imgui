@@ -1,6 +1,6 @@
 # Parallax
 
-**Version 1.1.0** — Parallax is a C++20 desktop user interface framework built on DirectX 11 and Dear ImGui. It provides a cohesive, token-driven immediate-mode design system featuring a 5-layer surface hierarchy, dual themes (**Graphite Dark** and **Porcelain Light**), restraint-first accent presets, physics-driven animations, an on-demand SVG icon rasterization atlas, automatic layout cards, a JSON configuration manager, and an optional license key verification module.
+**Version 1.2.0** — Parallax is a C++20 desktop user interface framework built on DirectX 11 and Dear ImGui. It provides a cohesive, token-driven immediate-mode design system featuring a 5-layer surface hierarchy, three themes (**AMOLED Black**, **Graphite Dark**, and **Porcelain Light**), the canonical **#9998F6** brand accent, smooth synchronized scrolling, global search navigation, physics-driven animations, an on-demand SVG icon rasterization atlas, automatic layout cards, a JSON configuration manager, and an optional license key verification module.
 
 ---
 
@@ -10,27 +10,34 @@ While Dear ImGui is traditionally used for developer overlays and debug panels, 
 
 ---
 
-## Key Features in v1.1.0
+## Key Features in v1.2.0
 
-- **5-Layer Visual Hierarchy & Design Tokens**:
+- **5-Layer Visual Hierarchy & Surface Separation**:
   - Clear visual separation across Application Shell (`WindowBg`), Navigation Sidebar (`HeaderBg`), Workspace Canvas (`ContentBg`), Elevated Content Cards (`CardBg` / `CardHeaderBg`), and Interactive Controls (`WidgetBg` / `WidgetHover` / `WidgetActive`).
-- **Dual Theme Engine (`Graphite` Dark & `Porcelain` Light)**:
-  - **Graphite (`ThemeMode::Dark`, default)**: Deep graphite layered surfaces, soft neutral borders, and crisp off-white typography.
+- **Three-Tier Theme Engine (`AMOLED Black`, `Graphite Dark` & `Porcelain Light`)**:
+  - **AMOLED (`ThemeMode::Amoled`, default)**: True `#000000` base with strict 5-layer dark-gray surfaces (`#050507`, `#0A0B0E`, `#0F1015`, `#14161C`, `#1C1F28`) ensuring cards and controls never blend together, paired with high-contrast `#F5F6FA` typography.
+  - **Graphite (`ThemeMode::Dark`)**: Deep graphite layered surfaces, soft neutral borders, and readable off-white typography.
   - **Porcelain (`ThemeMode::Light`)**: Purpose-built warm off-white palette with elevated white cards, dark graphite typography, and subtle ambient shadows.
-  - Smooth, flicker-free animated color interpolation when switching themes at runtime, including Win32 DWM titlebar adaptation.
-- **Restraint-First Accent System**:
-  - Default **Muted Sage (`#78A18B`)** visual identity alongside **Monochrome**, **Desaturated Copper**, **Subtle Steel Blue**, and **Custom RGBA** presets with automatic contrast-safe token derivation for both Dark and Light modes.
+  - 3-way segmented `ThemeSwitcher` toggle with spring-physics active pill and smooth runtime color interpolation.
+- **Canonical Brand Accent System (`#9998F6`)**:
+  - Default **Parallax Violet (`#9998F6`, `AccentPreset::Parallax`)** alongside **Muted Sage**, **Monochrome**, **Desaturated Copper**, **Subtle Steel Blue**, and **Custom RGBA** presets with automatic contrast-safe token derivation across all themes.
+- **Pinned Workspace Header & Global Search Bar**:
+  - Decoupled, fixed header bar housing the live section title, search input, quick theme switcher, and resolution metrics.
+  - Search catalog indexing all tabs, sections, and controls with case-insensitive token filtering.
+  - Interactive search popover with metadata badges; selecting an entry navigates to the tab, expands collapsible sections, and highlights the target card with a pulsing accent spotlight outline.
+- **Synchronized Inertial Scrolling Architecture**:
+  - Dedicated content scroll region isolating mouse wheel input from Dear ImGui's internal handler, eliminating judder and scroll-fighting.
+  - 1-frame height pop on tab switching eliminated via synchronized scroll target resets.
+- **Original Parallax Multi-Layer Vector Branding**:
+  - Restored authentic `assets/logo.svg` multi-layer emblem in sidebar and navigation bars with un-premultiplied straight RGBA alpha blending.
 - **Bespoke Parallax Widget Suite**:
-  - **Toggles & Checkboxes**: Standard and compact pill toggles (`Toggle`, `ToggleCompact`), animated checkboxes (`Checkbox`), indeterminate checkboxes (`CheckboxIndeterminate`), and chained `ControlRow` builders with descriptions, disabled states, inline keybinds, and color pickers.
-  - **Precision Sliders & Dual Range Sliders**: Single-value (`SliderFloat`, `SliderInt`, `SliderFloatEx`) and dual-handle range sliders (`RangeSliderFloat`, `RangeSliderInt`) with machined pill thumbs, center grip notches, optional tick marks, floating drag callouts, and **double-click / Ctrl+Click inline numeric editing**.
-  - **Buttons**: `Primary`, `Secondary`, `Subtle` (`Ghost`), and `Destructive` (`Danger`) variants, compact buttons (`ButtonCompact`), square icon buttons (`IconButton`), and extended `ButtonEx` options with animated loading spinners and shortcut badges.
-  - **Dropdowns & Multi-Selects**: Single-select (`Dropdown`) and tag-summarized multi-select (`MultiDropdown`) popovers with integrated live search filters and SVG icons.
-  - **Color Pickers**: HSV saturation-value square, hue/alpha bars, hex input, curated swatch palette, and full-row `ColorPickerRow` helper.
-  - **Text Inputs & Keybinds**: Icon-prefixed text and password inputs (`InputText` with visibility toggle) and interactive key/mouse binding pills (`KeybindWidget` with `Hold` / `Toggle` / `Always On` context menu).
-- **Automatic Card Sizing & Fixed Application Shell**:
-  - Fixed `1137 × 699` outer menu dimensions with collapsible `220px` / `64px` sidebar navigation.
-  - `BeginGroupbox` automatically sizes its height to fit child widgets when `height <= 0.0f`, eliminating manual pixel height estimation and clipped content.
-  - `CollapsibleGroupbox` with animated chevron rotation and vertical space reclamation.
+  - **Toggles & Checkboxes**: Standard and compact pill toggles (`Toggle`, `ToggleCompact`), animated checkboxes (`Checkbox`), indeterminate checkboxes (`CheckboxIndeterminate`), and chained `ControlRow` builders.
+  - **Precision Sliders & Dual Range Sliders**: Single-value and dual-handle range sliders with machined pill thumbs, floating drag callouts, and **double-click / Ctrl+Click inline numeric editing**.
+  - **Interactive Keybinds**: `KeybindWidget` and `KeybindRow` supporting keyboard and mouse buttons (M1–M5), Hold/Toggle/Always-On modes, release gating, and conflict-free hotkey handling.
+  - **Buttons**: `Primary`, `Secondary`, `Subtle` (`Ghost`), and `Destructive` variants, compact buttons (`ButtonCompact`), square icon buttons (`IconButton`), and `ButtonEx` with spinners and badges.
+  - **Dropdowns & Multi-Selects**: Single-select (`Dropdown`) and tag-summarized multi-select (`MultiDropdown`) with live search filters.
+  - **Color Pickers**: HSV canvas, alpha bar, hex input, swatch palette, and `ColorPickerRow`.
+  - **Automatic Card Sizing**: Auto-fitting `BeginGroupbox` and animated `CollapsibleGroupbox`.
 - **On-Demand SVG Icon Atlas**:
   - Embedded LunaSVG rasterization pipeline packing over 2,077 Lucide vector icons dynamically into DirectX 11 texture memory with per-monitor DPI scaling.
 - **JSON Configuration & Key Verification**:
@@ -72,12 +79,13 @@ cmake --build build --config Release
 ```
 
 The automated test suite verifies:
-1. Semantic Versioning (`1.1.0`) constants and `1137 × 699` fixed window dimensions.
-2. Theme Engine transitions (`Graphite` Dark ↔ `Porcelain` Light) and Accent Preset token derivation.
+1. Semantic Versioning (`1.2.0`) constants and `1137 × 699` fixed window dimensions.
+2. Theme Engine transitions (`AMOLED` Black ↔ `Graphite` Dark ↔ `Porcelain` Light) and canonical `#9998F6` Accent derivation.
 3. Auto-sizing `Groupbox` content fitting and `CollapsibleGroupbox` space reclamation.
-4. Headless rendering of all redesigned custom widgets across Dark and Light themes.
-5. JSON `ConfigManager` atomic profile persistence, Theme/Accent serialization, and Base64 import/export.
-6. Asynchronous `KeySystem` rejection and VIP authentication flows.
+4. Headless rendering of all custom widgets across Dark and Light themes.
+5. Keybind Hold, Toggle, Always-On state machines, simulation hooks, and layout boundary safety.
+6. JSON `ConfigManager` atomic profile persistence, Theme/Accent serialization, and Base64 import/export.
+7. Asynchronous `KeySystem` rejection and VIP authentication flows.
 
 ### Launching the DirectX 11 Showcase
 
@@ -96,8 +104,8 @@ void OnDeviceCreated(ID3D11Device* device, ID3D11DeviceContext* context) {
     parallax::Init(device, context);
 
     // Optional: Configure default theme and accent preset
-    parallax::SetTheme(parallax::ThemeMode::Dark);          // Graphite Dark (default) or ThemeMode::Light (Porcelain)
-    parallax::SetAccentPreset(parallax::AccentPreset::Sage); // Sage (default), Monochrome, Copper, SteelBlue, Custom
+    parallax::SetTheme(parallax::ThemeMode::Amoled);              // AMOLED Black (default), Dark (Graphite), or Light (Porcelain)
+    parallax::SetAccentPreset(parallax::AccentPreset::Parallax);  // Canonical Parallax Violet #9998F6 (default)
 }
 
 void RenderUI() {

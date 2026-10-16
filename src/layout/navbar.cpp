@@ -129,12 +129,19 @@ bool NavBar::Begin(NavSide side) {
         const ImVec2 logoPos(logoX, logoY);
         const ImVec2 logoMax(logoPos.x + logoDim, logoPos.y + logoDim);
 
-        // Accent-adaptive architectural brand squircle badge
-        drawList->AddRectFilled(logoPos, logoMax, ImColor(colors.AccentMuted), 7.0f * dpi);
-        drawList->AddRect(logoPos, logoMax, ImColor(colors.Accent), 7.0f * dpi, 0, 1.0f);
-        const float innerIconDim = 16.0f * dpi;
-        const ImVec2 innerIconPos(logoPos.x + (logoDim - innerIconDim) * 0.5f, logoPos.y + (logoDim - innerIconDim) * 0.5f);
-        ctx.Icons().DrawIcon(drawList, "layers", innerIconPos, ImVec2(innerIconDim, innerIconDim), colors.Accent);
+        // Render official Parallax multi-layer vector emblem from assets/logo.svg
+        auto logoSub = ctx.Icons().GetIcon("logo", dpi, true);
+        if (!logoSub.valid || !logoSub.srv) {
+            logoSub = ctx.Icons().GetIcon("layers", dpi, false);
+        }
+        if (logoSub.valid && logoSub.srv) {
+            drawList->AddImage(
+                reinterpret_cast<ImTextureID>(logoSub.srv),
+                logoPos, logoMax,
+                logoSub.uv0, logoSub.uv1,
+                IM_COL32(255, 255, 255, 255)
+            );
+        }
 
         // Fading brand title and SemVer version
         if (expandT > 0.05f) {
@@ -271,15 +278,26 @@ bool NavBar::Begin(NavSide side) {
 
         // Set cursor for subsequent tabs
         ImGui::SetCursorScreenPos(ImVec2(s_navPos.x + 8.0f * dpi, s_navPos.y + 84.0f * dpi));
+        ImGui::GetCurrentWindow()->DC.IsSetPos = false;
     } else {
         // Horizontal top / bottom navbar brand
         ImGui::SetCursorScreenPos(ImVec2(s_navPos.x + 18.0f * dpi, s_navPos.y + 12.0f * dpi));
+        ImGui::GetCurrentWindow()->DC.IsSetPos = false;
         ImGui::BeginGroup();
         const ImVec2 logoPos(s_navPos.x + 18.0f * dpi, s_navPos.y + 12.0f * dpi);
         const float logoDim = 24.0f * dpi;
-        drawList->AddRectFilled(logoPos, ImVec2(logoPos.x + logoDim, logoPos.y + logoDim), ImColor(colors.AccentMuted), 6.0f * dpi);
-        drawList->AddRect(logoPos, ImVec2(logoPos.x + logoDim, logoPos.y + logoDim), ImColor(colors.Accent), 6.0f * dpi, 0, 1.0f);
-        ctx.Icons().DrawIcon(drawList, "layers", ImVec2(logoPos.x + 4.0f * dpi, logoPos.y + 4.0f * dpi), ImVec2(16.0f * dpi, 16.0f * dpi), colors.Accent);
+        auto logoSub = ctx.Icons().GetIcon("logo", dpi, true);
+        if (!logoSub.valid || !logoSub.srv) {
+            logoSub = ctx.Icons().GetIcon("layers", dpi, false);
+        }
+        if (logoSub.valid && logoSub.srv) {
+            drawList->AddImage(
+                reinterpret_cast<ImTextureID>(logoSub.srv),
+                logoPos, ImVec2(logoPos.x + logoDim, logoPos.y + logoDim),
+                logoSub.uv0, logoSub.uv1,
+                IM_COL32(255, 255, 255, 255)
+            );
+        }
         ImGui::Dummy(ImVec2(logoDim, logoDim));
         ImGui::SameLine(0.0f, 10.0f * dpi);
         PushFont(FontWeight::Bold);
@@ -418,6 +436,7 @@ bool NavBar::TabItem(const char* icon, const char* label, bool selected, const c
         }
 
         ImGui::SetCursorScreenPos(ImVec2(pos.x, pos.y + size.y + 4.0f * dpi));
+        window->DC.IsSetPos = false;
     } else {
         // Horizontal top/bottom tab
         const float iconDim = 16.0f * dpi;

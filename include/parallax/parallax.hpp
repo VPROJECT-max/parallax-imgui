@@ -227,6 +227,10 @@ public:
         return parallax::KeybindWidget(label, keybind);
     }
 
+    bool KeybindRow(const char* label, const char* description, parallax::Keybind* keybind) {
+        return parallax::KeybindRow(label, description, keybind);
+    }
+
     bool ThemeSwitcher(const char* label = nullptr) {
         return parallax::ThemeSwitcher(label);
     }

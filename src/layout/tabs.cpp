@@ -96,6 +96,7 @@ bool SubTabs::Item(const char* label, bool selected) {
         ImGui::SameLine(0.0f, 6.0f * dpi);
     } else {
         ImGui::SetCursorScreenPos(ImVec2(pos.x, pos.y + size.y + 4.0f * dpi));
+        window->DC.IsSetPos = false;
     }
 
     return pressed;

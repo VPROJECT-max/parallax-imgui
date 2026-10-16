@@ -11,13 +11,13 @@
 #include "parallax/auth/key_system.hpp"
 
 void TestSemVerAndFixedShell() {
-    std::cout << "[TEST] 1. Testing SemVer (1.1.0) & Fixed Window Dimensions (1137x699)..." << std::endl;
+    std::cout << "[TEST] 1. Testing SemVer (1.2.0) & Fixed Window Dimensions (1137x699)..." << std::endl;
 
     static_assert(PARALLAX_VERSION_MAJOR == 1, "Expected MAJOR == 1");
-    static_assert(PARALLAX_VERSION_MINOR == 1, "Expected MINOR == 1");
+    static_assert(PARALLAX_VERSION_MINOR == 2, "Expected MINOR == 2");
     static_assert(PARALLAX_VERSION_PATCH == 0, "Expected PATCH == 0");
-    static_assert(parallax::kVersionMajor == 1 && parallax::kVersionMinor == 1 && parallax::kVersionPatch == 0, "Expected 1.1.0");
-    assert(std::string(PARALLAX_VERSION_STRING) == "1.1.0");
+    static_assert(parallax::kVersionMajor == 1 && parallax::kVersionMinor == 2 && parallax::kVersionPatch == 0, "Expected 1.2.0");
+    assert(std::string(PARALLAX_VERSION_STRING) == "1.2.0");
 
     const ImVec2 defSize = parallax::GetDefaultWindowSize();
     assert(std::abs(defSize.x - 1137.0f) < 0.01f);
@@ -27,15 +27,28 @@ void TestSemVerAndFixedShell() {
 }
 
 void TestThemeAndAccentEngine() {
-    std::cout << "[TEST] 2. Testing Theme Engine (Graphite Dark <-> Porcelain Light) & Accent Presets..." << std::endl;
+    std::cout << "[TEST] 2. Testing Theme Engine (AMOLED Black <-> Graphite Dark <-> Porcelain Light) & Accent Presets..." << std::endl;
 
+    // Test AMOLED (Black)
+    parallax::SetTheme(parallax::ThemeMode::Amoled, false);
+    assert(parallax::GetTheme() == parallax::ThemeMode::Amoled);
+    assert(!parallax::IsLightTheme());
+    assert(parallax::IsAmoledTheme());
+
+    const ImVec4 amoledWinBg = parallax::Colors().WindowBg;
+    const ImVec4 amoledText = parallax::Colors().TextPrimary;
+    assert(amoledWinBg.x == 0.0f && amoledWinBg.y == 0.0f && amoledWinBg.z == 0.0f); // Pure #000000
+    assert(amoledText.x > 0.90f); // #F5F6FA
+
+    // Test Graphite Dark
     parallax::SetTheme(parallax::ThemeMode::Dark, false);
     assert(parallax::GetTheme() == parallax::ThemeMode::Dark);
     assert(!parallax::IsLightTheme());
+    assert(!parallax::IsAmoledTheme());
 
     const ImVec4 darkWinBg = parallax::Colors().WindowBg;
     const ImVec4 darkText = parallax::Colors().TextPrimary;
-    assert(darkWinBg.x < 0.15f);
+    assert(darkWinBg.x > 0.01f && darkWinBg.x < 0.15f);
     assert(darkText.x > 0.85f);
 
     // Switch to Porcelain (Light) with smooth transition
@@ -52,9 +65,17 @@ void TestThemeAndAccentEngine() {
     const ImVec4 lightText = parallax::Colors().TextPrimary;
     assert(lightWinBg.x > 0.85f);
     assert(lightText.x < 0.25f);
-    std::cout << "  ✓ Graphite Dark & Porcelain Light surface/text tokens verified" << std::endl;
+    std::cout << "  ✓ AMOLED Black, Graphite Dark & Porcelain Light surface/text tokens verified" << std::endl;
 
-    // Test Accent Presets
+    // Test Primary Brand Accent (Parallax #9998F6)
+    parallax::SetAccentPreset(parallax::AccentPreset::Parallax, false);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Parallax);
+    const ImVec4 parallaxAccent = parallax::Colors().Accent;
+    assert(std::abs(parallaxAccent.x - 153.0f / 255.0f) < 0.01f);
+    assert(std::abs(parallaxAccent.y - 152.0f / 255.0f) < 0.01f);
+    assert(std::abs(parallaxAccent.z - 246.0f / 255.0f) < 0.01f);
+
+    // Test Other Accent Presets
     parallax::SetAccentPreset(parallax::AccentPreset::Copper, false);
     assert(parallax::GetAccentPreset() == parallax::AccentPreset::Copper);
     const ImVec4 copperAccent = parallax::Colors().Accent;
@@ -69,10 +90,10 @@ void TestThemeAndAccentEngine() {
     parallax::SetCustomAccent(ImVec4(0.55f, 0.45f, 0.65f, 1.0f), false);
     assert(parallax::GetAccentPreset() == parallax::AccentPreset::Custom);
 
-    // Restore default Muted Sage & Dark theme
-    parallax::SetAccentPreset(parallax::AccentPreset::Sage, false);
-    parallax::SetTheme(parallax::ThemeMode::Dark, false);
-    std::cout << "  ✓ Accent presets (Sage, Monochrome, Copper, SteelBlue, Custom) verified" << std::endl;
+    // Restore default Parallax (#9998F6) & AMOLED theme
+    parallax::SetAccentPreset(parallax::AccentPreset::Parallax, false);
+    parallax::SetTheme(parallax::ThemeMode::Amoled, false);
+    std::cout << "  ✓ Accent presets (Parallax #9998F6, Sage, Monochrome, Copper, SteelBlue, Custom) verified" << std::endl;
 }
 
 void TestCollapsibleAndAutoGroupbox() {
@@ -299,12 +320,82 @@ void TestConfigEngine() {
 
     // Reset to defaults
     cfg.ResetToDefaults();
-    assert(parallax::GetTheme() == parallax::ThemeMode::Dark);
-    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Sage);
+    assert(parallax::GetTheme() == parallax::ThemeMode::Amoled);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Parallax);
 
     // Cleanup test profile
     cfg.DeleteProfile("UnitTestProfile");
     std::cout << "  ✓ Profile reset and deletion verified" << std::endl;
+}
+
+void TestKeybindStateMachineAndLayoutDiagnostics() {
+    std::cout << "[TEST] 7. Testing Keybind State Machine & Layout Diagnostics..." << std::endl;
+
+    parallax::ClearSimulatedKeys();
+
+    // 1. Hold mode
+    parallax::Keybind kbHold{ 0x41, parallax::KeybindMode::Hold, false }; // 'A'
+    parallax::UpdateKeybindState(kbHold);
+    assert(!kbHold.active);
+
+    parallax::SimulateKeyState(0x41, true);
+    parallax::UpdateKeybindState(kbHold);
+    assert(kbHold.active);
+
+    parallax::SimulateKeyState(0x41, false);
+    parallax::UpdateKeybindState(kbHold);
+    assert(!kbHold.active);
+
+    // 2. Toggle mode
+    parallax::Keybind kbToggle{ 0x42, parallax::KeybindMode::Toggle, false }; // 'B'
+    parallax::UpdateKeybindState(kbToggle);
+    assert(!kbToggle.active);
+
+    // Press down
+    parallax::SimulateKeyState(0x42, true);
+    parallax::UpdateKeybindState(kbToggle);
+    assert(kbToggle.active); // Toggled ON
+
+    // Release
+    parallax::SimulateKeyState(0x42, false);
+    parallax::UpdateKeybindState(kbToggle);
+    assert(kbToggle.active); // Still ON
+
+    // Press down second time
+    parallax::SimulateKeyState(0x42, true);
+    parallax::UpdateKeybindState(kbToggle);
+    assert(!kbToggle.active); // Toggled OFF
+
+    parallax::SimulateKeyState(0x42, false);
+    parallax::UpdateKeybindState(kbToggle);
+    assert(!kbToggle.active);
+
+    // 3. AlwaysOn mode
+    parallax::Keybind kbAlways{ 0x43, parallax::KeybindMode::AlwaysOn, false };
+    parallax::UpdateKeybindState(kbAlways);
+    assert(kbAlways.active);
+
+    parallax::ClearSimulatedKeys();
+
+    // 4. Layout Diagnostics (Ensure no SetCursorPos extending bounds assertion)
+    ImGui::NewFrame();
+    ImGui::SetNextWindowPos(ImVec2(10, 10));
+    ImGui::SetNextWindowSize(ImVec2(600, 400));
+    ImGui::Begin("LayoutDiagTestHost");
+
+    std::string testInput = "DiagnosticValue";
+    parallax::InputText("TestDiagnosticInput", testInput, "search", "Hint");
+
+    parallax::KeybindRow("Diagnostic Keybind", "Keybind row layout testing", &kbHold);
+
+    ImGuiWindow* win = ImGui::GetCurrentWindow();
+    assert(!win->DC.IsSetPos); // IsSetPos MUST be cleared to avoid ImGui assertion
+    (void)win;
+
+    ImGui::End();
+    ImGui::Render();
+
+    std::cout << "  ✓ Keybind Hold, Toggle, AlwaysOn state machine & Layout boundary safety verified" << std::endl;
 }
 
 void TestKeySystem() {
@@ -352,6 +443,7 @@ int main() {
     TestThemeAndAccentEngine();
     TestCollapsibleAndAutoGroupbox();
     TestRedesignedWidgetsHeadless();
+    TestKeybindStateMachineAndLayoutDiagnostics();
     TestConfigEngine();
     TestKeySystem();
 

@@ -31,10 +31,6 @@ void InputHandler::ClearToggleKeys() {
 }
 
 void InputHandler::Update() {
-    if (m_keyCaptureActive) {
-        return;
-    }
-
     const bool isTyping = ImGui::GetIO().WantTextInput;
 
     for (const auto& tk : m_toggleKeys) {
@@ -48,6 +44,10 @@ void InputHandler::Update() {
 
         const bool wasDown = m_wasKeyDown[tk.vkey];
         m_wasKeyDown[tk.vkey] = isDown;
+
+        if (m_keyCaptureActive) {
+            continue;
+        }
 
         // Trigger on transition edge (fresh key down)
         if (isDown && !wasDown) {

@@ -131,12 +131,77 @@ int RunDemo(HINSTANCE hInstance) {
 
     cfg.BindBool("groups.visuals_expanded", &visualGroupExpanded, true);
     cfg.BindBool("groups.audio_expanded", &audioGroupExpanded, true);
-    cfg.BindBool("groups.advanced_expanded", &advancedGroupExpanded, true);
-
     bool showKeyModal = false;
+
+    // Search catalog across tabs and sections for global navigation
+    struct SearchCatalogItem {
+        int tabIndex;
+        const char* tabName;
+        const char* sectionName;
+        const char* itemName;
+        const char* description;
+        const char* icon;
+        bool* expandFlag;
+    };
+
+    const SearchCatalogItem searchCatalog[] = {
+        // Tab 0: Components
+        { 0, "Components", "Toggles, Checkboxes & Chained Rows", "Bounding Box Overlay", "Render 2D/3D spatial bounds with adaptive contrast", "eye", nullptr },
+        { 0, "Components", "Toggles, Checkboxes & Chained Rows", "Trajectory Snaplines", "Trace line projections from viewport origin", "navigation", nullptr },
+        { 0, "Components", "Toggles, Checkboxes & Chained Rows", "Bone Skeletons", "Bone matrix kinematic wireframe overlay", "activity", nullptr },
+        { 0, "Components", "Toggles, Checkboxes & Chained Rows", "Rim Glow Effect", "Fresnel peripheral luminescence shader", "sun", nullptr },
+        { 0, "Components", "Interactive Keybind Controls", "Bounding Box Hotkey", "Hardware keybind for Bounding Box Overlay", "lock", nullptr },
+        { 0, "Components", "Interactive Keybind Controls", "Aim Assist Keybind", "Hardware keybind for Aim Smoothing Assist", "crosshair", nullptr },
+        { 0, "Components", "Interactive Keybind Controls", "Triggerbot Activation", "Hardware keybind for Automatic Fire Trigger", "zap", nullptr },
+        { 0, "Components", "Interactive Keybind Controls", "Rim Glow Keybind", "Hardware keybind for Peripheral Glow Shader", "sun", nullptr },
+        { 0, "Components", "Precision Sliders & Dual Range Sliders", "Aim Assist FOV", "Field of view targeting cone angle in degrees", "sliders", nullptr },
+        { 0, "Components", "Precision Sliders & Dual Range Sliders", "Smoothing Factor", "Exponential mouse smoothing coefficient", "sliders", nullptr },
+        { 0, "Components", "Precision Sliders & Dual Range Sliders", "Max Target Count", "Maximum simultaneous tracked targets", "layers", nullptr },
+        { 0, "Components", "Precision Sliders & Dual Range Sliders", "Render Distance Range", "Near and far render distance limits in meters", "sliders", nullptr },
+        { 0, "Components", "Precision Sliders & Dual Range Sliders", "Ping Compensation Range", "Network round-trip latency compensation bounds", "sliders", nullptr },
+        { 0, "Components", "Button Family & Variants", "Deploy Module Button", "Accent-colored primary button with tactile feedback", "zap", nullptr },
+        { 0, "Components", "Button Family & Variants", "Sync Profile Button", "Bordered secondary action button", "refresh-cw", nullptr },
+        { 0, "Components", "Button Family & Variants", "Purge Cache Button", "High-visibility terracotta button for irreversible actions", "trash-2", nullptr },
+        // Tab 1: Selectors & Inputs
+        { 1, "Selectors", "Dropdowns & Multi-Select Menus", "Target Bone Priority", "Single selection dropdown selector", "layers", nullptr },
+        { 1, "Selectors", "Dropdowns & Multi-Select Menus", "Active Telemetry Layers", "Multi-selection combobox with inline count badge", "check", nullptr },
+        { 1, "Selectors", "Color Picker & Swatch Controls", "Primary Bounding Color", "Color picker swatch with HSV canvas", "palette", nullptr },
+        { 1, "Selectors", "Text Inputs & Password Masking", "Operator Identifier", "Single line text input with clear button", "user", nullptr },
+        { 1, "Selectors", "Text Inputs & Password Masking", "Secret API Token", "Masked password input with eye visibility toggle", "lock", nullptr },
+        { 1, "Selectors", "Interactive Keybind Controls", "Keybind Management", "Configure Hold, Toggle, or Always-On hardware keybinds", "cpu", nullptr },
+        // Tab 2: Appearance
+        { 2, "Appearance", "Theme Engine — AMOLED, Graphite & Porcelain", "Theme Switcher", "AMOLED Black, Graphite Dark, and Porcelain Light", "sun", nullptr },
+        { 2, "Appearance", "Theme Engine — AMOLED, Graphite & Porcelain", "Accent Color Presets", "Parallax Violet (#9998F6), Sage, Monochrome, Copper, Steel Blue", "palette", nullptr },
+        { 2, "Appearance", "Theme Engine — AMOLED, Graphite & Porcelain", "Custom Accent Picker", "RGB color picker for bespoke accent color", "sliders", nullptr },
+        { 2, "Appearance", "Theme Engine — AMOLED, Graphite & Porcelain", "Animation Speed Multiplier", "Speed scaling from Fast (1.5x) to Off (Instant snap)", "clock", nullptr },
+        { 2, "Appearance", "Toast Notification System", "Toast Notifications", "Success, info, warning, and danger toast notifications", "bell", nullptr },
+        // Tab 3: Layouts
+        { 3, "Layouts", "Navigation Presets & Placement", "Modern Sidebar Preset", "Expanded 200px Left Dock", "sidebar", nullptr },
+        { 3, "Layouts", "Navigation Presets & Placement", "Compact Tactical Preset", "Collapsed 68px Icon Dock", "crosshair", nullptr },
+        { 3, "Layouts", "Navigation Presets & Placement", "Minimal Tabbed Preset", "Top horizontal navigation bar", "maximize-2", nullptr },
+        { 3, "Layouts", "Navigation Presets & Placement", "Navigation Dock Side", "Dock sidebar to Left, Right, Top, or Bottom", "layout", nullptr },
+        { 3, "Layouts", "Collapsible Trajectory Solver", "Sub-frame Kinematics", "Collapsible trajectory solver kinematics row", "cpu", &advancedGroupExpanded },
+        { 3, "Layouts", "Collapsible Trajectory Solver", "Solver Tick Rate", "Collapsible solver tick rate slider", "sliders", &advancedGroupExpanded },
+        { 3, "Layouts", "Fixed Menu Shell & Automatic Card Sizing", "Fixed Menu Shell", "1137x699 fixed footprint with auto-fitting cards", "maximize", nullptr },
+        { 3, "Layouts", "Compact Card A (2 Controls)", "Auto-Sizing Cards", "Compact cards that auto-fit content height", "layers", nullptr },
+        // Tab 4: Icons
+        { 4, "Icons", "On-Demand 2,077 SVG Icon Atlas", "SVG Icon Atlas", "High-DPI rasterized SVG icon catalog", "image", nullptr },
+        // Tab 5: Configs
+        { 5, "Configs", "Profile Management", "Configuration Profiles", "Save, load, import, export, and delete JSON configs", "database", nullptr },
+        // Tab 6: Key System
+        { 6, "Key System", "Developer License Status", "License Key Status", "Asynchronous seat validation and modal dialog", "shield", nullptr },
+        { 6, "Key System", "Authorization Simulator", "Key Verification Simulator", "Test non-blocking authentication with VIP keys", "terminal", nullptr }
+    };
+
+    std::string spotlightSection = "";
+    float spotlightTimer = 0.0f;
 
     // 4. Main message and render loop
     host.RunMainLoop([&]() {
+        if (spotlightTimer > 0.0f) {
+            spotlightTimer -= ImGui::GetIO().DeltaTime;
+            if (spotlightTimer < 0.0f) spotlightTimer = 0.0f;
+        }
         // Update live keybind states
         parallax::UpdateKeybindState(boxKey);
         parallax::UpdateKeybindState(aimKey);
@@ -230,10 +295,236 @@ int RunDemo(HINSTANCE hInstance) {
                     break;
             }
 
-            ImGui::SetCursorScreenPos(contentPos);
-            ImGui::BeginChild("##ParallaxMainContentRegion", contentSize, false, ImGuiWindowFlags_None);
+            auto SpotlightCheck = [&](const char* title) {
+                if (spotlightTimer > 0.0f && spotlightSection == title) {
+                    ImDrawList* dl = ImGui::GetWindowDrawList();
+                    float pulse = (std::sin(spotlightTimer * 8.0f) * 0.5f + 0.5f);
+                    ImVec4 pulseCol = colors.Accent;
+                    pulseCol.w = 0.45f + 0.55f * pulse;
+                    const ImVec2 rMin = ImGui::GetItemRectMin();
+                    const ImVec2 rMax = ImGui::GetItemRectMax();
+                    dl->AddRect(
+                        ImVec2(rMin.x - 2.0f * dpi, rMin.y - 2.0f * dpi),
+                        ImVec2(rMax.x + 2.0f * dpi, rMax.y + 2.0f * dpi),
+                        ImColor(pulseCol),
+                        metrics.FrameRounding * dpi,
+                        0,
+                        2.0f * dpi
+                    );
+                }
+            };
 
-            // Smooth inertial scrolling synchronized with scrollbar drag
+            auto RenderSearchPopover = [&](std::string& query, const ImVec2& searchMin, const ImVec2& searchMax) {
+                if (ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+                    query.clear();
+                    return;
+                }
+
+                std::string q = query;
+                while (!q.empty() && std::isspace(static_cast<unsigned char>(q.front()))) q.erase(q.begin());
+                while (!q.empty() && std::isspace(static_cast<unsigned char>(q.back()))) q.pop_back();
+                if (q.empty()) return;
+
+                std::vector<std::string> tokens;
+                {
+                    std::string cur;
+                    for (char ch : q) {
+                        if (std::isspace(static_cast<unsigned char>(ch))) {
+                            if (!cur.empty()) { tokens.push_back(cur); cur.clear(); }
+                        } else {
+                            cur.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(ch))));
+                        }
+                    }
+                    if (!cur.empty()) tokens.push_back(cur);
+                }
+
+                auto toLower = [](std::string_view s) {
+                    std::string out;
+                    out.reserve(s.size());
+                    for (char c : s) out.push_back(static_cast<char>(std::tolower(static_cast<unsigned char>(c))));
+                    return out;
+                };
+
+                std::vector<SearchCatalogItem> matches;
+                for (const auto& item : searchCatalog) {
+                    std::string hay = toLower(item.itemName) + " " + toLower(item.description) + " " +
+                                      toLower(item.sectionName) + " " + toLower(item.tabName);
+                    bool allFound = true;
+                    for (const auto& tok : tokens) {
+                        if (hay.find(tok) == std::string::npos) {
+                            allFound = false;
+                            break;
+                        }
+                    }
+                    if (allFound) {
+                        matches.push_back(item);
+                    }
+                }
+
+                ImGui::SetNextWindowPos(ImVec2(searchMin.x, searchMax.y + 6.0f * dpi));
+                ImGui::SetNextWindowSize(ImVec2(390.0f * dpi, 0.0f));
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f * dpi, 8.0f * dpi));
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, metrics.PopupRounding * dpi);
+                ImGui::PushStyleVar(ImGuiStyleVar_PopupBorderSize, 1.0f);
+                ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.PopupBg);
+                ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
+
+                if (ImGui::Begin("##ParallaxSearchPopover", nullptr,
+                        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize |
+                        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing))
+                {
+                    if (matches.empty()) {
+                        ImGui::Spacing();
+                        parallax::PushFont(parallax::FontWeight::Medium);
+                        ImGui::TextColored(colors.TextMuted, "No matching controls found for \"%s\"", q.c_str());
+                        parallax::PopFont();
+                        parallax::PushFont(parallax::FontWeight::Caption);
+                        ImGui::TextColored(colors.TextMuted, "Press Esc to clear search");
+                        parallax::PopFont();
+                        ImGui::Spacing();
+                    } else {
+                        int count = std::min(static_cast<int>(matches.size()), 6);
+                        for (int i = 0; i < count; ++i) {
+                            const auto& item = matches[i];
+                            ImGui::PushID(i);
+                            const ImVec2 rowPos = ImGui::GetCursorScreenPos();
+                            const float rowW = ImGui::GetContentRegionAvail().x;
+                            const float rowH = 42.0f * dpi;
+                            const ImRect rowBb(rowPos, ImVec2(rowPos.x + rowW, rowPos.y + rowH));
+
+                            ImGui::ItemSize(rowBb);
+                            if (ImGui::ItemAdd(rowBb, ImGui::GetID("##SearchRow"))) {
+                                bool hovered = false, held = false;
+                                bool pressed = ImGui::ButtonBehavior(rowBb, ImGui::GetID("##SearchRow"), &hovered, &held);
+
+                                ImDrawList* dl = ImGui::GetWindowDrawList();
+                                if (hovered) {
+                                    dl->AddRectFilled(rowBb.Min, rowBb.Max, ImColor(colors.WidgetHover), metrics.FrameRounding * dpi);
+                                    dl->AddRect(rowBb.Min, rowBb.Max, ImColor(colors.AccentMuted), metrics.FrameRounding * dpi);
+                                }
+
+                                const float iconSz = 16.0f * dpi;
+                                const ImVec2 icPos(rowBb.Min.x + 8.0f * dpi, rowBb.Min.y + (rowH - iconSz) * 0.5f);
+                                parallax::Context::Get().Icons().DrawIcon(dl, item.icon, icPos, ImVec2(iconSz, iconSz), hovered ? colors.Accent : colors.TextSecondary);
+
+                                const float textX = icPos.x + iconSz + 10.0f * dpi;
+                                parallax::PushFont(parallax::FontWeight::SemiBold);
+                                dl->AddText(ImVec2(textX, rowBb.Min.y + 4.0f * dpi), ImColor(hovered ? colors.TextPrimary : colors.TextSecondary), item.itemName);
+                                parallax::PopFont();
+
+                                parallax::PushFont(parallax::FontWeight::Caption);
+                                char subBuf[128];
+                                snprintf(subBuf, sizeof(subBuf), "%s > %s", item.tabName, item.sectionName);
+                                dl->AddText(ImVec2(textX, rowBb.Min.y + 22.0f * dpi), ImColor(colors.TextMuted), subBuf);
+                                parallax::PopFont();
+
+                                parallax::PushFont(parallax::FontWeight::Caption);
+                                const ImVec2 badgeTextSz = ImGui::CalcTextSize(item.tabName);
+                                const float badgePad = 6.0f * dpi;
+                                const float badgeW = badgeTextSz.x + badgePad * 2.0f;
+                                const float badgeH = 18.0f * dpi;
+                                const ImVec2 badgeMin(rowBb.Max.x - badgeW - 8.0f * dpi, rowBb.Min.y + (rowH - badgeH) * 0.5f);
+                                const ImVec2 badgeMax(badgeMin.x + badgeW, badgeMin.y + badgeH);
+                                dl->AddRectFilled(badgeMin, badgeMax, ImColor(colors.AccentMuted), 4.0f * dpi);
+                                dl->AddText(ImVec2(badgeMin.x + badgePad, badgeMin.y + (badgeH - badgeTextSz.y) * 0.5f), ImColor(colors.Accent), item.tabName);
+                                parallax::PopFont();
+
+                                if (pressed) {
+                                    activeMainTab = item.tabIndex;
+                                    if (item.expandFlag) {
+                                        *item.expandFlag = true;
+                                    }
+                                    spotlightSection = item.sectionName;
+                                    spotlightTimer = 2.5f;
+                                    query.clear();
+                                }
+                            }
+                            ImGui::PopID();
+                        }
+                    }
+                    ImGui::End();
+                }
+                ImGui::PopStyleColor(2);
+                ImGui::PopStyleVar(3);
+            };
+
+            // -----------------------------------------------------------------
+            // Pinned Workspace Header Bar (Never scrolls with content)
+            // -----------------------------------------------------------------
+            const float headerH = 36.0f * dpi;
+            ImGui::SetCursorScreenPos(contentPos);
+            ImGui::BeginGroup();
+            {
+                const char* sectionTitles[] = {
+                    "Component Showcase",
+                    "Selectors & Inputs",
+                    "Themes & Appearance",
+                    "Layout Architecture",
+                    "SVG Icon Atlas",
+                    "Configuration Engine",
+                    "Key Authorization"
+                };
+                const int safeTab = std::clamp(activeMainTab, 0, 6);
+
+                parallax::PushFont(parallax::FontWeight::Bold);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.0f * dpi);
+                ImGui::TextColored(colors.TextPrimary, "%s", sectionTitles[safeTab]);
+                parallax::PopFont();
+
+                ImGui::SameLine(220.0f * dpi);
+                const ImVec2 searchPosBefore = ImGui::GetCursorScreenPos();
+                parallax::SearchBar(searchQuery, "Search controls or features...", 240.0f * dpi);
+                const ImVec2 searchPosAfter = ImGui::GetItemRectMax();
+
+                // Quick Theme Toggle Button (cycles Amoled -> Dark -> Light)
+                const float rightGroupW = 240.0f * dpi;
+                const float availX = ImGui::GetContentRegionAvail().x;
+                if (availX > rightGroupW) {
+                    ImGui::SameLine(ImGui::GetCursorPosX() + availX - rightGroupW);
+                } else {
+                    ImGui::SameLine();
+                }
+
+                auto curTheme = parallax::StyleManager::Get().GetTheme();
+                const char* themeLabel = "AMOLED Black";
+                const char* themeIcon = "circle";
+                if (curTheme == parallax::ThemeMode::Dark) {
+                    themeLabel = "Graphite (Dark)";
+                    themeIcon = "moon";
+                } else if (curTheme == parallax::ThemeMode::Light) {
+                    themeLabel = "Porcelain (Light)";
+                    themeIcon = "sun";
+                }
+
+                if (parallax::ButtonCompact(themeLabel, themeIcon, parallax::ButtonVariant::Secondary)) {
+                    parallax::ToggleTheme();
+                }
+                ImGui::SameLine(0.0f, 8.0f * dpi);
+                parallax::PushFont(parallax::FontWeight::Caption);
+                ImGui::TextColored(colors.TextMuted, "1137x699");
+                parallax::PopFont();
+
+                if (!searchQuery.empty()) {
+                    RenderSearchPopover(searchQuery, searchPosBefore, searchPosAfter);
+                }
+            }
+            ImGui::EndGroup();
+
+            // 1px Subtle divider line between Header and Content
+            const float dividerY = contentPos.y + headerH + 4.0f * dpi;
+            ImGui::GetWindowDrawList()->AddLine(
+                ImVec2(contentPos.x, dividerY),
+                ImVec2(contentPos.x + contentSize.x, dividerY),
+                ImColor(colors.BorderSubtle)
+            );
+
+            // -----------------------------------------------------------------
+            // Dedicated Scrollable Tab Region
+            // -----------------------------------------------------------------
+            const ImVec2 scrollRegionPos(contentPos.x, dividerY + 6.0f * dpi);
+            const ImVec2 scrollRegionSize(contentSize.x, contentSize.y - (dividerY - contentPos.y) - 6.0f * dpi);
+
             static float s_targetScrollY = 0.0f;
             static float s_currentScrollY = 0.0f;
             static float s_scrollVelocity = 0.0f;
@@ -244,20 +535,23 @@ int RunDemo(HINSTANCE hInstance) {
                 s_targetScrollY = 0.0f;
                 s_currentScrollY = 0.0f;
                 s_scrollVelocity = 0.0f;
-                ImGui::SetScrollY(0.0f);
             }
 
-            ImGuiWindow* curWin = ImGui::GetCurrentWindow();
-            bool isDraggingScrollbar = (ImGui::GetActiveID() == ImGui::GetWindowScrollbarID(curWin, ImGuiAxis_Y));
+            ImGui::SetCursorScreenPos(scrollRegionPos);
+            ImGui::SetNextWindowScroll(ImVec2(0.0f, std::round(s_currentScrollY)));
+            ImGui::BeginChild("##ParallaxTabScrollRegion", scrollRegionSize, false, ImGuiWindowFlags_NoScrollWithMouse);
+
+            ImGuiWindow* scrollWin = ImGui::GetCurrentWindow();
+            bool isDraggingScrollbar = (ImGui::GetActiveID() == ImGui::GetWindowScrollbarID(scrollWin, ImGuiAxis_Y));
             if (isDraggingScrollbar) {
                 s_targetScrollY = ImGui::GetScrollY();
                 s_currentScrollY = s_targetScrollY;
                 s_scrollVelocity = 0.0f;
             } else {
-                if (ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows) && !ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId)) {
+                if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows) && !ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopupId)) {
                     float wheel = ImGui::GetIO().MouseWheel;
                     if (wheel != 0.0f) {
-                        s_scrollVelocity -= wheel * 420.0f * dpi;
+                        s_scrollVelocity -= wheel * 360.0f * dpi;
                     }
                 }
 
@@ -277,56 +571,7 @@ int RunDemo(HINSTANCE hInstance) {
                 if (std::abs(s_currentScrollY - s_targetScrollY) < 0.3f) {
                     s_currentScrollY = s_targetScrollY;
                 }
-                ImGui::SetScrollY(s_currentScrollY);
             }
-
-            // -----------------------------------------------------------------
-            // Workspace Header Bar: Search, Section Title & Quick Theme Action
-            // -----------------------------------------------------------------
-            {
-                const char* sectionTitles[] = {
-                    "Component Showcase",
-                    "Selectors & Inputs",
-                    "Themes & Appearance",
-                    "Layout Architecture",
-                    "SVG Icon Atlas",
-                    "Configuration Engine",
-                    "Key Authorization"
-                };
-                const int safeTab = std::clamp(activeMainTab, 0, 6);
-
-                parallax::PushFont(parallax::FontWeight::Bold);
-                ImGui::TextColored(colors.TextPrimary, "%s", sectionTitles[safeTab]);
-                parallax::PopFont();
-
-                ImGui::SameLine(220.0f * dpi);
-                parallax::SearchBar(searchQuery, "Filter controls or icons...", 240.0f * dpi);
-
-                const float rightGroupW = 230.0f * dpi;
-                const float availX = ImGui::GetContentRegionAvail().x;
-                if (availX > rightGroupW) {
-                    ImGui::SameLine(ImGui::GetCursorPosX() + availX - rightGroupW);
-                } else {
-                    ImGui::SameLine();
-                }
-
-                const bool isLight = parallax::IsLightTheme();
-                if (parallax::ButtonCompact(
-                        isLight ? "Porcelain (Light)" : "Graphite (Dark)",
-                        isLight ? "sun" : "moon",
-                        parallax::ButtonVariant::Secondary))
-                {
-                    parallax::ToggleTheme();
-                }
-                ImGui::SameLine(0.0f, 8.0f * dpi);
-                parallax::PushFont(parallax::FontWeight::Caption);
-                ImGui::TextColored(colors.TextMuted, "1137x699");
-                parallax::PopFont();
-            }
-
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
 
             // =================================================================
             // TAB 0: COMPONENT SHOWCASE
@@ -388,6 +633,7 @@ int RunDemo(HINSTANCE hInstance) {
                     .Disabled(true);
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Toggles, Checkboxes & Chained Rows");
 
                 // Second auto-sized card in Column 1: Button Family
                 parallax::BeginGroupbox("Button Family & Variants", "zap");
@@ -428,6 +674,7 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::IconButton("##QuickLockBtn", "lock", parallax::ButtonVariant::Ghost, 28.0f, "Open Key Modal");
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Button Family & Variants");
 
                 parallax::NextColumn();
 
@@ -448,6 +695,7 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::RangeSliderInt("Acceptable Ping Window", &pingRangeMin, &pingRangeMax, 0, 250, "%d ms");
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Precision Sliders & Dual Range Sliders");
 
                 // Second auto-sized card in Column 2: Collapsible Sections
                 if (parallax::BeginCollapsibleGroupbox("Collapsible Acoustic Section", &audioGroupExpanded, "bell", 0.0f, false)) {
@@ -455,6 +703,7 @@ int RunDemo(HINSTANCE hInstance) {
                     static float alertGain = 78.0f;
                     parallax::SliderFloat("Master Alert Gain", &alertGain, 0.0f, 100.0f, "%.0f%%");
                     parallax::EndCollapsibleGroupbox();
+                    SpotlightCheck("Collapsible Acoustic Section");
                 }
 
                 parallax::EndGrid();
@@ -477,6 +726,7 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::MultiDropdown("Active Telemetry Layers", visualElements, selectedElements, visualIcons);
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Dropdowns & Multi-Select Menus");
 
                 parallax::BeginGroupbox("Color Picker & Swatch Controls", "palette");
                 parallax::GroupboxDescription("HSV saturation/value canvas, alpha checkerboard, HEX/RGBA fields, and right-click savable palette.");
@@ -486,6 +736,7 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::ColorPickerRow("Surface Rim Highlight", &glowColor, true);
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Color Picker & Swatch Controls");
 
                 parallax::NextColumn();
 
@@ -500,44 +751,34 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::InputText("Secret API Token", testApiToken, "lock", "Enter secret key...", -1.0f, true);
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Text Inputs & Password Masking");
 
                 parallax::BeginGroupbox("Interactive Keybind Controls", "cpu");
                 parallax::GroupboxDescription("Left-click to bind keyboard or mouse button (Esc clears). Right-click to select Hold / Toggle / Always On.");
 
-                auto drawKeybindLine = [&](const char* label, const char* desc, parallax::Keybind* kb) {
-                    const float startY = ImGui::GetCursorPosY();
-                    parallax::PushFont(parallax::FontWeight::Medium);
-                    ImGui::TextColored(colors.TextPrimary, "%s", label);
-                    parallax::PopFont();
-                    parallax::PushFont(parallax::FontWeight::Caption);
-                    ImGui::TextColored(colors.TextMuted, "%s", desc);
-                    parallax::PopFont();
-                    const float endY = ImGui::GetCursorPosY();
-
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetWindowContentRegionMax().x - 90.0f * dpi, startY + 4.0f * dpi));
-                    parallax::KeybindWidget(label, kb);
-                    ImGui::SetCursorPosY(endY + 6.0f * dpi);
-                };
-
-                drawKeybindLine("Overlay Master Toggle", "Toggles 2D/3D bounding boxes", &boxKey);
-                drawKeybindLine("Precision Aim Assist", "Active while key is held down", &aimKey);
-                drawKeybindLine("Auto-Trigger Gate", "Continuous automatic activation", &triggerKey);
-                drawKeybindLine("Surface Rim Shader", "Toggles outer contour pass", &glowKey);
+                parallax::KeybindRow("Overlay Master Toggle", "Toggles 2D/3D bounding boxes", &boxKey);
+                ImGui::Spacing();
+                parallax::KeybindRow("Precision Aim Assist", "Active while key is held down", &aimKey);
+                ImGui::Spacing();
+                parallax::KeybindRow("Auto-Trigger Gate", "Continuous automatic activation", &triggerKey);
+                ImGui::Spacing();
+                parallax::KeybindRow("Surface Rim Shader", "Toggles outer contour pass", &glowKey);
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Interactive Keybind Controls");
 
                 parallax::EndGrid();
             }
             // =================================================================
             // TAB 2: THEMES & APPEARANCE
-            // (Graphite Dark / Porcelain Light, Muted Sage & Accent Presets, Typography, Toasts)
+            // (AMOLED Black / Graphite Dark / Porcelain Light, Parallax & Accent Presets, Typography, Toasts)
             // =================================================================
             else if (activeMainTab == 2) {
                 parallax::BeginGrid(2, 14.0f);
 
                 // Column 1: Theme Engine & Accent Presets
-                parallax::BeginGroupbox("Theme Engine — Graphite & Porcelain", "sun");
-                parallax::GroupboxDescription("Switch smoothly between Graphite (Dark) and Porcelain (Light) with real-time token interpolation.");
+                parallax::BeginGroupbox("Theme Engine — AMOLED, Graphite & Porcelain", "sun");
+                parallax::GroupboxDescription("Switch smoothly between AMOLED (Black), Graphite (Dark), and Porcelain (Light) with real-time token interpolation.");
 
                 parallax::ThemeSwitcher("Active Interface Theme");
 
@@ -575,11 +816,12 @@ int RunDemo(HINSTANCE hInstance) {
                 }
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Theme Engine — AMOLED, Graphite & Porcelain");
 
                 parallax::NextColumn();
 
                 // Column 2: Typography Scale & Toast Notifications
-                parallax::BeginGroupbox("Typography Scale & Surface Hierarchy", "type");
+                parallax::BeginGroupbox("Typography Scale & Hierarchy", "type");
                 parallax::GroupboxDescription("5-layer surface separation paired with DPI-scaled Inter font weights.");
 
                 parallax::PushFont(parallax::FontWeight::Title);
@@ -607,8 +849,9 @@ int RunDemo(HINSTANCE hInstance) {
                 parallax::PopFont();
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Typography Scale & Hierarchy");
 
-                parallax::BeginGroupbox("Toast Notification Testbench", "bell");
+                parallax::BeginGroupbox("Toast Notification System", "bell");
                 parallax::GroupboxDescription("Trigger theme-aware toast notifications with semantic status accents.");
 
                 const float halfBtnW = (ImGui::GetContentRegionAvail().x - 8.0f * dpi) * 0.5f;
@@ -629,6 +872,7 @@ int RunDemo(HINSTANCE hInstance) {
                 }
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Toast Notification System");
 
                 parallax::EndGrid();
             }
@@ -686,6 +930,7 @@ int RunDemo(HINSTANCE hInstance) {
                     }
 
                     parallax::EndGroupbox();
+                    SpotlightCheck("Navigation Presets & Placement");
 
                     parallax::NextColumn();
 
@@ -696,6 +941,7 @@ int RunDemo(HINSTANCE hInstance) {
                     ImGui::BulletText("Multiple cards stack cleanly in each column without stretching");
                     ImGui::BulletText("Sidebar smoothly interpolates between 68px and 200px");
                     parallax::EndGroupbox();
+                    SpotlightCheck("Fixed Menu Shell & Automatic Card Sizing");
 
                     if (parallax::BeginCollapsibleGroupbox("Collapsible Trajectory Solver", &advancedGroupExpanded, "cpu", 0.0f, false)) {
                         static bool enablePrediction = true;
@@ -703,6 +949,7 @@ int RunDemo(HINSTANCE hInstance) {
                         parallax::Row("Sub-frame Kinematics", &enablePrediction).Icon("zap");
                         parallax::SliderFloat("Solver Tick Rate", &solverHz, 30.0f, 240.0f, "%.0f Hz");
                         parallax::EndCollapsibleGroupbox();
+                        SpotlightCheck("Collapsible Trajectory Solver");
                     }
 
                     parallax::EndGrid();
@@ -714,6 +961,7 @@ int RunDemo(HINSTANCE hInstance) {
                     parallax::Row("Quick Toggle Alpha", &compactToggleA).Icon("check");
                     parallax::Row("Quick Toggle Beta", &compactToggleB).Icon("shield");
                     parallax::EndGroupbox();
+                    SpotlightCheck("Compact Card A (2 Controls)");
 
                     parallax::BeginGroupbox("Compact Card B (Stacked Below A)", "sliders");
                     parallax::GroupboxDescription("Stacked directly below Card A in Column 1 with balanced spacing.");
@@ -790,19 +1038,20 @@ int RunDemo(HINSTANCE hInstance) {
                     ImGui::BeginGroup();
                     const ImVec2 cellPos = ImGui::GetCursorScreenPos();
                     const ImVec2 cellSize(96.0f * dpi, 54.0f * dpi);
-                    ImGui::GetWindowDrawList()->AddRectFilled(cellPos, ImVec2(cellPos.x + cellSize.x, cellPos.y + cellSize.y), ImColor(colors.WidgetBg), 6.0f * dpi);
-                    ImGui::GetWindowDrawList()->AddRect(cellPos, ImVec2(cellPos.x + cellSize.x, cellPos.y + cellSize.y), ImColor(colors.BorderSubtle), 6.0f * dpi);
+                    ImDrawList* cellDraw = ImGui::GetWindowDrawList();
+                    cellDraw->AddRectFilled(cellPos, ImVec2(cellPos.x + cellSize.x, cellPos.y + cellSize.y), ImColor(colors.WidgetBg), 6.0f * dpi);
+                    cellDraw->AddRect(cellPos, ImVec2(cellPos.x + cellSize.x, cellPos.y + cellSize.y), ImColor(colors.BorderSubtle), 6.0f * dpi);
 
-                    ImGui::SetCursorScreenPos(ImVec2(cellPos.x + (cellSize.x - 20.0f * dpi) * 0.5f, cellPos.y + 8.0f * dpi));
-                    parallax::Icon(showcaseIcons[i], ImVec2(20.0f * dpi, 20.0f * dpi), colors.Accent);
+                    const float iconSz = 20.0f * dpi;
+                    const ImVec2 iconPos(cellPos.x + (cellSize.x - iconSz) * 0.5f, cellPos.y + 8.0f * dpi);
+                    parallax::Context::Get().Icons().DrawIcon(cellDraw, showcaseIcons[i], iconPos, ImVec2(iconSz, iconSz), colors.Accent);
 
                     parallax::PushFont(parallax::FontWeight::Caption);
                     const ImVec2 ts = ImGui::CalcTextSize(showcaseIcons[i]);
-                    ImGui::SetCursorScreenPos(ImVec2(cellPos.x + (cellSize.x - ts.x) * 0.5f, cellPos.y + 32.0f * dpi));
-                    ImGui::TextColored(colors.TextSecondary, "%s", showcaseIcons[i]);
+                    const ImVec2 labelPos(cellPos.x + (cellSize.x - ts.x) * 0.5f, cellPos.y + 32.0f * dpi);
+                    cellDraw->AddText(labelPos, ImColor(colors.TextSecondary), showcaseIcons[i]);
                     parallax::PopFont();
 
-                    ImGui::SetCursorScreenPos(cellPos);
                     ImGui::Dummy(cellSize);
                     ImGui::EndGroup();
                     shown++;
@@ -815,6 +1064,7 @@ int RunDemo(HINSTANCE hInstance) {
                 ImGui::SameLine(0.0f, 10.0f * dpi);
                 ImGui::TextColored(colors.TextMuted, "Graceful Fallback: Unrecognized icon names automatically render the procedural vector shield.");
                 parallax::EndGroupbox();
+                SpotlightCheck("On-Demand 2,077 SVG Icon Atlas");
             }
             // =================================================================
             // TAB 5: CONFIGURATIONS (JSON Config Engine)
@@ -877,6 +1127,7 @@ int RunDemo(HINSTANCE hInstance) {
                 }
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Developer License Status");
 
                 parallax::NextColumn();
 
@@ -903,6 +1154,7 @@ int RunDemo(HINSTANCE hInstance) {
                 }
 
                 parallax::EndGroupbox();
+                SpotlightCheck("Authorization Simulator");
 
                 parallax::EndGrid();
             }

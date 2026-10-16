@@ -53,6 +53,9 @@ void Grid::NextColumn() {
 
 void Grid::End() {
     ImGui::EndGroup();
+    s_columns = 1;
+    s_currentCol = 0;
+    s_columnWidth = 0.0f;
 }
 
 float Grid::GetColumnWidth() noexcept {
@@ -90,6 +93,9 @@ bool Groupbox::Begin(const char* title, const char* icon, float height) {
     } else {
         childH = height * dpi;
     }
+
+    // Keep groupbox child window scroll strictly locked to 0 so contents never shift relative to header
+    ImGui::SetNextWindowScroll(ImVec2(0.0f, 0.0f));
 
     ImGuiWindowFlags winFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
     bool open = ImGui::BeginChild(childId, ImVec2(w, childH), childFlags, winFlags);
@@ -133,8 +139,12 @@ bool Groupbox::Begin(const char* title, const char* icon, float height) {
         drawList->AddText(nullptr, 0.0f, textPos, ImColor(colors.TextPrimary), title, textEnd);
         PopFont();
 
-        // Advance cursor below the header strip into the padded body area
-        ImGui::SetCursorScreenPos(ImVec2(winPos.x + padX, winPos.y + headerBarH + 12.0f * dpi));
+        // Advance cursor below the header strip into the padded body area without setting IsSetPos flag
+        ImGuiWindow* curWin = ImGui::GetCurrentWindow();
+        const ImVec2 bodyPos(winPos.x + padX, winPos.y + headerBarH + 12.0f * dpi);
+        curWin->DC.CursorPos = bodyPos;
+        curWin->DC.CursorMaxPos = ImMax(curWin->DC.CursorMaxPos, bodyPos);
+        curWin->DC.IsSetPos = false;
     }
 
     return open;

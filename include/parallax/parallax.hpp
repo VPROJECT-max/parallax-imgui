@@ -56,6 +56,19 @@ StyleMetrics& Metrics();
 void ApplyTheme();
 
 // -----------------------------------------------------------------------------
+// Theme & Accent Engine API (Graphite Dark / Porcelain Light + Restraint Accents)
+// -----------------------------------------------------------------------------
+void SetTheme(ThemeMode mode, bool animate = true);
+ThemeMode GetTheme() noexcept;
+void ToggleTheme(bool animate = true);
+bool IsLightTheme() noexcept;
+
+void SetAccentPreset(AccentPreset preset, bool animate = true);
+AccentPreset GetAccentPreset() noexcept;
+void SetCustomAccent(const ImVec4& color, bool animate = true);
+ImVec4 GetCustomAccent() noexcept;
+
+// -----------------------------------------------------------------------------
 // Animation Engine Wrappers
 // -----------------------------------------------------------------------------
 float AnimFloat(ImGuiID id, float target, float duration = 0.25f, anim::EasingPreset preset = anim::EasingPreset::EaseOutQuint);
@@ -114,10 +127,13 @@ void NextColumn();
 void EndGrid();
 
 bool BeginGroupbox(const char* title, const char* icon = nullptr, float height = 0.0f);
+void GroupboxDescription(const char* text);
 void EndGroupbox();
 
 bool SearchBar(std::string& inOutQuery, const char* placeholder = "Search...", float width = 0.0f);
 void UserProfileCard(const UserProfile& profile, const ImVec2& size = ImVec2(0.0f, 0.0f));
+bool ThemeSwitcher(const char* label = nullptr);
+bool AccentSelector(const char* label = nullptr, bool showCustomPicker = true);
 
 // -----------------------------------------------------------------------------
 // Declarative Builder API
@@ -135,6 +151,10 @@ public:
         }
     }
 
+    void GroupboxDescription(const char* text) {
+        parallax::GroupboxDescription(text);
+    }
+
     void CollapsibleGroupbox(const char* title, bool* p_expanded, std::function<void()> content, const char* icon = nullptr, float defaultHeight = 0.0f, bool centered = true) {
         if (parallax::BeginCollapsibleGroupbox(title, p_expanded, icon, defaultHeight, centered)) {
             if (content) content();
@@ -142,7 +162,7 @@ public:
         }
     }
 
-    // Phase 2 & 3 Declarative Widgets & Chaining
+    // Declarative Widgets & Chaining
     ControlRow Checkbox(const char* label, bool* p_value) {
         ControlRow row(label, p_value);
         row.Style(ToggleStyle::Checkbox);
@@ -157,6 +177,14 @@ public:
 
     bool Button(const char* label, const char* icon = nullptr, ButtonVariant variant = ButtonVariant::Secondary, const ImVec2& size = ImVec2(0.0f, 0.0f)) {
         return parallax::Button(label, icon, variant, size);
+    }
+
+    bool ButtonCompact(const char* label, const char* icon = nullptr, ButtonVariant variant = ButtonVariant::Secondary) {
+        return parallax::ButtonCompact(label, icon, variant);
+    }
+
+    bool IconButton(const char* id, const char* icon, ButtonVariant variant = ButtonVariant::Ghost, float dimension = 30.0f, const char* tooltip = nullptr) {
+        return parallax::IconButton(id, icon, variant, dimension, tooltip);
     }
 
     bool InputText(const char* label, std::string& text, const char* icon = nullptr, const char* placeholder = nullptr, float width = 0.0f, bool isPassword = false) {
@@ -175,6 +203,10 @@ public:
         return parallax::RangeSliderFloat(label, v_min, v_max, min_limit, max_limit, format, width);
     }
 
+    bool RangeSliderInt(const char* label, int* v_min, int* v_max, int min_limit, int max_limit, const char* format = "%d", float width = 0.0f) {
+        return parallax::RangeSliderInt(label, v_min, v_max, min_limit, max_limit, format, width);
+    }
+
     bool Dropdown(const char* label, const std::vector<std::string>& items, int* selected_index, const std::vector<std::string>& item_icons = {}, float width = 0.0f) {
         return parallax::Dropdown(label, items, selected_index, item_icons, width);
     }
@@ -187,8 +219,20 @@ public:
         return parallax::ColorPicker(label, color, hasAlpha);
     }
 
+    bool ColorRow(const char* label, ImVec4* color, bool hasAlpha = true) {
+        return parallax::ColorPickerRow(label, color, hasAlpha);
+    }
+
     bool Keybind(const char* label, parallax::Keybind* keybind) {
         return parallax::KeybindWidget(label, keybind);
+    }
+
+    bool ThemeSwitcher(const char* label = nullptr) {
+        return parallax::ThemeSwitcher(label);
+    }
+
+    bool AccentSelector(const char* label = nullptr, bool showCustomPicker = true) {
+        return parallax::AccentSelector(label, showCustomPicker);
     }
 
     void Notify(NotificationLevel level, const std::string& title, const std::string& message, float duration = 4.0f) {
@@ -218,6 +262,18 @@ public:
         return *this;
     }
 
+    WindowBuilder& WithTheme(ThemeMode mode) noexcept {
+        m_themeMode = mode;
+        m_hasTheme = true;
+        return *this;
+    }
+
+    WindowBuilder& WithAccent(AccentPreset preset) noexcept {
+        m_accentPreset = preset;
+        m_hasAccent = true;
+        return *this;
+    }
+
     WindowBuilder& WithNavSide(NavSide side) noexcept {
         m_navSide = side;
         return *this;
@@ -243,6 +299,12 @@ public:
         if (!m_initializedDefaults) {
             SetNavSide(m_navSide);
             SetWindowSizeTier(m_sizeTier);
+            if (m_hasTheme) {
+                SetTheme(m_themeMode, false);
+            }
+            if (m_hasAccent) {
+                SetAccentPreset(m_accentPreset, false);
+            }
             if (m_hasProfile) {
                 Context::Get().Profile = m_profile;
             }
@@ -276,6 +338,10 @@ private:
     std::string m_title;
     NavSide m_navSide{NavSide::Left};
     WindowSizeTier m_sizeTier{WindowSizeTier::Standard};
+    ThemeMode m_themeMode{ThemeMode::Dark};
+    AccentPreset m_accentPreset{AccentPreset::Sage};
+    bool m_hasTheme{false};
+    bool m_hasAccent{false};
     bool m_hasProfile{false};
     UserProfile m_profile;
     std::vector<BuilderTab> m_tabs;

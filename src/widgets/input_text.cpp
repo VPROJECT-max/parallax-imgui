@@ -29,17 +29,20 @@ bool InputText(
     const auto& colors = StyleManager::Get().Colors();
     const auto& metrics = StyleManager::Get().Metrics();
 
-    const bool hasVisibleLabel = (label && label[0] && label[0] != '#' && label[1] != '#');
+    const bool hasVisibleLabel = (label && label[0] && !(label[0] == '#' && label[1] == '#'));
     if (hasVisibleLabel) {
         PushFont(FontWeight::Medium);
-        ImGui::TextColored(colors.TextSecondary, "%s", label);
+        const char* labelEnd = ImGui::FindRenderedTextEnd(label);
+        if (labelEnd > label) {
+            ImGui::TextColored(colors.TextSecondary, "%.*s", static_cast<int>(labelEnd - label), label);
+            ImGui::Dummy(ImVec2(0.0f, 1.0f * dpi));
+        }
         PopFont();
-        ImGui::Spacing();
     }
 
     const float availWidth = ImGui::GetContentRegionAvail().x;
-    const float width = (widthArg > 0.0f) ? widthArg : (widthArg < 0.0f ? availWidth : std::min(availWidth, 280.0f * dpi));
-    const float height = 36.0f * dpi;
+    const float width = (widthArg > 0.0f) ? widthArg : availWidth;
+    const float height = 32.0f * dpi;
 
     const ImVec2 pos = window->DC.CursorPos;
     const ImRect frameBb(pos, ImVec2(pos.x + width, pos.y + height));
@@ -48,31 +51,42 @@ bool InputText(
     ImGui::ItemSize(frameBb, g.Style.FramePadding.y);
     if (!ImGui::ItemAdd(frameBb, id, &frameBb)) return false;
 
-    const bool hovered = ImGui::ItemHoverable(frameBb, id, g.CurrentItemFlags);
-    const bool isFocused = (g.ActiveId == id);
+    const ImVec2 nextCursorPos = ImGui::GetCursorScreenPos();
 
-    // Spring focus border animation
-    char focusIdStr[64];
-    snprintf(focusIdStr, sizeof(focusIdStr), "##focus_%08X", id);
+    char innerIdStr[64];
+    snprintf(innerIdStr, sizeof(innerIdStr), "##InnerInput_%08X", id);
+    const ImGuiID innerId = window->GetID(innerIdStr);
+
+    const bool hovered = ImGui::ItemHoverable(frameBb, id, g.CurrentItemFlags) ||
+                         frameBb.Contains(ImGui::GetIO().MousePos);
+    const bool isFocused = (g.ActiveId == innerId);
+
     const float targetFocus = isFocused ? 1.0f : (hovered ? 0.35f : 0.0f);
-    const float animFocus = ctx.Anim().SpringFloat(ImGui::GetID(focusIdStr), targetFocus, {140.0f, 20.0f, 1.0f, 0.001f});
+    const float animFocus = ctx.Anim().SpringFloat(id + 0x6100, targetFocus, {180.0f, 22.0f, 1.0f, 0.001f});
 
     ImDrawList* drawList = window->DrawList;
     const float rounding = metrics.FrameRounding * dpi;
 
-    // Draw custom background
-    const ImU32 bgCol = IM_COL32(15, 17, 26, 255);
-    drawList->AddRectFilled(frameBb.Min, frameBb.Max, bgCol, rounding);
+    // Theme-aware interactive control surface
+    const ImVec4 bgCol(
+        colors.WidgetBg.x + (colors.WidgetHover.x - colors.WidgetBg.x) * (hovered ? 0.6f : 0.0f),
+        colors.WidgetBg.y + (colors.WidgetHover.y - colors.WidgetBg.y) * (hovered ? 0.6f : 0.0f),
+        colors.WidgetBg.z + (colors.WidgetHover.z - colors.WidgetBg.z) * (hovered ? 0.6f : 0.0f),
+        1.0f
+    );
+    drawList->AddRectFilled(frameBb.Min, frameBb.Max, ImColor(bgCol), rounding);
 
-    // Draw animated focus glow and border
+    // Animated focus halo & border
     if (animFocus > 0.05f) {
+        ImVec4 halo = colors.AccentMuted;
+        halo.w *= 0.65f * animFocus;
         drawList->AddRect(
-            ImVec2(frameBb.Min.x - 1.0f, frameBb.Min.y - 1.0f),
-            ImVec2(frameBb.Max.x + 1.0f, frameBb.Max.y + 1.0f),
-            ImColor(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.25f * animFocus),
-            rounding + 1.0f,
+            ImVec2(frameBb.Min.x - 1.5f * dpi, frameBb.Min.y - 1.5f * dpi),
+            ImVec2(frameBb.Max.x + 1.5f * dpi, frameBb.Max.y + 1.5f * dpi),
+            ImColor(halo),
+            rounding + 1.5f * dpi,
             0,
-            2.0f
+            1.5f * dpi
         );
     }
 
@@ -80,24 +94,25 @@ bool InputText(
         colors.Border.x + (colors.Accent.x - colors.Border.x) * animFocus,
         colors.Border.y + (colors.Accent.y - colors.Border.y) * animFocus,
         colors.Border.z + (colors.Accent.z - colors.Border.z) * animFocus,
-        0.10f + 0.65f * animFocus
+        colors.Border.w + (colors.Accent.w - colors.Border.w) * animFocus
     );
-    drawList->AddRect(frameBb.Min, frameBb.Max, ImColor(borderVec), rounding, 0, 1.0f);
+    drawList->AddRect(frameBb.Min, frameBb.Max, ImColor(borderVec), rounding, 0, isFocused ? 1.5f : 1.0f);
 
-    float textStartX = frameBb.Min.x + 12.0f * dpi;
+    float textStartX = frameBb.Min.x + 10.0f * dpi;
 
-    // Render optional leading icon directly into drawList
+    // Optional leading icon
     if (icon && icon[0]) {
-        const float iconDim = 16.0f * dpi;
+        const float iconDim = 15.0f * dpi;
         const ImVec2 iconPos(textStartX, frameBb.Min.y + (height - iconDim) * 0.5f);
-        const ImVec4 iconTint = isFocused ? colors.Accent : colors.TextMuted;
+        const ImVec4 iconTint = isFocused ? colors.Accent : colors.TextSecondary;
         ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), iconTint);
         textStartX += iconDim + 8.0f * dpi;
     }
 
-    // Clear button if text is not empty and hovered/focused
+    // Theme-aware Clear Button if text is not empty and hovered/focused
     const bool hasText = (buf[0] != '\0');
     float textEndX = frameBb.Max.x - 10.0f * dpi;
+    bool clearedThisFrame = false;
     if (hasText && (hovered || isFocused)) {
         const float clearSize = 16.0f * dpi;
         const ImVec2 clearPos(frameBb.Max.x - clearSize - 8.0f * dpi, frameBb.Min.y + (height - clearSize) * 0.5f);
@@ -105,33 +120,36 @@ bool InputText(
 
         char clearIdStr[64];
         snprintf(clearIdStr, sizeof(clearIdStr), "##clear_%08X", id);
-        const ImGuiID clearId = ImGui::GetID(clearIdStr);
+        const ImGuiID clearId = window->GetID(clearIdStr);
         bool clearHovered = false, clearHeld = false;
         bool clearPressed = ImGui::ButtonBehavior(clearBb, clearId, &clearHovered, &clearHeld);
 
+        ImVec4 pillCol = clearHovered ? colors.AccentMuted : colors.CardHover;
         drawList->AddCircleFilled(
             ImVec2(clearPos.x + clearSize * 0.5f, clearPos.y + clearSize * 0.5f),
-            clearSize * 0.45f,
-            clearHovered ? IM_COL32(255, 255, 255, 40) : IM_COL32(255, 255, 255, 20)
+            clearSize * 0.48f,
+            ImColor(pillCol)
         );
 
-        const float pad = 4.0f * dpi;
-        const ImU32 crossCol = clearHovered ? IM_COL32(255, 255, 255, 220) : IM_COL32(160, 165, 180, 180);
-        drawList->AddLine(ImVec2(clearBb.Min.x + pad, clearBb.Min.y + pad), ImVec2(clearBb.Max.x - pad, clearBb.Max.y - pad), crossCol, 1.5f);
-        drawList->AddLine(ImVec2(clearBb.Max.x - pad, clearBb.Min.y + pad), ImVec2(clearBb.Min.x + pad, clearBb.Max.y - pad), crossCol, 1.5f);
+        const float pad = 4.5f * dpi;
+        const ImU32 crossCol = ImColor(clearHovered ? colors.Accent : colors.TextSecondary);
+        drawList->AddLine(ImVec2(clearBb.Min.x + pad, clearBb.Min.y + pad), ImVec2(clearBb.Max.x - pad, clearBb.Max.y - pad), crossCol, 1.5f * dpi);
+        drawList->AddLine(ImVec2(clearBb.Max.x - pad, clearBb.Min.y + pad), ImVec2(clearBb.Min.x + pad, clearBb.Max.y - pad), crossCol, 1.5f * dpi);
 
         if (clearPressed) {
             buf[0] = '\0';
+            clearedThisFrame = true;
         }
         textEndX = clearPos.x - 4.0f * dpi;
     }
 
-    // Set cursor for native text input inside custom frame
     const float inputWidth = std::max(textEndX - textStartX, 10.0f * dpi);
-    ImGui::SetCursorScreenPos(ImVec2(textStartX, frameBb.Min.y + (height - ImGui::GetTextLineHeight()) * 0.5f - 1.0f));
+    ImGui::SetCursorScreenPos(ImVec2(textStartX, frameBb.Min.y + (height - ImGui::GetTextLineHeight()) * 0.5f));
 
     ImGui::PushItemWidth(inputWidth);
     ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
     ImGui::PushStyleColor(ImGuiCol_Text, colors.TextPrimary);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f));
@@ -140,10 +158,9 @@ bool InputText(
     if (isPassword) flags |= ImGuiInputTextFlags_Password;
 
     PushFont(FontWeight::Regular);
-    bool valueChanged = ImGui::InputText("##InnerCustomInput", buf, bufSize, flags);
+    bool valueChanged = ImGui::InputText(innerIdStr, buf, bufSize, flags) || clearedThisFrame;
 
-    // Draw placeholder if text is empty and not focused
-    if (!hasText && !isFocused && placeholder && placeholder[0]) {
+    if (buf[0] == '\0' && !ImGui::IsItemActive() && placeholder && placeholder[0]) {
         drawList->AddText(
             ImVec2(textStartX, frameBb.Min.y + (height - ImGui::GetTextLineHeight()) * 0.5f),
             ImColor(colors.TextMuted),
@@ -153,9 +170,10 @@ bool InputText(
 
     PopFont();
     ImGui::PopStyleVar();
-    ImGui::PopStyleColor(3);
+    ImGui::PopStyleColor(5);
     ImGui::PopItemWidth();
 
+    ImGui::SetCursorScreenPos(nextCursorPos);
     return valueChanged;
 }
 

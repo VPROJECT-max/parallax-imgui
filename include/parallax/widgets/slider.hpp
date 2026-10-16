@@ -4,6 +4,16 @@
 
 namespace parallax {
 
+struct SliderOptions {
+    const char* format{"%.2f"};
+    float width{0.0f};
+    bool twoLine{false};
+    bool compact{false};
+    bool disabled{false};
+    int tickCount{5};           // Number of subtle reference ticks along the track (0 = none)
+    bool floatingValue{true};   // Show floating value callout above thumb while dragging
+};
+
 bool SliderFloat(
     const char* label,
     float* v,
@@ -13,6 +23,14 @@ bool SliderFloat(
     float width = 0.0f,
     bool twoLine = false,
     bool disabled = false
+);
+
+bool SliderFloatEx(
+    const char* label,
+    float* v,
+    float v_min,
+    float v_max,
+    const SliderOptions& options
 );
 
 bool SliderInt(

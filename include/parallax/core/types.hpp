@@ -6,7 +6,30 @@
 #include <functional>
 #include <imgui.h>
 
+#define PARALLAX_VERSION_MAJOR 1
+#define PARALLAX_VERSION_MINOR 1
+#define PARALLAX_VERSION_PATCH 0
+#define PARALLAX_VERSION_STRING "1.1.0"
+
 namespace parallax {
+
+inline constexpr int kVersionMajor = PARALLAX_VERSION_MAJOR;
+inline constexpr int kVersionMinor = PARALLAX_VERSION_MINOR;
+inline constexpr int kVersionPatch = PARALLAX_VERSION_PATCH;
+inline constexpr std::string_view kVersionString = PARALLAX_VERSION_STRING;
+
+enum class ThemeMode : uint8_t {
+    Dark = 0,   // Graphite (Default)
+    Light       // Porcelain
+};
+
+enum class AccentPreset : uint8_t {
+    Sage = 0,       // Muted Sage (#78A18B) - Default
+    Monochrome,     // Monochrome / Graphite
+    Copper,         // Desaturated Copper
+    SteelBlue,      // Subtle Steel Blue
+    Custom          // Custom Accent Color
+};
 
 enum class NavSide : uint8_t {
     Left = 0,
@@ -57,7 +80,7 @@ struct UserProfile {
     std::string subtitle{"Pro Account"};
     std::string icon{"user"};
     bool isOnline{true};
-    ImVec4 statusColor{0.16f, 0.75f, 0.45f, 1.0f}; // Emerald active dot
+    ImVec4 statusColor{0.471f, 0.631f, 0.545f, 1.0f}; // Muted sage active dot
 };
 
 using SearchQueryCallback = std::function<void(std::string_view query)>;

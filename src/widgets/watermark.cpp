@@ -48,20 +48,20 @@ void Watermark(const char* appName, const char* user, bool showFps, bool showPin
 
     // Drop shadow
     drawList->AddRectFilled(
-        ImVec2(minPos.x + 2.0f, minPos.y + 3.0f),
-        ImVec2(maxPos.x + 2.0f, maxPos.y + 3.0f),
-        IM_COL32(0, 0, 0, 90),
+        ImVec2(minPos.x + 1.5f, minPos.y + 2.5f),
+        ImVec2(maxPos.x + 1.5f, maxPos.y + 2.5f),
+        ImColor(colors.Shadow),
         pillHeight * 0.5f
     );
 
     // Pill background & border
-    drawList->AddRectFilled(minPos, maxPos, IM_COL32(14, 16, 24, 240), pillHeight * 0.5f);
-    drawList->AddRect(minPos, maxPos, ImColor(colors.Border), pillHeight * 0.5f, 0, 1.0f);
+    drawList->AddRectFilled(minPos, maxPos, ImColor(colors.PopupBg), pillHeight * 0.5f);
+    drawList->AddRect(minPos, maxPos, ImColor(colors.BorderStrong), pillHeight * 0.5f, 0, 1.0f);
 
-    // Glowing green online dot
+    // Active status dot
     const ImVec2 dotCenter(minPos.x + paddingX + dotRadius, minPos.y + pillHeight * 0.5f);
-    drawList->AddCircleFilled(dotCenter, dotRadius + 2.0f, IM_COL32(34, 197, 94, 40));
-    drawList->AddCircleFilled(dotCenter, dotRadius, IM_COL32(34, 197, 94, 255));
+    drawList->AddCircleFilled(dotCenter, dotRadius + 2.5f, ImColor(colors.AccentMuted));
+    drawList->AddCircleFilled(dotCenter, dotRadius, ImColor(colors.Accent));
 
     // Text
     const ImVec2 textPos(dotCenter.x + dotRadius + 8.0f * dpi, minPos.y + paddingY);

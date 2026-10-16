@@ -1,8 +1,10 @@
 #include "parallax/dx11/d3d11_host.hpp"
+#include "parallax/core/style.hpp"
 #include <dwmapi.h>
 #include <imgui.h>
 #include <backends/imgui_impl_win32.h>
 #include <backends/imgui_impl_dx11.h>
+#include <algorithm>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -195,7 +197,21 @@ void D3D11Host::BeginFrame() {
 void D3D11Host::EndFrame(bool vsync) {
     ImGui::Render();
 
-    const float clearColor[4] = {0.040f, 0.043f, 0.055f, 1.0f}; // Charcoal slate background
+    const bool isLight = StyleManager::Get().IsLightTheme();
+    static bool s_lastDwmLight = false;
+    if (m_hwnd && isLight != s_lastDwmLight) {
+        BOOL useDarkMode = isLight ? FALSE : TRUE;
+        DwmSetWindowAttribute(m_hwnd, 20 /* DWMWA_USE_IMMERSIVE_DARK_MODE */, &useDarkMode, sizeof(useDarkMode));
+        s_lastDwmLight = isLight;
+    }
+
+    const ImVec4& winBg = StyleManager::Get().Colors().WindowBg;
+    const float clearColor[4] = {
+        std::clamp(winBg.x * (isLight ? 0.94f : 0.72f), 0.0f, 1.0f),
+        std::clamp(winBg.y * (isLight ? 0.94f : 0.72f), 0.0f, 1.0f),
+        std::clamp(winBg.z * (isLight ? 0.94f : 0.72f), 0.0f, 1.0f),
+        1.0f
+    };
     m_context->OMSetRenderTargets(1, &m_renderTargetView, nullptr);
     m_context->ClearRenderTargetView(m_renderTargetView, clearColor);
 

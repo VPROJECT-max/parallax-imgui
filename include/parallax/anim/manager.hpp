@@ -16,6 +16,7 @@ struct BezierAnimState {
     float duration{0.25f};
     EasingPreset preset{EasingPreset::EaseOutQuint};
     bool active{false};
+    bool initialized{false};
 };
 
 struct SpringAnimState {

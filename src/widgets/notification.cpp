@@ -109,13 +109,13 @@ void NotificationManager::Render() {
         drawList->AddRectFilled(
             ImVec2(minPos.x + 2.0f, minPos.y + 4.0f),
             ImVec2(maxPos.x + 2.0f, maxPos.y + 4.0f),
-            IM_COL32(0, 0, 0, 70),
+            ImColor(colors.Shadow),
             rounding
         );
 
         // Card background
-        drawList->AddRectFilled(minPos, maxPos, IM_COL32(18, 20, 31, 248), rounding);
-        drawList->AddRect(minPos, maxPos, ImColor(colors.Border), rounding, 0, 1.0f);
+        drawList->AddRectFilled(minPos, maxPos, ImColor(colors.PopupBg), rounding);
+        drawList->AddRect(minPos, maxPos, ImColor(colors.BorderStrong), rounding, 0, 1.0f);
 
         // Left accent strip
         drawList->AddRectFilled(

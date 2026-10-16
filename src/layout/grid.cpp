@@ -70,59 +70,92 @@ bool Groupbox::Begin(const char* title, const char* icon, float height) {
         w = ImGui::GetContentRegionAvail().x;
     }
 
+    const float rounding = metrics.ChildRounding * dpi;
+    const float padX = metrics.CardPadding * dpi;
+    const float padY = metrics.CardPadding * dpi;
+
     ImGui::PushStyleColor(ImGuiCol_ChildBg, colors.CardBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
-    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.ChildRounding * dpi);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16.0f * dpi, 16.0f * dpi));
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, rounding);
+    ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 1.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(padX, padY));
 
     char childId[128];
     snprintf(childId, sizeof(childId), "##GB_%s", title ? title : "card");
 
-    bool open = ImGui::BeginChild(childId, ImVec2(w, height), true, ImGuiWindowFlags_NoScrollbar);
+    ImGuiChildFlags childFlags = ImGuiChildFlags_Borders;
+    float childH = 0.0f;
+    if (height <= 0.0f) {
+        childFlags |= ImGuiChildFlags_AutoResizeY;
+    } else {
+        childH = height * dpi;
+    }
+
+    ImGuiWindowFlags winFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+    bool open = ImGui::BeginChild(childId, ImVec2(w, childH), childFlags, winFlags);
 
     if (title && title[0] != '\0') {
-        PushFont(FontWeight::SemiBold);
         ImDrawList* drawList = ImGui::GetWindowDrawList();
-        const ImVec2 startPos = ImGui::GetCursorScreenPos();
+        const ImVec2 winPos = ImGui::GetWindowPos();
+        const float winW = ImGui::GetWindowWidth();
+        const float headerBarH = 38.0f * dpi;
+
+        // Elevated/tinted CardHeaderBg strip across the top of the card
+        drawList->AddRectFilled(
+            winPos,
+            ImVec2(winPos.x + winW, winPos.y + headerBarH),
+            ImColor(colors.CardHeaderBg),
+            rounding,
+            ImDrawFlags_RoundCornersTop
+        );
+
+        // Crisp 1px bottom border separating card header from card body
+        drawList->AddLine(
+            ImVec2(winPos.x, winPos.y + headerBarH),
+            ImVec2(winPos.x + winW, winPos.y + headerBarH),
+            ImColor(colors.BorderSubtle),
+            1.0f
+        );
+
+        PushFont(FontWeight::SemiBold);
         const float fontH = ImGui::GetFontSize();
-        const float iconDim = 16.0f * dpi;
-        const float headerH = std::max(fontH, iconDim);
-        float textX = startPos.x;
+        const float iconDim = 15.0f * dpi;
+        float textX = winPos.x + padX;
 
         if (icon && icon[0] != '\0') {
-            const ImVec2 iconPos(textX, startPos.y + (headerH - iconDim) * 0.5f);
+            const ImVec2 iconPos(textX, winPos.y + (headerBarH - iconDim) * 0.5f);
             ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), colors.Accent);
             textX += iconDim + 8.0f * dpi;
         }
 
         const char* textEnd = ImGui::FindRenderedTextEnd(title);
-        const ImVec2 textPos(textX, startPos.y + (headerH - fontH) * 0.5f);
+        const ImVec2 textPos(textX, winPos.y + (headerBarH - fontH) * 0.5f);
         drawList->AddText(nullptr, 0.0f, textPos, ImColor(colors.TextPrimary), title, textEnd);
         PopFont();
 
-        // Advance cursor past header title
-        ImGui::SetCursorScreenPos(ImVec2(startPos.x, startPos.y + headerH + 6.0f * dpi));
-
-        // Custom subtle 1px divider
-        const ImVec2 lineStart = ImGui::GetCursorScreenPos();
-        const float lineW = ImGui::GetContentRegionAvail().x;
-        drawList->AddLine(
-            lineStart,
-            ImVec2(lineStart.x + lineW, lineStart.y),
-            ImColor(colors.Border),
-            1.0f
-        );
-
-        ImGui::SetCursorScreenPos(ImVec2(lineStart.x, lineStart.y + 8.0f * dpi));
+        // Advance cursor below the header strip into the padded body area
+        ImGui::SetCursorScreenPos(ImVec2(winPos.x + padX, winPos.y + headerBarH + 12.0f * dpi));
     }
 
     return open;
 }
 
+void Groupbox::Description(const char* text) {
+    if (!text || text[0] == '\0') return;
+    const auto& colors = StyleManager::Get().Colors();
+    PushFont(FontWeight::Caption);
+    ImGui::PushStyleColor(ImGuiCol_Text, colors.TextMuted);
+    ImGui::TextWrapped("%s", text);
+    ImGui::PopStyleColor();
+    PopFont();
+    ImGui::Spacing();
+}
+
 void Groupbox::End() {
     ImGui::EndChild();
-    ImGui::PopStyleVar(2);
+    ImGui::PopStyleVar(3);
     ImGui::PopStyleColor(2);
+    ImGui::Spacing();
 }
 
 } // namespace parallax::layout

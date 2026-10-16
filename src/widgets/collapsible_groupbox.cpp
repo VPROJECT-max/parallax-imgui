@@ -84,18 +84,31 @@ bool BeginCollapsibleGroupbox(
 
     const float rounding = metrics.ChildRounding * dpi;
 
+    // Subtle elevation shadow beneath card
+    ImVec4 shadowCol = colors.Shadow;
+    shadowCol.w *= 0.28f;
+    drawList->AddRectFilled(
+        ImVec2(cardBb.Min.x, cardBb.Min.y + 2.0f * dpi),
+        ImVec2(cardBb.Max.x, cardBb.Max.y + 2.0f * dpi),
+        ImColor(shadowCol),
+        rounding
+    );
+
     // Outer card background and border
     drawList->AddRectFilled(cardBb.Min, cardBb.Max, ImColor(colors.CardBg), rounding);
-    drawList->AddRect(cardBb.Min, cardBb.Max, ImColor(colors.Border), rounding, 0, 1.0f);
 
-    // Header hover highlight
-    if (hovered) {
-        const ImDrawFlags cornerFlags = (progress > 0.05f) ? ImDrawFlags_RoundCornersTop : ImDrawFlags_RoundCornersAll;
-        drawList->AddRectFilled(headerBb.Min, headerBb.Max, ImColor(colors.CardHover), rounding, cornerFlags);
+    // Header sub-surface (CardHeaderBg when expanded, CardHover when hovered)
+    const ImDrawFlags cornerFlags = (progress > 0.05f) ? ImDrawFlags_RoundCornersTop : ImDrawFlags_RoundCornersAll;
+    if (hovered || progress > 0.05f) {
+        const ImVec4 hdrBg = hovered ? colors.CardHover : colors.CardHeaderBg;
+        drawList->AddRectFilled(headerBb.Min, headerBb.Max, ImColor(hdrBg), rounding, cornerFlags);
     }
 
+    drawList->AddRect(cardBb.Min, cardBb.Max, ImColor(hovered ? colors.BorderStrong : colors.Border), rounding, 0, 1.0f);
+
     // Header Title & Icon
-    const ImVec2 titleSize = ImGui::CalcTextSize(title ? title : "");
+    PushFont(FontWeight::SemiBold);
+    const ImVec2 titleSize = ImGui::CalcTextSize(title ? title : "", nullptr, true);
     const float midHeaderY = headerBb.Min.y + (headerH - titleSize.y) * 0.5f;
 
     if (centered) {
@@ -122,7 +135,7 @@ bool BeginCollapsibleGroupbox(
     } else {
         float textX = headerBb.Min.x + 12.0f * dpi;
         if (icon && icon[0] != '\0') {
-            const float iconDim = 16.0f * dpi;
+            const float iconDim = 15.0f * dpi;
             const ImVec2 iconPos = ImVec2(textX, headerBb.Min.y + (headerH - iconDim) * 0.5f);
             ctx.Icons().DrawIcon(drawList, icon, iconPos, ImVec2(iconDim, iconDim), colors.Accent);
             textX += iconDim + 8.0f * dpi;
@@ -130,12 +143,27 @@ bool BeginCollapsibleGroupbox(
         const char* textEnd = ImGui::FindRenderedTextEnd(title);
         drawList->AddText(nullptr, 0.0f, ImVec2(textX, midHeaderY), ImColor(colors.TextPrimary), title, textEnd);
     }
+    PopFont();
 
-    // Chevron icon indicating expand/collapse state
-    const char* chevIcon = (*p_expanded && progress > 0.5f) ? "chevron-down" : "chevron-right";
-    const float chevDim = 14.0f * dpi;
-    const ImVec2 chevPos = ImVec2(headerBb.Max.x - chevDim - 12.0f * dpi, headerBb.Min.y + (headerH - chevDim) * 0.5f);
-    ctx.Icons().DrawIcon(drawList, chevIcon, chevPos, ImVec2(chevDim, chevDim), hovered ? colors.TextPrimary : colors.TextMuted);
+    // Smooth vector chevron indicating expand/collapse progress
+    const ImVec2 chevCenter(headerBb.Max.x - 16.0f * dpi, headerBb.Min.y + headerH * 0.5f);
+    const float span = 4.0f * dpi;
+    const ImU32 chevCol = ImColor(hovered ? colors.Accent : colors.TextSecondary);
+    // Interpolate between right-pointing chevron (progress=0) and down-pointing chevron (progress=1)
+    const ImVec2 p1(
+        chevCenter.x - span * (0.4f + 0.6f * progress),
+        chevCenter.y - span * (0.9f - 0.4f * progress)
+    );
+    const ImVec2 p2(
+        chevCenter.x + span * (0.5f * (1.0f - progress)),
+        chevCenter.y + span * (0.5f * progress)
+    );
+    const ImVec2 p3(
+        chevCenter.x + span * (-0.4f * (1.0f - progress) + 1.0f * progress),
+        chevCenter.y + span * (0.9f * (1.0f - progress) - 0.5f * progress)
+    );
+    drawList->AddLine(p1, p2, chevCol, 1.6f * dpi);
+    drawList->AddLine(p2, p3, chevCol, 1.6f * dpi);
 
     // Horizontal divider line below header if expanded
     if (progress > 0.05f) {

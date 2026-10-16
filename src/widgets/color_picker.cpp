@@ -12,8 +12,9 @@
 namespace parallax {
 
 static void DrawCheckerboard(ImDrawList* drawList, const ImRect& bb, float squareSize = 4.0f) {
-    const ImU32 col1 = IM_COL32(50, 50, 60, 255);
-    const ImU32 col2 = IM_COL32(30, 30, 40, 255);
+    const bool light = StyleManager::Get().IsLightTheme();
+    const ImU32 col1 = light ? IM_COL32(225, 223, 218, 255) : IM_COL32(54, 58, 68, 255);
+    const ImU32 col2 = light ? IM_COL32(198, 195, 188, 255) : IM_COL32(34, 37, 45, 255);
 
     for (float y = bb.Min.y; y < bb.Max.y; y += squareSize) {
         for (float x = bb.Min.x; x < bb.Max.x; x += squareSize) {
@@ -46,6 +47,7 @@ static std::string ColorToHex(const ImVec4& c, bool hasAlpha) {
 
 static bool HexToColor(const char* hex, ImVec4& outCol, bool hasAlpha) {
     if (!hex || hex[0] == '\0') return false;
+    while (*hex == ' ' || *hex == '\t') hex++;
     if (hex[0] == '#') hex++;
 
     size_t len = strlen(hex);
@@ -67,8 +69,8 @@ static bool HexToColor(const char* hex, ImVec4& outCol, bool hasAlpha) {
     return true;
 }
 
-// Retain hue when saturation or value drops to 0
 static std::unordered_map<ImGuiID, float> s_hueCache;
+static std::unordered_map<ImGuiID, ImVec4> s_openOriginColor;
 
 bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2& size) {
     if (!color) return false;
@@ -85,8 +87,8 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
     const ImGuiID id = window->GetID(str_id);
 
     ImVec2 swatchSize = size;
-    if (swatchSize.x <= 0.0f) swatchSize.x = 22.0f * dpi;
-    if (swatchSize.y <= 0.0f) swatchSize.y = 22.0f * dpi;
+    if (swatchSize.x <= 0.0f) swatchSize.x = 24.0f * dpi;
+    if (swatchSize.y <= 0.0f) swatchSize.y = 20.0f * dpi;
 
     const ImVec2 pos = ImGui::GetCursorScreenPos();
     const ImRect bb(pos, ImVec2(pos.x + swatchSize.x, pos.y + swatchSize.y));
@@ -98,35 +100,41 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
     bool held = false;
     bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held);
 
-    // Context menu on right click
     char ctxMenuId[64];
-    snprintf(ctxMenuId, sizeof(ctxMenuId), "##CPContextMenu_%s", str_id);
+    snprintf(ctxMenuId, sizeof(ctxMenuId), "##CPContextMenu_%08X", id);
     if (hovered && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
         ImGui::OpenPopup(ctxMenuId);
     }
 
-    // Swatch Rendering
-    const float rounding = 4.0f * dpi;
-    if (hasAlpha && color->w < 0.99f) {
-        DrawCheckerboard(drawList, bb, 4.0f * dpi);
-    }
-    drawList->AddRectFilled(bb.Min, bb.Max, ImColor(*color), rounding);
-
-    // Border with hover effect
-    ImVec4 borderCol = hovered ? colors.BorderStrong : colors.Border;
-    drawList->AddRect(bb.Min, bb.Max, ImColor(borderCol), rounding, 0, 1.0f);
-
-    // Popup ID
     char popupId[64];
-    snprintf(popupId, sizeof(popupId), "##CPPopup_%s", str_id);
+    snprintf(popupId, sizeof(popupId), "##CPPopup_%08X", id);
 
     if (pressed) {
+        s_openOriginColor[id] = *color;
         ImGui::OpenPopup(popupId);
     }
 
+    const bool isOpen = ImGui::IsPopupOpen(popupId);
+
+    // Framed hardware color well swatch
+    const float outerRounding = 5.0f * dpi;
+    const float innerPad = 2.0f * dpi;
+    const ImRect innerBb(
+        ImVec2(bb.Min.x + innerPad, bb.Min.y + innerPad),
+        ImVec2(bb.Max.x - innerPad, bb.Max.y - innerPad)
+    );
+
+    drawList->AddRectFilled(bb.Min, bb.Max, ImColor(hovered ? colors.WidgetHover : colors.WidgetBg), outerRounding);
+    if (hasAlpha && color->w < 0.99f) {
+        DrawCheckerboard(drawList, innerBb, 3.5f * dpi);
+    }
+    drawList->AddRectFilled(innerBb.Min, innerBb.Max, ImColor(*color), std::max(2.5f * dpi, outerRounding - innerPad));
+
+    const ImVec4 borderCol = isOpen ? colors.Accent : (hovered ? colors.BorderStrong : colors.Border);
+    drawList->AddRect(bb.Min, bb.Max, ImColor(borderCol), outerRounding, 0, isOpen ? 1.5f : 1.0f);
+
     bool changed = false;
 
-    // Right-click Quick Copy/Paste Menu
     if (ImGui::BeginPopup(ctxMenuId)) {
         if (ImGui::MenuItem("Copy HEX")) {
             ImGui::SetClipboardText(ColorToHex(*color, hasAlpha).c_str());
@@ -140,9 +148,8 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
         ImGui::EndPopup();
     }
 
-    // Color Picker Popup positioning (upward/downward check)
-    const float popupW = 236.0f * dpi;
-    const float popupH = hasAlpha ? (320.0f * dpi) : (295.0f * dpi);
+    const float popupW = 248.0f * dpi;
+    const float popupH = hasAlpha ? (338.0f * dpi) : (312.0f * dpi);
 
     const float winBottom = window->ClipRect.Max.y;
     const float screenH = ImGui::GetIO().DisplaySize.y;
@@ -150,29 +157,55 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
 
     ImVec2 popupPos;
     if (bb.Max.y + popupH > bottomLimit - 12.0f * dpi && bb.Min.y - popupH > 10.0f * dpi) {
-        popupPos = ImVec2(bb.Min.x - (popupW - swatchSize.x), bb.Min.y - popupH - 4.0f * dpi);
+        popupPos = ImVec2(std::max(10.0f * dpi, bb.Max.x - popupW), bb.Min.y - popupH - 4.0f * dpi);
     } else {
-        popupPos = ImVec2(bb.Min.x - (popupW - swatchSize.x), bb.Max.y + 4.0f * dpi);
+        popupPos = ImVec2(std::max(10.0f * dpi, bb.Max.x - popupW), bb.Max.y + 4.0f * dpi);
     }
 
     ImGui::SetNextWindowPos(popupPos, ImGuiCond_Appearing);
     ImGui::SetNextWindowSize(ImVec2(popupW, 0.0f), ImGuiCond_Always);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(12.0f * dpi, 12.0f * dpi));
-    ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, metrics.PopupRounding);
-    ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.HeaderBg);
+    ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, metrics.PopupRounding * dpi);
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.PopupBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
 
     if (ImGui::BeginPopup(popupId)) {
+        ImDrawList* popDraw = ImGui::GetWindowDrawList();
+        const float canvasW = popupW - 24.0f * dpi;
+
+        // Header Row: Title on left, Original vs Current live comparison swatch on right
+        const ImVec2 headerPos = ImGui::GetCursorScreenPos();
         PushFont(FontWeight::Medium);
-        ImGui::TextColored(colors.TextPrimary, "Color Palette");
+        ImGui::TextColored(colors.TextPrimary, "Color Inspector");
         PopFont();
+
+        const ImVec4 origCol = (s_openOriginColor.find(id) != s_openOriginColor.end()) ? s_openOriginColor[id] : *color;
+        const float compW = 48.0f * dpi;
+        const float compH = 18.0f * dpi;
+        const ImVec2 compMin(headerPos.x + canvasW - compW, headerPos.y);
+        const ImVec2 compMax(compMin.x + compW, compMin.y + compH);
+        const ImVec2 compMid(compMin.x + compW * 0.5f, compMax.y);
+
+        if (hasAlpha && (origCol.w < 0.99f || color->w < 0.99f)) {
+            DrawCheckerboard(popDraw, ImRect(compMin, compMax), 3.0f * dpi);
+        }
+        popDraw->AddRectFilled(compMin, compMid, ImColor(origCol), 4.0f * dpi, ImDrawFlags_RoundCornersLeft);
+        popDraw->AddRectFilled(ImVec2(compMid.x, compMin.y), compMax, ImColor(*color), 4.0f * dpi, ImDrawFlags_RoundCornersRight);
+        popDraw->AddRect(compMin, compMax, ImColor(colors.BorderStrong), 4.0f * dpi, 0, 1.0f);
+
+        // Clicking left half of comparison swatch reverts to original color
+        const ImRect revertBb(compMin, compMid);
+        if (revertBb.Contains(ImGui::GetIO().MousePos) && ImGui::IsMouseClicked(0)) {
+            *color = origCol;
+            changed = true;
+        }
+
         ImGui::Spacing();
 
         // Convert current color to HSV
         float H = 0.0f, S = 0.0f, V = 0.0f;
         ImGui::ColorConvertRGBtoHSV(color->x, color->y, color->z, H, S, V);
 
-        // Retrieve or store cached hue to prevent snapping at zero saturation
         if (s_hueCache.find(id) == s_hueCache.end()) {
             s_hueCache[id] = H;
         } else if (S > 0.02f && V > 0.02f) {
@@ -181,14 +214,9 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
             H = s_hueCache[id];
         }
 
-        const float canvasW = popupW - 24.0f * dpi;
-        const float svH = 125.0f * dpi;
+        const float svH = 126.0f * dpi;
 
-        ImDrawList* popDraw = ImGui::GetWindowDrawList();
-
-        // ==========================================
-        // 1. Custom 2D Saturation-Value (SV) Box
-        // ==========================================
+        // 1. Custom 2D Saturation-Value (SV) Canvas
         const ImVec2 svPos = ImGui::GetCursorScreenPos();
         const ImRect svBb(svPos, ImVec2(svPos.x + canvasW, svPos.y + svH));
 
@@ -207,7 +235,6 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
             changed = true;
         }
 
-        // Draw SV Box with multi-color gradients
         float pureR = 0.0f, pureG = 0.0f, pureB = 0.0f;
         ImGui::ColorConvertHSVtoRGB(H, 1.0f, 1.0f, pureR, pureG, pureB);
         const ImU32 colPure = ImColor(pureR, pureG, pureB, 1.0f);
@@ -215,21 +242,18 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
         const ImU32 colBlack = IM_COL32(0, 0, 0, 255);
 
         popDraw->AddRectFilledMultiColor(svBb.Min, svBb.Max, colWhite, colPure, colPure, colWhite);
-        // Vertical black gradient overlay
         popDraw->AddRectFilledMultiColor(svBb.Min, svBb.Max, 0, 0, colBlack, colBlack);
-        popDraw->AddRect(svBb.Min, svBb.Max, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
+        popDraw->AddRect(svBb.Min, svBb.Max, ImColor(colors.BorderStrong), 4.0f * dpi, 0, 1.0f);
 
-        // Crosshair indicator
-        const ImVec2 crossPos = ImVec2(svBb.Min.x + S * canvasW, svBb.Min.y + (1.0f - V) * svH);
-        popDraw->AddCircle(crossPos, 4.5f * dpi, IM_COL32(0, 0, 0, 200), 12, 2.0f * dpi);
-        popDraw->AddCircle(crossPos, 4.0f * dpi, IM_COL32(255, 255, 255, 255), 12, 1.5f * dpi);
+        const ImVec2 crossPos(svBb.Min.x + S * canvasW, svBb.Min.y + (1.0f - V) * svH);
+        popDraw->AddCircleFilled(crossPos, 5.0f * dpi, ImColor(color->x, color->y, color->z, 1.0f), 16);
+        popDraw->AddCircle(crossPos, 5.5f * dpi, IM_COL32(0, 0, 0, 190), 16, 2.0f * dpi);
+        popDraw->AddCircle(crossPos, 5.0f * dpi, IM_COL32(255, 255, 255, 255), 16, 1.5f * dpi);
 
         ImGui::Spacing();
 
-        // ==========================================
         // 2. Custom Hue Slider Bar
-        // ==========================================
-        const float hueBarH = 13.0f * dpi;
+        const float hueBarH = 12.0f * dpi;
         const ImVec2 huePos = ImGui::GetCursorScreenPos();
         const ImRect hueBb(huePos, ImVec2(huePos.x + canvasW, huePos.y + hueBarH));
 
@@ -248,7 +272,6 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
             changed = true;
         }
 
-        // Draw 6 spectrum gradient segments
         const ImColor hueColors[7] = {
             ImColor(255, 0, 0),
             ImColor(255, 255, 0),
@@ -268,17 +291,26 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
         }
         popDraw->AddRect(hueBb.Min, hueBb.Max, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
 
-        // Hue cursor pill
         const float curHueX = hueBb.Min.x + H * canvasW;
-        popDraw->AddRectFilled(ImVec2(curHueX - 2.5f * dpi, hueBb.Min.y - 1.0f * dpi), ImVec2(curHueX + 2.5f * dpi, hueBb.Max.y + 1.0f * dpi), IM_COL32(255, 255, 255, 255), 2.0f * dpi);
-        popDraw->AddRect(ImVec2(curHueX - 2.5f * dpi, hueBb.Min.y - 1.0f * dpi), ImVec2(curHueX + 2.5f * dpi, hueBb.Max.y + 1.0f * dpi), IM_COL32(0, 0, 0, 180), 2.0f * dpi, 0, 1.0f);
+        popDraw->AddRectFilled(
+            ImVec2(curHueX - 3.0f * dpi, hueBb.Min.y - 1.5f * dpi),
+            ImVec2(curHueX + 3.0f * dpi, hueBb.Max.y + 1.5f * dpi),
+            IM_COL32(255, 255, 255, 255),
+            2.5f * dpi
+        );
+        popDraw->AddRect(
+            ImVec2(curHueX - 3.0f * dpi, hueBb.Min.y - 1.5f * dpi),
+            ImVec2(curHueX + 3.0f * dpi, hueBb.Max.y + 1.5f * dpi),
+            IM_COL32(0, 0, 0, 190),
+            2.5f * dpi,
+            0,
+            1.2f * dpi
+        );
 
-        // ==========================================
         // 3. Custom Alpha Slider Bar (if enabled)
-        // ==========================================
         if (hasAlpha) {
             ImGui::Spacing();
-            const float alphaBarH = 13.0f * dpi;
+            const float alphaBarH = 12.0f * dpi;
             const ImVec2 alphaPos = ImGui::GetCursorScreenPos();
             const ImRect alphaBb(alphaPos, ImVec2(alphaPos.x + canvasW, alphaPos.y + alphaBarH));
 
@@ -295,119 +327,141 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
                 changed = true;
             }
 
-            // Checkerboard underlay
             DrawCheckerboard(popDraw, alphaBb, 3.5f * dpi);
 
-            // Alpha gradient from 0 to 1
-            const ImColor colA0 = ImColor(color->x, color->y, color->z, 0.0f);
-            const ImColor colA1 = ImColor(color->x, color->y, color->z, 1.0f);
+            const ImColor colA0(color->x, color->y, color->z, 0.0f);
+            const ImColor colA1(color->x, color->y, color->z, 1.0f);
             popDraw->AddRectFilledMultiColor(alphaBb.Min, alphaBb.Max, colA0, colA1, colA1, colA0);
             popDraw->AddRect(alphaBb.Min, alphaBb.Max, ImColor(colors.Border), 3.0f * dpi, 0, 1.0f);
 
-            // Alpha cursor pill
             const float curAlphaX = alphaBb.Min.x + color->w * canvasW;
-            popDraw->AddRectFilled(ImVec2(curAlphaX - 2.5f * dpi, alphaBb.Min.y - 1.0f * dpi), ImVec2(curAlphaX + 2.5f * dpi, alphaBb.Max.y + 1.0f * dpi), IM_COL32(255, 255, 255, 255), 2.0f * dpi);
-            popDraw->AddRect(ImVec2(curAlphaX - 2.5f * dpi, alphaBb.Min.y - 1.0f * dpi), ImVec2(curAlphaX + 2.5f * dpi, alphaBb.Max.y + 1.0f * dpi), IM_COL32(0, 0, 0, 180), 2.0f * dpi, 0, 1.0f);
+            popDraw->AddRectFilled(
+                ImVec2(curAlphaX - 3.0f * dpi, alphaBb.Min.y - 1.5f * dpi),
+                ImVec2(curAlphaX + 3.0f * dpi, alphaBb.Max.y + 1.5f * dpi),
+                IM_COL32(255, 255, 255, 255),
+                2.5f * dpi
+            );
+            popDraw->AddRect(
+                ImVec2(curAlphaX - 3.0f * dpi, alphaBb.Min.y - 1.5f * dpi),
+                ImVec2(curAlphaX + 3.0f * dpi, alphaBb.Max.y + 1.5f * dpi),
+                IM_COL32(0, 0, 0, 190),
+                2.5f * dpi,
+                0,
+                1.2f * dpi
+            );
         }
 
         ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
-        // ==========================================
-        // 4. Hex & RGB Integer Inputs
-        // ==========================================
+        // 4. HEX & RGB Integer Inputs
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.WidgetBg);
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, colors.WidgetHover);
+        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, colors.WidgetActive);
+
         char hexBuf[16];
         snprintf(hexBuf, sizeof(hexBuf), "%s", ColorToHex(*color, hasAlpha).c_str());
 
-        ImGui::SetNextItemWidth(90.0f * dpi);
-        if (ImGui::InputText("##HexInput", hexBuf, sizeof(hexBuf), ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue)) {
+        ImGui::SetNextItemWidth(92.0f * dpi);
+        if (ImGui::InputText("##HexInput", hexBuf, sizeof(hexBuf), ImGuiInputTextFlags_EnterReturnsTrue)) {
             if (HexToColor(hexBuf, *color, hasAlpha)) {
                 changed = true;
             }
         }
 
-        ImGui::SameLine(0.0f, 8.0f * dpi);
+        ImGui::SameLine(0.0f, 6.0f * dpi);
 
         int r = static_cast<int>(color->x * 255.0f + 0.5f);
         int g = static_cast<int>(color->y * 255.0f + 0.5f);
         int b = static_cast<int>(color->z * 255.0f + 0.5f);
 
-        const float rgbW = 32.0f * dpi;
+        const float rgbW = (canvasW - 92.0f * dpi - 14.0f * dpi) / 3.0f;
         ImGui::SetNextItemWidth(rgbW);
-        if (ImGui::DragInt("##R", &r, 1.0f, 0, 255, "%d", ImGuiSliderFlags_AlwaysClamp)) {
+        if (ImGui::DragInt("##R", &r, 1.0f, 0, 255, "R:%d", ImGuiSliderFlags_AlwaysClamp)) {
             color->x = std::clamp(r, 0, 255) / 255.0f;
             changed = true;
         }
         ImGui::SameLine(0.0f, 4.0f * dpi);
         ImGui::SetNextItemWidth(rgbW);
-        if (ImGui::DragInt("##G", &g, 1.0f, 0, 255, "%d", ImGuiSliderFlags_AlwaysClamp)) {
+        if (ImGui::DragInt("##G", &g, 1.0f, 0, 255, "G:%d", ImGuiSliderFlags_AlwaysClamp)) {
             color->y = std::clamp(g, 0, 255) / 255.0f;
             changed = true;
         }
         ImGui::SameLine(0.0f, 4.0f * dpi);
         ImGui::SetNextItemWidth(rgbW);
-        if (ImGui::DragInt("##B", &b, 1.0f, 0, 255, "%d", ImGuiSliderFlags_AlwaysClamp)) {
+        if (ImGui::DragInt("##B", &b, 1.0f, 0, 255, "B:%d", ImGuiSliderFlags_AlwaysClamp)) {
             color->z = std::clamp(b, 0, 255) / 255.0f;
             changed = true;
         }
 
+        ImGui::PopStyleColor(3);
         ImGui::Spacing();
 
-        // ==========================================
-        // 5. Preset Palette Swatches
-        // ==========================================
-        const ImVec4 presets[] = {
-            ImVec4(1.0f, 1.0f, 1.0f, 1.0f),      // White
-            ImVec4(0.1f, 0.12f, 0.16f, 1.0f),    // Slate
-            ImVec4(0.93f, 0.27f, 0.27f, 1.0f),   // Crimson
-            ImVec4(0.96f, 0.62f, 0.04f, 1.0f),   // Amber
-            ImVec4(0.13f, 0.77f, 0.37f, 1.0f),   // Emerald
-            ImVec4(0.02f, 0.71f, 0.83f, 1.0f),   // Cyan
-            ImVec4(0.39f, 0.40f, 0.95f, 1.0f),   // Indigo (Accent)
-            ImVec4(0.66f, 0.33f, 0.98f, 1.0f),   // Purple
+        // 5. Restraint-First Saved Swatches (Right-click any swatch to overwrite with current color)
+        static ImVec4 s_savedSwatches[8] = {
+            ImVec4(0.471f, 0.631f, 0.545f, 1.0f), // Muted Sage (#78A18B)
+            ImVec4(0.710f, 0.514f, 0.416f, 1.0f), // Desaturated Copper (#B5836A)
+            ImVec4(0.431f, 0.565f, 0.678f, 1.0f), // Subtle Steel Blue (#6E90AD)
+            ImVec4(0.557f, 0.592f, 0.651f, 1.0f), // Monochrome Slate (#8E97A6)
+            ImVec4(0.310f, 0.659f, 0.471f, 1.0f), // Botanical Emerald (#4FA878)
+            ImVec4(0.831f, 0.608f, 0.294f, 1.0f), // Warm Ochre (#D49B4B)
+            ImVec4(0.788f, 0.337f, 0.337f, 1.0f), // Terracotta Crimson (#C95656)
+            ImVec4(0.925f, 0.937f, 0.957f, 1.0f), // Alabaster (#ECEFF4)
         };
 
-        for (size_t p = 0; p < sizeof(presets) / sizeof(presets[0]); ++p) {
-            if (p > 0) ImGui::SameLine(0.0f, 5.0f * dpi);
+        const float swatchGap = 5.0f * dpi;
+        const float itemSwatchW = (canvasW - swatchGap * 7.0f) / 8.0f;
+
+        for (size_t p = 0; p < 8; ++p) {
+            if (p > 0) ImGui::SameLine(0.0f, swatchGap);
 
             char swatchBtnId[32];
             snprintf(swatchBtnId, sizeof(swatchBtnId), "##Preset_%zu", p);
 
-            ImGui::PushStyleColor(ImGuiCol_Button, presets[p]);
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, presets[p]);
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, presets[p]);
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 3.0f * dpi);
-
-            if (ImGui::Button(swatchBtnId, ImVec2(18.0f * dpi, 18.0f * dpi))) {
-                color->x = presets[p].x;
-                color->y = presets[p].y;
-                color->z = presets[p].z;
+            const ImVec2 swPos = ImGui::GetCursorScreenPos();
+            if (ImGui::InvisibleButton(swatchBtnId, ImVec2(itemSwatchW, itemSwatchW))) {
+                color->x = s_savedSwatches[p].x;
+                color->y = s_savedSwatches[p].y;
+                color->z = s_savedSwatches[p].z;
                 if (!hasAlpha) color->w = 1.0f;
                 changed = true;
             }
+            if (ImGui::IsItemHovered()) {
+                if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+                    s_savedSwatches[p] = *color;
+                }
+                ImGui::SetTooltip("Click to apply  |  Right-click to save current color");
+            }
 
-            ImGui::PopStyleVar();
-            ImGui::PopStyleColor(3);
+            const ImVec2 swMax(swPos.x + itemSwatchW, swPos.y + itemSwatchW);
+            popDraw->AddRectFilled(swPos, swMax, ImColor(s_savedSwatches[p]), 4.0f * dpi);
+            popDraw->AddRect(
+                swPos,
+                swMax,
+                ImColor(ImGui::IsItemHovered() ? colors.Accent : colors.BorderStrong),
+                4.0f * dpi,
+                0,
+                ImGui::IsItemHovered() ? 1.5f : 1.0f
+            );
         }
 
         ImGui::Spacing();
 
-        // ==========================================
         // 6. Styled Copy & Paste Row
-        // ==========================================
-        ImGui::PushStyleColor(ImGuiCol_Button, colors.CardBg);
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors.CardHover);
+        ImGui::PushStyleColor(ImGuiCol_Button, colors.WidgetBg);
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, colors.WidgetHover);
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, colors.WidgetActive);
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, metrics.FrameRounding);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 5.0f * dpi);
 
         const float btnW = (canvasW - 8.0f * dpi) * 0.5f;
-        if (ImGui::Button("Copy HEX", ImVec2(btnW, 22.0f * dpi))) {
+        if (ImGui::Button("Copy HEX", ImVec2(btnW, 24.0f * dpi))) {
             ImGui::SetClipboardText(ColorToHex(*color, hasAlpha).c_str());
         }
         ImGui::SameLine(0.0f, 8.0f * dpi);
-        if (ImGui::Button("Paste HEX", ImVec2(btnW, 22.0f * dpi))) {
+        if (ImGui::Button("Paste HEX", ImVec2(btnW, 24.0f * dpi))) {
             const char* clip = ImGui::GetClipboardText();
             if (HexToColor(clip, *color, hasAlpha)) {
                 changed = true;
@@ -415,7 +469,7 @@ bool ColorPicker(const char* str_id, ImVec4* color, bool hasAlpha, const ImVec2&
         }
 
         ImGui::PopStyleVar(2);
-        ImGui::PopStyleColor(3);
+        ImGui::PopStyleColor(4);
 
         ImGui::EndPopup();
     }
@@ -437,6 +491,58 @@ bool ColorPicker(const char* str_id, float* col3or4, bool hasAlpha, const ImVec2
         return true;
     }
     return false;
+}
+
+bool ColorPickerRow(const char* label, ImVec4* color, bool hasAlpha) {
+    if (!color) return false;
+
+    Context& ctx = Context::Get();
+    const float dpi = ctx.GetDpiScale();
+    const auto& colors = StyleManager::Get().Colors();
+    const auto& metrics = StyleManager::Get().Metrics();
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
+    if (window->SkipItems) return false;
+
+    const float availW = ImGui::GetContentRegionAvail().x;
+    const float rowH = metrics.RowHeight * dpi;
+    const ImVec2 pos = ImGui::GetCursorScreenPos();
+    const ImRect rowBb(pos, ImVec2(pos.x + availW, pos.y + rowH));
+    ImGui::ItemSize(rowBb);
+    const ImVec2 nextRowCursor = ImGui::GetCursorScreenPos();
+
+    PushFont(FontWeight::Medium);
+    const char* textEnd = ImGui::FindRenderedTextEnd(label);
+    const ImVec2 labelSz = ImGui::CalcTextSize(label, textEnd);
+    drawList->AddText(
+        nullptr,
+        0.0f,
+        ImVec2(pos.x + 4.0f * dpi, pos.y + (rowH - labelSz.y) * 0.5f),
+        ImColor(colors.TextPrimary),
+        label,
+        textEnd
+    );
+    PopFont();
+
+    // Hex readout badge + color swatch on the right
+    const std::string hexStr = ColorToHex(*color, false);
+    PushFont(FontWeight::Caption);
+    const ImVec2 hexSz = ImGui::CalcTextSize(hexStr.c_str());
+    const float swatchW = 26.0f * dpi;
+    const float swatchH = 20.0f * dpi;
+    const float hexX = pos.x + availW - swatchW - hexSz.x - 14.0f * dpi;
+    drawList->AddText(ImVec2(hexX, pos.y + (rowH - hexSz.y) * 0.5f), ImColor(colors.TextSecondary), hexStr.c_str());
+    PopFont();
+
+    ImGui::SetCursorScreenPos(ImVec2(pos.x + availW - swatchW - 4.0f * dpi, pos.y + (rowH - swatchH) * 0.5f));
+    char pickerId[96];
+    snprintf(pickerId, sizeof(pickerId), "##CPRow_%s", label);
+    const bool changed = ColorPicker(pickerId, color, hasAlpha, ImVec2(swatchW, swatchH));
+
+    ImGui::SetCursorScreenPos(nextRowCursor);
+    window->DC.IsSetPos = false;
+    return changed;
 }
 
 } // namespace parallax

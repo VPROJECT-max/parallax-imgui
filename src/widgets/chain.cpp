@@ -27,6 +27,8 @@ ControlRow::ControlRow(ControlRow&& other) noexcept {
     m_description = other.m_description;
     m_tooltip = other.m_tooltip;
     m_disabled = other.m_disabled;
+    m_compact = other.m_compact;
+    m_indeterminate = other.m_indeterminate;
     m_style = other.m_style;
     m_keybind = other.m_keybind;
     m_colorVec4 = other.m_colorVec4;
@@ -50,6 +52,8 @@ ControlRow& ControlRow::operator=(ControlRow&& other) noexcept {
         m_description = other.m_description;
         m_tooltip = other.m_tooltip;
         m_disabled = other.m_disabled;
+        m_compact = other.m_compact;
+        m_indeterminate = other.m_indeterminate;
         m_style = other.m_style;
         m_keybind = other.m_keybind;
         m_colorVec4 = other.m_colorVec4;
@@ -80,6 +84,16 @@ ControlRow& ControlRow::Tooltip(const char* tip) noexcept {
 
 ControlRow& ControlRow::Disabled(bool disabled) noexcept {
     m_disabled = disabled;
+    return *this;
+}
+
+ControlRow& ControlRow::Compact(bool compact) noexcept {
+    m_compact = compact;
+    return *this;
+}
+
+ControlRow& ControlRow::Indeterminate(bool indeterminate) noexcept {
+    m_indeterminate = indeterminate;
     return *this;
 }
 
@@ -126,7 +140,8 @@ bool ControlRow::Render() {
     const ImGuiID id = window->GetID(m_label ? m_label : "##ControlRow");
     const float availW = ImGui::GetContentRegionAvail().x;
     const bool hasDesc = (m_description && m_description[0] != '\0');
-    const float rowHeight = hasDesc ? (38.0f * dpi) : (28.0f * dpi);
+    const float baseRowH = m_compact ? metrics.ControlHeightCompact : metrics.RowHeight;
+    const float rowHeight = (hasDesc ? 40.0f : baseRowH) * dpi;
 
     const ImVec2 pos = ImGui::GetCursorScreenPos();
     const ImRect bb(pos, ImVec2(pos.x + availW, pos.y + rowHeight));
@@ -134,8 +149,12 @@ bool ControlRow::Render() {
     ImGui::ItemSize(bb);
     if (!ImGui::ItemAdd(bb, id)) return false;
 
+    const ImVec2 nextRowCursor = ImGui::GetCursorScreenPos();
+
     // Right-aligned widgets width calculation
-    const float switchW = (m_style == ToggleStyle::PillSwitch) ? (34.0f * dpi) : (18.0f * dpi);
+    const float switchW = (m_style == ToggleStyle::PillSwitch)
+        ? ((m_compact ? 30.0f : 36.0f) * dpi)
+        : ((m_compact ? 16.0f : 18.0f) * dpi);
     float rightOffset = 4.0f * dpi;
 
     // Rightmost slot: Primary toggle
@@ -144,7 +163,7 @@ bool ControlRow::Render() {
 
     // Color swatch slot
     float colorX = 0.0f;
-    const float colorDim = 22.0f * dpi;
+    const float colorDim = (m_compact ? 18.0f : 22.0f) * dpi;
     if (m_colorVec4 || m_colorFloat) {
         colorX = bb.Max.x - colorDim - rightOffset;
         rightOffset += colorDim + 8.0f * dpi;
@@ -152,8 +171,8 @@ bool ControlRow::Render() {
 
     // Keybind slot
     float kbX = 0.0f;
-    const float kbW = 48.0f * dpi;
-    const float kbH = 22.0f * dpi;
+    const float kbW = 52.0f * dpi;
+    const float kbH = (m_compact ? 19.0f : 22.0f) * dpi;
     if (m_keybind) {
         kbX = bb.Max.x - kbW - rightOffset;
         rightOffset += kbW + 8.0f * dpi;
@@ -189,16 +208,19 @@ bool ControlRow::Render() {
         }
     }
 
-    // Animated toggle progress
+    // Animated toggle & hover progress
     const float targetCheck = *m_value ? 1.0f : 0.0f;
-    const float checkProgress = ctx.Anim().SpringFloat(id, targetCheck, {200.0f, 22.0f, 1.0f});
+    const float checkProgress = ctx.Anim().SpringFloat(id, targetCheck, {220.0f, 22.0f, 1.0f});
+    const float hoverProgress = ctx.Anim().AnimFloat(id + 0x10000, (hovered && !m_disabled) ? 1.0f : 0.0f, metrics.AnimFast);
 
     // Row hover background highlight
-    if (hovered && !m_disabled) {
+    if (hoverProgress > 0.01f && !m_disabled) {
+        ImVec4 rowHover = colors.CardHover;
+        rowHover.w *= hoverProgress * 0.75f;
         drawList->AddRectFilled(
-            ImVec2(bb.Min.x - 4.0f * dpi, bb.Min.y - 2.0f * dpi),
-            ImVec2(bb.Max.x + 4.0f * dpi, bb.Max.y + 2.0f * dpi),
-            ImColor(colors.CardHover),
+            ImVec2(bb.Min.x - 4.0f * dpi, bb.Min.y - 1.0f * dpi),
+            ImVec2(bb.Max.x + 4.0f * dpi, bb.Max.y + 1.0f * dpi),
+            ImColor(rowHover),
             metrics.FrameRounding
         );
     }
@@ -206,9 +228,11 @@ bool ControlRow::Render() {
     // Left side: Icon + Label + Description
     float textX = bb.Min.x + 4.0f * dpi;
     if (m_icon && m_icon[0] != '\0') {
-        const float iconDim = 16.0f * dpi;
+        const float iconDim = (m_compact ? 14.0f : 16.0f) * dpi;
         const ImVec2 iconPos = ImVec2(textX, bb.Min.y + (hasDesc ? 6.0f * dpi : (rowHeight - iconDim) * 0.5f));
-        const ImVec4 iconCol = m_disabled ? colors.TextMuted : (hovered ? colors.Accent : colors.TextSecondary);
+        const ImVec4 iconCol = m_disabled
+            ? colors.TextMuted
+            : ((*m_value || hovered) ? colors.Accent : colors.TextSecondary);
         ctx.Icons().DrawIcon(drawList, m_icon, iconPos, ImVec2(iconDim, iconDim), iconCol);
         textX += iconDim + 8.0f * dpi;
     }
@@ -223,7 +247,7 @@ bool ControlRow::Render() {
     if (hasDesc) {
         const float descY = labelY + ImGui::GetFontSize() + 2.0f * dpi;
         PushFont(FontWeight::Caption);
-        drawList->AddText(ImVec2(textX, descY), ImColor(colors.TextMuted), m_description);
+        drawList->AddText(ImVec2(textX, descY), ImColor(colors.TextSecondary), m_description);
         PopFont();
     }
 
@@ -250,68 +274,28 @@ bool ControlRow::Render() {
 
     // 3. Primary Switch / Checkbox
     if (m_style == ToggleStyle::PillSwitch) {
-        const float switchH = 18.0f * dpi;
+        const float switchH = (m_compact ? 16.0f : 19.0f) * dpi;
         const float switchY = bb.Min.y + (rowHeight - switchH) * 0.5f;
-        const ImVec2 switchMin = ImVec2(switchX, switchY);
-        const ImVec2 switchMax = ImVec2(switchMin.x + switchW, switchMin.y + switchH);
+        const ImVec2 switchMin(switchX, switchY);
+        const ImVec2 switchMax(switchMin.x + switchW, switchMin.y + switchH);
 
-        ImVec4 pillBg = ImVec4(
-            colors.CardBg.x + (colors.Accent.x - colors.CardBg.x) * checkProgress,
-            colors.CardBg.y + (colors.Accent.y - colors.CardBg.y) * checkProgress,
-            colors.CardBg.z + (colors.Accent.z - colors.CardBg.z) * checkProgress,
-            m_disabled ? 0.35f : 1.0f
-        );
-
-        drawList->AddRectFilled(switchMin, switchMax, ImColor(pillBg), switchH * 0.5f);
-        drawList->AddRect(switchMin, switchMax, ImColor(colors.Border), switchH * 0.5f, 0, 1.0f);
-
-        const float thumbRadius = 6.5f * dpi;
-        const float startThumbX = switchMin.x + thumbRadius + 2.5f * dpi;
-        const float endThumbX = switchMax.x - thumbRadius - 2.5f * dpi;
-        const float curThumbX = startThumbX + (endThumbX - startThumbX) * checkProgress;
-        const ImVec2 thumbCenter = ImVec2(curThumbX, switchMin.y + switchH * 0.5f);
-
-        drawList->AddCircleFilled(ImVec2(thumbCenter.x, thumbCenter.y + 1.0f * dpi), thumbRadius, IM_COL32(0, 0, 0, 60));
-        drawList->AddCircleFilled(thumbCenter, thumbRadius, m_disabled ? ImU32(ImColor(colors.TextMuted)) : IM_COL32(255, 255, 255, 255));
+        DrawParallaxSwitchGlyph(drawList, switchMin, switchMax, checkProgress, hoverProgress, held, m_disabled);
     } else {
-        const float boxDim = 18.0f * dpi;
+        const float boxDim = (m_compact ? 16.0f : 18.0f) * dpi;
         const float boxY = bb.Min.y + (rowHeight - boxDim) * 0.5f;
-        const ImVec2 boxMin = ImVec2(switchX, boxY);
-        const ImVec2 boxMax = ImVec2(boxMin.x + boxDim, boxMin.y + boxDim);
+        const ImVec2 boxMin(switchX, boxY);
+        const ImVec2 boxMax(boxMin.x + boxDim, boxMin.y + boxDim);
 
-        ImVec4 boxBg = ImVec4(
-            colors.CardBg.x + (colors.Accent.x - colors.CardBg.x) * checkProgress,
-            colors.CardBg.y + (colors.Accent.y - colors.CardBg.y) * checkProgress,
-            colors.CardBg.z + (colors.Accent.z - colors.CardBg.z) * checkProgress,
-            m_disabled ? 0.35f : 1.0f
-        );
-
-        drawList->AddRectFilled(boxMin, boxMax, ImColor(boxBg), 4.0f * dpi);
-        drawList->AddRect(boxMin, boxMax, ImColor(hovered ? colors.BorderStrong : colors.Border), 4.0f * dpi, 0, 1.0f);
-
-        if (checkProgress > 0.05f) {
-            const ImVec2 p1 = ImVec2(boxMin.x + 4.5f * dpi, boxMin.y + 9.5f * dpi);
-            const ImVec2 p2 = ImVec2(boxMin.x + 7.5f * dpi, boxMin.y + 13.0f * dpi);
-            const ImVec2 p3 = ImVec2(boxMin.x + 13.5f * dpi, boxMin.y + 5.5f * dpi);
-
-            const ImVec2 curP2 = ImVec2(p1.x + (p2.x - p1.x) * std::min(checkProgress * 2.0f, 1.0f),
-                                        p1.y + (p2.y - p1.y) * std::min(checkProgress * 2.0f, 1.0f));
-            drawList->AddLine(p1, curP2, IM_COL32(255, 255, 255, static_cast<int>(255 * checkProgress)), 2.0f * dpi);
-
-            if (checkProgress > 0.5f) {
-                const float secondHalf = (checkProgress - 0.5f) * 2.0f;
-                const ImVec2 curP3 = ImVec2(p2.x + (p3.x - p2.x) * secondHalf, p2.y + (p3.y - p2.y) * secondHalf);
-                drawList->AddLine(p2, curP3, IM_COL32(255, 255, 255, static_cast<int>(255 * checkProgress)), 2.0f * dpi);
-            }
-        }
+        DrawParallaxCheckboxGlyph(drawList, boxMin, boxMax, checkProgress, hoverProgress, m_indeterminate, m_disabled);
     }
 
     if (m_tooltip && hovered) {
         ImGui::SetTooltip("%s", m_tooltip);
     }
 
-    // Ensure cursor is restored to the end of the entire row so chained sub-widgets do not corrupt layout
-    ImGui::SetCursorScreenPos(ImVec2(bb.Min.x, bb.Max.y + ImGui::GetStyle().ItemSpacing.y));
+    // Restore cursor to the exact position computed by ItemSize(bb) for the full row
+    ImGui::SetCursorScreenPos(nextRowCursor);
+    window->DC.IsSetPos = false;
 
     return pressed;
 }

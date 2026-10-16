@@ -5,6 +5,7 @@
 #include "parallax/icons/icon_atlas.hpp"
 #include "parallax/anim/manager.hpp"
 #include "parallax/widgets/button.hpp"
+#include "parallax/widgets/checkbox.hpp"
 #include <imgui_internal.h>
 #include <fstream>
 #include <chrono>
@@ -174,19 +175,20 @@ bool KeySystem::RenderModal(bool* p_open) {
 
     const ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-    ImGui::SetNextWindowSize(ImVec2(480.0f * dpi, 0.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(460.0f * dpi, 0.0f), ImGuiCond_Always);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, metrics.WindowRounding * dpi);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, metrics.PopupRounding * dpi);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24.0f * dpi, 20.0f * dpi));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, colors.WindowBg);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, colors.PopupBg);
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.PopupBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
-    ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, ImVec4(0.04f, 0.05f, 0.08f, 0.75f));
+    ImGui::PushStyleColor(ImGuiCol_ModalWindowDimBg, colors.OverlayDim);
 
     bool opened = ImGui::BeginPopupModal("##ParallaxKeyModal", p_open,
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_AlwaysAutoResize);
 
     if (!opened) {
-        ImGui::PopStyleColor(3);
+        ImGui::PopStyleColor(4);
         ImGui::PopStyleVar(2);
         if (p_open) *p_open = false;
         return false;
@@ -207,7 +209,9 @@ bool KeySystem::RenderModal(bool* p_open) {
     // -------------------------------------------------------------------------
     const float shieldDim = 28.0f * dpi;
     const ImVec2 iconPos(winPos.x + 24.0f * dpi, winPos.y + 20.0f * dpi);
-    ctx.Icons().DrawIcon(drawList, "shield", iconPos, ImVec2(shieldDim, shieldDim), colors.Accent);
+    drawList->AddRectFilled(iconPos, ImVec2(iconPos.x + shieldDim, iconPos.y + shieldDim), ImColor(colors.AccentMuted), 6.0f * dpi);
+    drawList->AddRect(iconPos, ImVec2(iconPos.x + shieldDim, iconPos.y + shieldDim), ImColor(colors.Accent), 6.0f * dpi, 0, 1.0f);
+    ctx.Icons().DrawIcon(drawList, "shield", ImVec2(iconPos.x + 6.0f * dpi, iconPos.y + 6.0f * dpi), ImVec2(16.0f * dpi, 16.0f * dpi), colors.Accent);
 
     // Title & Subtitle text block
     const float titleX = winPos.x + 24.0f * dpi + shieldDim + 12.0f * dpi;
@@ -216,7 +220,7 @@ bool KeySystem::RenderModal(bool* p_open) {
     PopFont();
 
     PushFont(FontWeight::Caption);
-    drawList->AddText(ImVec2(titleX, winPos.y + 38.0f * dpi), ImColor(colors.TextMuted), "Enter your product key to unlock the complete UI suite.");
+    drawList->AddText(ImVec2(titleX, winPos.y + 37.0f * dpi), ImColor(colors.TextMuted), "Enter your product key to unlock the complete UI suite.");
     PopFont();
 
     // Close 'X' button in top-right
@@ -228,16 +232,15 @@ bool KeySystem::RenderModal(bool* p_open) {
     }
 
     // Advance cursor past header
-    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 60.0f * dpi));
+    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 58.0f * dpi));
     drawList->AddLine(
-        ImVec2(winPos.x + 24.0f * dpi, winPos.y + 60.0f * dpi),
-        ImVec2(winPos.x + 24.0f * dpi + contentWidth, winPos.y + 60.0f * dpi),
-        ImColor(colors.Border),
+        ImVec2(winPos.x + 24.0f * dpi, winPos.y + 58.0f * dpi),
+        ImVec2(winPos.x + 24.0f * dpi + contentWidth, winPos.y + 58.0f * dpi),
+        ImColor(colors.BorderSubtle),
         1.0f
     );
 
-    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 72.0f * dpi));
-    ImGui::Spacing();
+    ImGui::SetCursorScreenPos(ImVec2(winPos.x + 24.0f * dpi, winPos.y + 70.0f * dpi));
 
     // Key input label
     PushFont(FontWeight::Medium);
@@ -252,13 +255,14 @@ bool KeySystem::RenderModal(bool* p_open) {
         snprintf(s_keyBuffer, sizeof(s_keyBuffer), "%s", m_enteredKey.c_str());
     }
 
-    const float eyeBtnDim = 36.0f * dpi;
+    const float eyeBtnDim = 34.0f * dpi;
     const float inputW = contentWidth - eyeBtnDim - 8.0f * dpi;
 
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, metrics.FrameRounding * dpi);
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * dpi, 9.0f * dpi));
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.CardBg);
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f * dpi, 8.0f * dpi));
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.WidgetBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
+    ImGui::PushStyleColor(ImGuiCol_Text, colors.TextPrimary);
 
     ImGuiInputTextFlags inputFlags = ImGuiInputTextFlags_None;
     if (!m_showKeyText) {
@@ -274,7 +278,7 @@ bool KeySystem::RenderModal(bool* p_open) {
         StartVerification(s_keyBuffer);
     }
 
-    ImGui::PopStyleColor(2);
+    ImGui::PopStyleColor(3);
     ImGui::PopStyleVar(2);
 
     ImGui::SameLine(0.0f, 8.0f * dpi);
@@ -285,25 +289,16 @@ bool KeySystem::RenderModal(bool* p_open) {
     }
 
     ImGui::Spacing();
-    ImGui::Spacing();
 
-    // Remember key checkbox
-    ImGui::PushStyleColor(ImGuiCol_FrameBg, colors.CardBg);
-    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, colors.CardHover);
-    ImGui::PushStyleColor(ImGuiCol_FrameBgActive, colors.Accent);
-    ImGui::PushStyleColor(ImGuiCol_CheckMark, colors.Accent);
-    ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f * dpi);
-    ImGui::Checkbox("Remember key on this device", &m_rememberKey);
-    ImGui::PopStyleVar();
-    ImGui::PopStyleColor(5);
+    // Remember key checkbox using custom Parallax Checkbox
+    Checkbox("Remember key on this device", &m_rememberKey);
 
     ImGui::Spacing();
 
     // Status / Feedback message area (deterministic height to prevent layout jumps)
     const float statusBannerHeight = 34.0f * dpi;
     if (m_status == KeyStatus::Verifying) {
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.12f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(colors.Accent.x, colors.Accent.y, colors.Accent.z, 0.14f));
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Accent);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
         ImGui::BeginChild("##VerifyingBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -330,7 +325,7 @@ bool KeySystem::RenderModal(bool* p_open) {
         ImGui::PopStyleVar();
         ImGui::PopStyleColor(2);
     } else if (m_status == KeyStatus::Success) {
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.05f, 0.25f, 0.12f, 0.35f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(colors.Success.x, colors.Success.y, colors.Success.z, 0.14f));
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Success);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
         ImGui::BeginChild("##SuccessBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -342,7 +337,7 @@ bool KeySystem::RenderModal(bool* p_open) {
         ImGui::PopStyleVar();
         ImGui::PopStyleColor(2);
     } else if (m_status == KeyStatus::InvalidKey) {
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.30f, 0.08f, 0.08f, 0.35f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(colors.Danger.x, colors.Danger.y, colors.Danger.z, 0.14f));
         ImGui::PushStyleColor(ImGuiCol_Border, colors.Danger);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, metrics.FrameRounding * dpi);
         ImGui::BeginChild("##ErrorBanner", ImVec2(contentWidth, statusBannerHeight), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -363,7 +358,7 @@ bool KeySystem::RenderModal(bool* p_open) {
     // Bottom Action Buttons
     const float buttonGap = 12.0f * dpi;
     const float buttonW = (contentWidth - buttonGap) * 0.5f;
-    const float buttonH = 38.0f * dpi;
+    const float buttonH = 36.0f * dpi;
 
     // Get Key button (links to developer portal)
     if (Button("Get License Key", "external-link", ButtonVariant::Secondary, ImVec2(buttonW, buttonH))) {
@@ -385,7 +380,7 @@ bool KeySystem::RenderModal(bool* p_open) {
     }
 
     ImGui::EndPopup();
-    ImGui::PopStyleColor(3);
+    ImGui::PopStyleColor(4);
     ImGui::PopStyleVar(2);
 
     return opened;

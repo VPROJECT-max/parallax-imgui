@@ -114,19 +114,19 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     const ImGuiID id = window->GetID(str_id);
     const bool isListening = (s_listeningWidgetId == id);
 
-    // Format display string e.g. "[ F ]" or "[ ... ]"
+    // Format display string e.g. "F" or "NONE" or "..."
     std::string btnText;
     if (isListening) {
-        btnText = "[ ... ]";
+        btnText = "...";
     } else if (bind->vkey == 0) {
-        btnText = "[ NONE ]";
+        btnText = "NONE";
     } else {
-        btnText = "[ " + GetKeyName(bind->vkey) + " ]";
+        btnText = GetKeyName(bind->vkey);
     }
 
     ImVec2 textSize = ImGui::CalcTextSize(btnText.c_str());
     ImVec2 widgetSize = size;
-    if (widgetSize.x <= 0.0f) widgetSize.x = std::max(textSize.x + 16.0f * dpi, 44.0f * dpi);
+    if (widgetSize.x <= 0.0f) widgetSize.x = std::max(textSize.x + 18.0f * dpi, 48.0f * dpi);
     if (widgetSize.y <= 0.0f) widgetSize.y = 22.0f * dpi;
 
     const ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -140,35 +140,47 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held);
 
     // Animated hover/listening state
-    float targetHighlight = isListening ? 1.0f : (hovered ? 0.3f : 0.0f);
-    float highlight = ctx.Anim().SpringFloat(id, targetHighlight, {160.0f, 20.0f, 1.0f});
+    float targetHighlight = isListening ? 1.0f : (hovered ? 0.45f : 0.0f);
+    float highlight = ctx.Anim().SpringFloat(id, targetHighlight, {180.0f, 22.0f, 1.0f});
+    (void)highlight;
 
-    // Background pill
-    ImVec4 bgCol = colors.CardBg;
-    if (highlight > 0.01f) {
-        if (isListening) {
-            bgCol = colors.AccentMuted;
-        } else {
-            bgCol = colors.CardHover;
-        }
+    const float rounding = 4.5f * dpi;
+
+    // Tactile keycap pill surface
+    ImVec4 bgCol = isListening
+        ? colors.AccentMuted
+        : (hovered ? colors.WidgetHover : colors.WidgetBg);
+    drawList->AddRectFilled(bb.Min, bb.Max, ImColor(bgCol), rounding);
+
+    // Keycap bottom bevel line for hardware depth
+    if (!isListening) {
+        drawList->AddLine(
+            ImVec2(bb.Min.x + 3.0f * dpi, bb.Max.y - 1.5f * dpi),
+            ImVec2(bb.Max.x - 3.0f * dpi, bb.Max.y - 1.5f * dpi),
+            ImColor(colors.BorderStrong),
+            1.0f * dpi
+        );
     }
-    drawList->AddRectFilled(bb.Min, bb.Max, ImColor(bgCol), metrics.FrameRounding);
 
     // Border
-    ImVec4 borderCol = isListening ? colors.Accent : (hovered ? colors.BorderStrong : colors.Border);
-    drawList->AddRect(bb.Min, bb.Max, ImColor(borderCol), metrics.FrameRounding, 0, isListening ? 1.5f : 1.0f);
+    ImVec4 borderCol = isListening
+        ? colors.Accent
+        : (bind->active ? colors.Accent : (hovered ? colors.BorderStrong : colors.Border));
+    drawList->AddRect(bb.Min, bb.Max, ImColor(borderCol), rounding, 0, (isListening || bind->active) ? 1.5f : 1.0f);
 
     // Text label
-    ImVec4 textCol = isListening ? colors.Accent : (bind->active ? colors.Accent : (hovered ? colors.TextPrimary : colors.TextSecondary));
+    ImVec4 textCol = isListening
+        ? colors.Accent
+        : (bind->active ? colors.Accent : (bind->vkey == 0 ? colors.TextMuted : colors.TextPrimary));
     ImVec2 textPos = ImVec2(
         bb.Min.x + (widgetSize.x - textSize.x) * 0.5f,
-        bb.Min.y + (widgetSize.y - textSize.y) * 0.5f
+        bb.Min.y + (widgetSize.y - textSize.y) * 0.5f - 0.5f * dpi
     );
     drawList->AddText(textPos, ImColor(textCol), btnText.c_str());
 
     // Popup management
     char popupId[64];
-    snprintf(popupId, sizeof(popupId), "##KBPopup_%s", str_id);
+    snprintf(popupId, sizeof(popupId), "##KBPopup_%08X", id);
 
     // Left-click directly triggers listening mode
     if (pressed) {
@@ -250,10 +262,10 @@ bool KeybindWidget(const char* str_id, Keybind* bind, const ImVec2& size) {
     }
 
     // Anchored configuration popup (opened via Right-Click or from popup button)
-    ImGui::SetNextWindowSize(ImVec2(190.0f * dpi, 0.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(196.0f * dpi, 0.0f), ImGuiCond_Always);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f * dpi, 10.0f * dpi));
-    ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, metrics.PopupRounding);
-    ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.HeaderBg);
+    ImGui::PushStyleVar(ImGuiStyleVar_PopupRounding, metrics.PopupRounding * dpi);
+    ImGui::PushStyleColor(ImGuiCol_PopupBg, colors.PopupBg);
     ImGui::PushStyleColor(ImGuiCol_Border, colors.BorderStrong);
 
     if (ImGui::BeginPopup(popupId)) {

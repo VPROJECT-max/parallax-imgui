@@ -246,6 +246,14 @@ bool ConfigManager::SaveProfile(const std::string& profileName) {
 
     root["values"] = values;
 
+    auto& styleMgr = StyleManager::Get();
+    const ImVec4 custAcc = styleMgr.GetCustomAccent();
+    root["theme"] = {
+        {"mode", static_cast<int>(styleMgr.GetTheme())},
+        {"accent_preset", static_cast<int>(styleMgr.GetAccentPreset())},
+        {"custom_accent", {{"r", custAcc.x}, {"g", custAcc.y}, {"b", custAcc.z}, {"a", custAcc.w}}}
+    };
+
     // Atomic write pattern: write to .tmp, flush, and rename
     try {
         fs::create_directories(m_configDir);
@@ -283,6 +291,31 @@ bool ConfigManager::LoadProfile(const std::string& profileName) {
 
         json root = json::parse(file);
         if (!root.contains("values") || !root["values"].is_object()) return false;
+
+        if (root.contains("theme") && root["theme"].is_object()) {
+            const auto& th = root["theme"];
+            auto& styleMgr = StyleManager::Get();
+            if (th.contains("custom_accent") && th["custom_accent"].is_object()) {
+                const auto& ca = th["custom_accent"];
+                if (ca.contains("r") && ca.contains("g") && ca.contains("b")) {
+                    ImVec4 c(
+                        ca["r"].get<float>(),
+                        ca["g"].get<float>(),
+                        ca["b"].get<float>(),
+                        ca.value("a", 1.0f)
+                    );
+                    styleMgr.SetCustomAccent(c, true);
+                }
+            }
+            if (th.contains("accent_preset") && th["accent_preset"].is_number_integer()) {
+                int ap = std::clamp(th["accent_preset"].get<int>(), 0, 4);
+                styleMgr.SetAccentPreset(static_cast<AccentPreset>(ap), true);
+            }
+            if (th.contains("mode") && th["mode"].is_number_integer()) {
+                int tm = std::clamp(th["mode"].get<int>(), 0, 1);
+                styleMgr.SetTheme(static_cast<ThemeMode>(tm), true);
+            }
+        }
 
         const auto& values = root["values"];
 
@@ -392,6 +425,8 @@ void ConfigManager::ResetToDefaults() {
                 break;
         }
     }
+    StyleManager::Get().SetTheme(ThemeMode::Dark, true);
+    StyleManager::Get().SetAccentPreset(AccentPreset::Sage, true);
     m_isDirty = true;
 }
 
@@ -399,6 +434,14 @@ std::string ConfigManager::ExportToBase64() {
     json root;
     root["schema_version"] = 1;
     root["profile_name"] = m_activeProfile;
+
+    auto& styleMgr = StyleManager::Get();
+    const ImVec4 custAcc = styleMgr.GetCustomAccent();
+    root["theme"] = {
+        {"mode", static_cast<int>(styleMgr.GetTheme())},
+        {"accent_preset", static_cast<int>(styleMgr.GetAccentPreset())},
+        {"custom_accent", {{"r", custAcc.x}, {"g", custAcc.y}, {"b", custAcc.z}, {"a", custAcc.w}}}
+    };
 
     json values = json::object();
     for (const auto& [key, entry] : m_entries) {
@@ -437,6 +480,31 @@ bool ConfigManager::ImportFromBase64(const std::string& base64Str) {
         std::string jsonStr = Base64Decode(base64Str);
         json root = json::parse(jsonStr);
         if (!root.contains("values") || !root["values"].is_object()) return false;
+
+        if (root.contains("theme") && root["theme"].is_object()) {
+            const auto& th = root["theme"];
+            auto& styleMgr = StyleManager::Get();
+            if (th.contains("custom_accent") && th["custom_accent"].is_object()) {
+                const auto& ca = th["custom_accent"];
+                if (ca.contains("r") && ca.contains("g") && ca.contains("b")) {
+                    ImVec4 c(
+                        ca["r"].get<float>(),
+                        ca["g"].get<float>(),
+                        ca["b"].get<float>(),
+                        ca.value("a", 1.0f)
+                    );
+                    styleMgr.SetCustomAccent(c, true);
+                }
+            }
+            if (th.contains("accent_preset") && th["accent_preset"].is_number_integer()) {
+                int ap = std::clamp(th["accent_preset"].get<int>(), 0, 4);
+                styleMgr.SetAccentPreset(static_cast<AccentPreset>(ap), true);
+            }
+            if (th.contains("mode") && th["mode"].is_number_integer()) {
+                int tm = std::clamp(th["mode"].get<int>(), 0, 1);
+                styleMgr.SetTheme(static_cast<ThemeMode>(tm), true);
+            }
+        }
 
         const auto& values = root["values"];
         for (auto& [key, entry] : m_entries) {

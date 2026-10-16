@@ -26,6 +26,8 @@ public:
     ControlRow& Description(const char* desc) noexcept;
     ControlRow& Tooltip(const char* tip) noexcept;
     ControlRow& Disabled(bool disabled = true) noexcept;
+    ControlRow& Compact(bool compact = true) noexcept;
+    ControlRow& Indeterminate(bool indeterminate = true) noexcept;
     ControlRow& Style(ToggleStyle style) noexcept;
     ControlRow& Keybind(parallax::Keybind* keybind) noexcept;
     ControlRow& Color(ImVec4* color, bool hasAlpha = true) noexcept;
@@ -42,6 +44,8 @@ private:
     const char* m_description{nullptr};
     const char* m_tooltip{nullptr};
     bool m_disabled{false};
+    bool m_compact{false};
+    bool m_indeterminate{false};
     ToggleStyle m_style{ToggleStyle::PillSwitch};
 
     parallax::Keybind* m_keybind{nullptr};

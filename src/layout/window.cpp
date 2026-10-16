@@ -75,6 +75,9 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
         }
     }
 
+    // Advance smooth theme & accent transitions
+    StyleManager::Get().UpdateTransition(ImGui::GetIO().DeltaTime);
+
     // Process hotkeys (Right Shift / Insert)
     ctx.Input().Update();
 
@@ -117,16 +120,34 @@ bool WindowShell::Begin(const char* title, bool* p_open, ImGuiWindowFlags extraF
                              ImGuiWindowFlags_NoScrollWithMouse |
                              extraFlags;
 
+    const auto& colors = StyleManager::Get().Colors();
+    const float rounding = StyleManager::Get().Metrics().WindowRounding * dpi;
+
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, StyleManager::Get().Metrics().WindowRounding * dpi);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, rounding);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 1.0f);
-    ImGui::PushStyleColor(ImGuiCol_Border, StyleManager::Get().Colors().Border);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, StyleManager::Get().Colors().WindowBg);
+    ImGui::PushStyleColor(ImGuiCol_Border, colors.Border);
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, colors.ContentBg);
 
     bool opened = ImGui::Begin(title, nullptr, flags);
 
     s_windowPos = ImGui::GetWindowPos();
     s_windowSize = ImGui::GetWindowSize();
+
+    // Soft multi-layer ambient drop shadow behind the menu shell
+    if (ImDrawList* bgDraw = ImGui::GetBackgroundDrawList()) {
+        for (int s = 1; s <= 3; ++s) {
+            const float spread = static_cast<float>(s) * 4.0f * dpi;
+            ImVec4 shCol = colors.Shadow;
+            shCol.w *= alpha * (0.38f / static_cast<float>(s));
+            bgDraw->AddRectFilled(
+                ImVec2(s_windowPos.x - spread * 0.5f, s_windowPos.y - spread * 0.25f + 2.0f * dpi),
+                ImVec2(s_windowPos.x + s_windowSize.x + spread * 0.5f, s_windowPos.y + s_windowSize.y + spread * 0.75f + 2.0f * dpi),
+                ImColor(shCol),
+                rounding + spread * 0.5f
+            );
+        }
+    }
 
     // Disable input interactions during closing transition
     s_closingDisabledPushed = !requestOpen;

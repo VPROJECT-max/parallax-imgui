@@ -121,29 +121,22 @@ bool NavBar::Begin(NavSide side) {
 
     const float expandT = std::clamp((s_animatedNavW - 68.0f) / (200.0f - 68.0f), 0.0f, 1.0f);
 
-    // Custom Parallax Brand Logo & Header
+    // Custom Parallax Brand Emblem & Header Controls
     if (isVertical) {
         const float logoDim = 28.0f * dpi;
         const float logoX = s_navPos.x + (68.0f * dpi - logoDim) * 0.5f;
-        const float logoY = s_navPos.y + 14.0f * dpi;
+        const float logoY = s_navPos.y + 13.0f * dpi;
         const ImVec2 logoPos(logoX, logoY);
+        const ImVec2 logoMax(logoPos.x + logoDim, logoPos.y + logoDim);
 
-        // Render custom Futuristic Layered Neon P Logo with preserveColors = true
-        auto logoSub = ctx.Icons().GetIcon("logo", dpi, true);
-        if (!logoSub.valid || !logoSub.srv) {
-            logoSub = ctx.Icons().GetIcon("layers", dpi, false);
-        }
-        if (logoSub.valid && logoSub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(logoSub.srv),
-                logoPos,
-                ImVec2(logoPos.x + logoDim, logoPos.y + logoDim),
-                logoSub.uv0, logoSub.uv1,
-                IM_COL32(255, 255, 255, 255)
-            );
-        }
+        // Accent-adaptive architectural brand squircle badge
+        drawList->AddRectFilled(logoPos, logoMax, ImColor(colors.AccentMuted), 7.0f * dpi);
+        drawList->AddRect(logoPos, logoMax, ImColor(colors.Accent), 7.0f * dpi, 0, 1.0f);
+        const float innerIconDim = 16.0f * dpi;
+        const ImVec2 innerIconPos(logoPos.x + (logoDim - innerIconDim) * 0.5f, logoPos.y + (logoDim - innerIconDim) * 0.5f);
+        ctx.Icons().DrawIcon(drawList, "layers", innerIconPos, ImVec2(innerIconDim, innerIconDim), colors.Accent);
 
-        // Fading brand title and version
+        // Fading brand title and SemVer version
         if (expandT > 0.05f) {
             ImVec4 titleCol = colors.TextPrimary;
             titleCol.w = expandT;
@@ -152,78 +145,148 @@ bool NavBar::Begin(NavSide side) {
 
             const float textStartX = logoPos.x + logoDim + 10.0f * dpi;
             PushFont(FontWeight::Bold);
-            drawList->AddText(ImVec2(textStartX, logoPos.y + 1.0f * dpi), ImColor(titleCol), "PARALLAX");
+            drawList->AddText(ImVec2(textStartX, logoPos.y + 0.5f * dpi), ImColor(titleCol), "PARALLAX");
             PopFont();
 
             PushFont(FontWeight::Caption);
-            drawList->AddText(ImVec2(textStartX, logoPos.y + 16.0f * dpi), ImColor(verCol), "v3.2 SYSTEM");
+            drawList->AddText(ImVec2(textStartX, logoPos.y + 15.5f * dpi), ImColor(verCol), "v" PARALLAX_VERSION_STRING " UI");
             PopFont();
         }
 
-        // Animated Chevron Expansion Toggle Button
-        const float btnDim = 22.0f * dpi;
-        const float btnX = s_navPos.x + (s_navSize.x - btnDim) * 0.5f;
-        const float btnY = s_navPos.y + 48.0f * dpi;
-        const ImVec2 btnPos(btnX, btnY);
-        const ImRect toggleBb(btnPos, ImVec2(btnPos.x + btnDim, btnPos.y + btnDim));
+        // Utility Row: Sidebar Expand/Collapse + Quick Theme Switcher (Graphite <-> Porcelain)
+        const float availRowW = s_navSize.x - 16.0f * dpi;
+        const float btnGap = 6.0f * dpi;
+        const float eachBtnW = (availRowW - btnGap) * 0.5f;
+        const float btnH = 24.0f * dpi;
+        const float btnY = s_navPos.y + 47.0f * dpi;
 
-        ImGuiID toggleId = ImGui::GetID("##NavToggleExpansionBtn");
-        ImGui::ItemSize(toggleBb);
-        if (ImGui::ItemAdd(toggleBb, toggleId)) {
-            bool tHovered = false, tHeld = false;
-            if (ImGui::ButtonBehavior(toggleBb, toggleId, &tHovered, &tHeld)) {
-                s_navExpanded = !s_navExpanded;
-            }
+        // 1. Expand / Collapse Button
+        {
+            const ImVec2 btnPos(s_navPos.x + 8.0f * dpi, btnY);
+            const ImRect toggleBb(btnPos, ImVec2(btnPos.x + eachBtnW, btnPos.y + btnH));
+            ImGuiID toggleId = ImGui::GetID("##NavToggleExpansionBtn");
+            ImGui::ItemSize(toggleBb);
+            if (ImGui::ItemAdd(toggleBb, toggleId)) {
+                bool tHovered = false, tHeld = false;
+                if (ImGui::ButtonBehavior(toggleBb, toggleId, &tHovered, &tHeld)) {
+                    s_navExpanded = !s_navExpanded;
+                }
 
-            if (tHovered) {
-                drawList->AddRectFilled(toggleBb.Min, toggleBb.Max, ImColor(colors.CardHover), 4.0f * dpi);
-            }
-            drawList->AddRect(toggleBb.Min, toggleBb.Max, ImColor(tHovered ? colors.BorderStrong : colors.Border), 4.0f * dpi, 0, 1.0f);
-
-            const char* chevIcon = s_navExpanded ? "chevron-left" : "chevron-right";
-            auto chev = ctx.Icons().GetIcon(chevIcon);
-            if (chev.valid && chev.srv) {
-                const float cDim = 12.0f * dpi;
-                const ImVec2 cPos(btnPos.x + (btnDim - cDim) * 0.5f, btnPos.y + (btnDim - cDim) * 0.5f);
-                drawList->AddImage(
-                    reinterpret_cast<ImTextureID>(chev.srv),
-                    cPos,
-                    ImVec2(cPos.x + cDim, cPos.y + cDim),
-                    chev.uv0, chev.uv1,
-                    ImColor(tHovered ? colors.Accent : colors.TextMuted)
+                drawList->AddRectFilled(
+                    toggleBb.Min, toggleBb.Max,
+                    ImColor(tHovered ? colors.WidgetHover : colors.WidgetBg),
+                    5.0f * dpi
                 );
-            }
+                drawList->AddRect(
+                    toggleBb.Min, toggleBb.Max,
+                    ImColor(tHovered ? colors.BorderStrong : colors.Border),
+                    5.0f * dpi, 0, 1.0f
+                );
 
-            if (tHovered) {
-                ImGui::SetTooltip("%s Sidebar", s_navExpanded ? "Collapse" : "Expand");
+                const char* chevIcon = s_navExpanded ? "chevron-left" : "chevron-right";
+                const float cDim = 12.0f * dpi;
+                const float iconX = (expandT > 0.55f)
+                    ? (toggleBb.Min.x + 8.0f * dpi)
+                    : (toggleBb.Min.x + (eachBtnW - cDim) * 0.5f);
+                const ImVec2 cPos(iconX, toggleBb.Min.y + (btnH - cDim) * 0.5f);
+                ctx.Icons().DrawIcon(drawList, chevIcon, cPos, ImVec2(cDim, cDim), tHovered ? colors.Accent : colors.TextSecondary);
+
+                if (expandT > 0.55f) {
+                    PushFont(FontWeight::Caption);
+                    ImVec4 lblCol = tHovered ? colors.TextPrimary : colors.TextSecondary;
+                    lblCol.w *= std::clamp((expandT - 0.55f) / 0.45f, 0.0f, 1.0f);
+                    const float th = ImGui::GetFontSize();
+                    drawList->AddText(
+                        ImVec2(cPos.x + cDim + 5.0f * dpi, toggleBb.Min.y + (btnH - th) * 0.5f),
+                        ImColor(lblCol),
+                        "Fold"
+                    );
+                    PopFont();
+                }
+
+                if (tHovered) {
+                    ImGui::SetTooltip("%s Sidebar", s_navExpanded ? "Collapse" : "Expand");
+                }
             }
         }
 
+        // 2. Theme Switcher Button (Dark Graphite <-> Light Porcelain)
+        {
+            const ImVec2 btnPos(s_navPos.x + 8.0f * dpi + eachBtnW + btnGap, btnY);
+            const ImRect themeBb(btnPos, ImVec2(btnPos.x + eachBtnW, btnPos.y + btnH));
+            ImGuiID themeId = ImGui::GetID("##NavThemeSwitchBtn");
+            ImGui::ItemSize(themeBb);
+            if (ImGui::ItemAdd(themeBb, themeId)) {
+                bool thHovered = false, thHeld = false;
+                if (ImGui::ButtonBehavior(themeBb, themeId, &thHovered, &thHeld)) {
+                    StyleManager::Get().ToggleTheme();
+                }
+
+                const bool isLight = StyleManager::Get().IsLightTheme();
+                drawList->AddRectFilled(
+                    themeBb.Min, themeBb.Max,
+                    ImColor(thHovered ? colors.WidgetHover : colors.WidgetBg),
+                    5.0f * dpi
+                );
+                drawList->AddRect(
+                    themeBb.Min, themeBb.Max,
+                    ImColor(thHovered ? colors.Accent : colors.Border),
+                    5.0f * dpi, 0, 1.0f
+                );
+
+                const char* themeIcon = isLight ? "sun" : "moon";
+                const float cDim = 12.0f * dpi;
+                const float iconX = (expandT > 0.55f)
+                    ? (themeBb.Min.x + 8.0f * dpi)
+                    : (themeBb.Min.x + (eachBtnW - cDim) * 0.5f);
+                const ImVec2 cPos(iconX, themeBb.Min.y + (btnH - cDim) * 0.5f);
+                ctx.Icons().DrawIcon(drawList, themeIcon, cPos, ImVec2(cDim, cDim), thHovered ? colors.Accent : colors.TextSecondary);
+
+                if (expandT > 0.55f) {
+                    PushFont(FontWeight::Caption);
+                    ImVec4 lblCol = thHovered ? colors.TextPrimary : colors.TextSecondary;
+                    lblCol.w *= std::clamp((expandT - 0.55f) / 0.45f, 0.0f, 1.0f);
+                    const float th = ImGui::GetFontSize();
+                    drawList->AddText(
+                        ImVec2(cPos.x + cDim + 5.0f * dpi, themeBb.Min.y + (btnH - th) * 0.5f),
+                        ImColor(lblCol),
+                        isLight ? "Light" : "Dark"
+                    );
+                    PopFont();
+                }
+
+                if (thHovered) {
+                    ImGui::SetTooltip("Switch to %s Theme", isLight ? "Graphite (Dark)" : "Porcelain (Light)");
+                }
+            }
+        }
+
+        // Subtle divider below header utility row
+        drawList->AddLine(
+            ImVec2(s_navPos.x + 10.0f * dpi, s_navPos.y + 77.0f * dpi),
+            ImVec2(s_navPos.x + s_navSize.x - 10.0f * dpi, s_navPos.y + 77.0f * dpi),
+            ImColor(colors.BorderSubtle),
+            1.0f
+        );
+
         // Set cursor for subsequent tabs
-        ImGui::SetCursorScreenPos(ImVec2(s_navPos.x + 8.0f * dpi, s_navPos.y + 78.0f * dpi));
+        ImGui::SetCursorScreenPos(ImVec2(s_navPos.x + 8.0f * dpi, s_navPos.y + 84.0f * dpi));
     } else {
         // Horizontal top / bottom navbar brand
         ImGui::SetCursorScreenPos(ImVec2(s_navPos.x + 18.0f * dpi, s_navPos.y + 12.0f * dpi));
         ImGui::BeginGroup();
-        auto logoSub = ctx.Icons().GetIcon("logo", dpi, true);
-        if (!logoSub.valid || !logoSub.srv) {
-            logoSub = ctx.Icons().GetIcon("layers", dpi, false);
-        }
-        if (logoSub.valid && logoSub.srv) {
-            drawList->AddImage(
-                reinterpret_cast<ImTextureID>(logoSub.srv),
-                ImVec2(s_navPos.x + 18.0f * dpi, s_navPos.y + 12.0f * dpi),
-                ImVec2(s_navPos.x + 18.0f * dpi + 24.0f * dpi, s_navPos.y + 12.0f * dpi + 24.0f * dpi),
-                logoSub.uv0, logoSub.uv1,
-                IM_COL32(255, 255, 255, 255)
-            );
-        }
+        const ImVec2 logoPos(s_navPos.x + 18.0f * dpi, s_navPos.y + 12.0f * dpi);
+        const float logoDim = 24.0f * dpi;
+        drawList->AddRectFilled(logoPos, ImVec2(logoPos.x + logoDim, logoPos.y + logoDim), ImColor(colors.AccentMuted), 6.0f * dpi);
+        drawList->AddRect(logoPos, ImVec2(logoPos.x + logoDim, logoPos.y + logoDim), ImColor(colors.Accent), 6.0f * dpi, 0, 1.0f);
+        ctx.Icons().DrawIcon(drawList, "layers", ImVec2(logoPos.x + 4.0f * dpi, logoPos.y + 4.0f * dpi), ImVec2(16.0f * dpi, 16.0f * dpi), colors.Accent);
+        ImGui::Dummy(ImVec2(logoDim, logoDim));
         ImGui::SameLine(0.0f, 10.0f * dpi);
         PushFont(FontWeight::Bold);
         ImGui::TextColored(colors.TextPrimary, "PARALLAX");
         PopFont();
         ImGui::EndGroup();
-        ImGui::SameLine(0.0f, 24.0f * dpi);
+        ImGui::SameLine(0.0f, 20.0f * dpi);
     }
 
     return true;

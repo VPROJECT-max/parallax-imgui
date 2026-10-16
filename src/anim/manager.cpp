@@ -28,10 +28,11 @@ float AnimationManager::AnimFloat(ImGuiID id, float target, float duration, Easi
     }
 
     auto& state = m_bezierStates[id];
-    if (!state.active && state.currentValue == 0.0f && state.targetValue == 0.0f && state.elapsed == 0.0f) {
+    if (!state.initialized) {
         state.currentValue = target;
         state.startValue = target;
         state.targetValue = target;
+        state.initialized = true;
         return target;
     }
 

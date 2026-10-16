@@ -31,6 +31,38 @@ void ApplyTheme() {
     StyleManager::Get().ApplyToImGui();
 }
 
+void SetTheme(ThemeMode mode, bool animate) {
+    StyleManager::Get().SetTheme(mode, animate);
+}
+
+ThemeMode GetTheme() noexcept {
+    return StyleManager::Get().GetTheme();
+}
+
+void ToggleTheme(bool animate) {
+    StyleManager::Get().ToggleTheme(animate);
+}
+
+bool IsLightTheme() noexcept {
+    return StyleManager::Get().IsLightTheme();
+}
+
+void SetAccentPreset(AccentPreset preset, bool animate) {
+    StyleManager::Get().SetAccentPreset(preset, animate);
+}
+
+AccentPreset GetAccentPreset() noexcept {
+    return StyleManager::Get().GetAccentPreset();
+}
+
+void SetCustomAccent(const ImVec4& color, bool animate) {
+    StyleManager::Get().SetCustomAccent(color, animate);
+}
+
+ImVec4 GetCustomAccent() noexcept {
+    return StyleManager::Get().GetCustomAccent();
+}
+
 float AnimFloat(ImGuiID id, float target, float duration, anim::EasingPreset preset) {
     return Context::Get().Anim().AnimFloat(id, target, duration, preset);
 }
@@ -176,6 +208,10 @@ bool BeginGroupbox(const char* title, const char* icon, float height) {
     return layout::Groupbox::Begin(title, icon, height);
 }
 
+void GroupboxDescription(const char* text) {
+    layout::Groupbox::Description(text);
+}
+
 void EndGroupbox() {
     layout::Groupbox::End();
 }
@@ -186,6 +222,14 @@ bool SearchBar(std::string& inOutQuery, const char* placeholder, float width) {
 
 void UserProfileCard(const UserProfile& profile, const ImVec2& size) {
     layout::UserProfileCard(profile, size);
+}
+
+bool ThemeSwitcher(const char* label) {
+    return layout::HeaderWidgets::ThemeSwitcher(label);
+}
+
+bool AccentSelector(const char* label, bool showCustomPicker) {
+    return layout::HeaderWidgets::AccentSelector(label, showCustomPicker);
 }
 
 } // namespace parallax

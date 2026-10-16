@@ -1,31 +1,41 @@
 # Parallax
 
-Parallax is a C++20 desktop user interface library built on top of DirectX 11 and Dear ImGui. It provides an immediate-mode UI system featuring custom aesthetics, physics-driven spring animations, an on-demand SVG icon rasterization atlas, structured responsive layouts, a JSON configuration manager, and an optional license key verification module.
+**Version 1.1.0** — Parallax is a C++20 desktop user interface framework built on DirectX 11 and Dear ImGui. It provides a cohesive, token-driven immediate-mode design system featuring a 5-layer surface hierarchy, dual themes (**Graphite Dark** and **Porcelain Light**), restraint-first accent presets, physics-driven animations, an on-demand SVG icon rasterization atlas, automatic layout cards, a JSON configuration manager, and an optional license key verification module.
 
 ---
 
 ## Overview
 
-While Dear ImGui is traditionally utilized for debugging consoles and developer tooling, Parallax provides a cohesive, polished desktop interface framework suitable for client applications, configuration utilities, and overlay dashboards. Parallax abstracts lower-level ImGui cursor math and manual drawing, offering structured layout grids, chained widget rows, typography management, and hardware-accelerated icon caching.
+While Dear ImGui is traditionally used for developer overlays and debug panels, Parallax transforms it into a structured desktop UI library suitable for client applications, configuration suites, and technical dashboards. Parallax replaces ad-hoc ImGui styling with a centralized design token architecture (`StyleColors` and `StyleMetrics`), custom-rendered interactive widgets, automatic card sizing, and hardware-accelerated vector icon caching.
 
 ---
 
-## Features
+## Key Features in v1.1.0
 
-- **Custom Immediate-Mode Aesthetic**: Multi-layered dark themes, high-contrast borders, consistent padding, and typography hierarchy powered by the Inter font family.
-- **On-Demand SVG Icon Atlas**: Embedded pipeline backed by LunaSVG capable of rasterizing over 2,000 vector icons on demand directly into dynamic DirectX 11 texture memory with per-monitor DPI scaling.
-- **Physics-Driven Motion**: Damped harmonic spring physics and easing curves for interactive widget hover states, modal popups, and sidebar transitions.
-- **Custom Widget Suite**:
-  - Checkboxes and animated pill switches.
-  - Chained control rows with inline sub-widgets (keybinds, color pickers).
-  - Single-select and multi-select dropdowns with integrated search and icons.
-  - Floating-point and integer sliders, single and two-line formats, and dual-thumb range sliders.
-  - Collapsible cards and groupboxes with animated disclosure chevrons and space reclamation.
-  - Text and password inputs with leading icon indicators.
-  - Stacked transient toast notifications with severity levels.
-  - Fixed-dimension application shells (1137 × 699) with collapsible icon/expanded sidebars.
-- **JSON Configuration Engine**: Variable binding system with atomic disk writes, profile switching, and compact Base64 configuration import/export.
-- **Modular Key Verification System**: Optional cryptographic and remote authorization module with asynchronous status polling, persistent encrypted credential storage, and non-blocking dialogs.
+- **5-Layer Visual Hierarchy & Design Tokens**:
+  - Clear visual separation across Application Shell (`WindowBg`), Navigation Sidebar (`HeaderBg`), Workspace Canvas (`ContentBg`), Elevated Content Cards (`CardBg` / `CardHeaderBg`), and Interactive Controls (`WidgetBg` / `WidgetHover` / `WidgetActive`).
+- **Dual Theme Engine (`Graphite` Dark & `Porcelain` Light)**:
+  - **Graphite (`ThemeMode::Dark`, default)**: Deep graphite layered surfaces, soft neutral borders, and crisp off-white typography.
+  - **Porcelain (`ThemeMode::Light`)**: Purpose-built warm off-white palette with elevated white cards, dark graphite typography, and subtle ambient shadows.
+  - Smooth, flicker-free animated color interpolation when switching themes at runtime, including Win32 DWM titlebar adaptation.
+- **Restraint-First Accent System**:
+  - Default **Muted Sage (`#78A18B`)** visual identity alongside **Monochrome**, **Desaturated Copper**, **Subtle Steel Blue**, and **Custom RGBA** presets with automatic contrast-safe token derivation for both Dark and Light modes.
+- **Bespoke Parallax Widget Suite**:
+  - **Toggles & Checkboxes**: Standard and compact pill toggles (`Toggle`, `ToggleCompact`), animated checkboxes (`Checkbox`), indeterminate checkboxes (`CheckboxIndeterminate`), and chained `ControlRow` builders with descriptions, disabled states, inline keybinds, and color pickers.
+  - **Precision Sliders & Dual Range Sliders**: Single-value (`SliderFloat`, `SliderInt`, `SliderFloatEx`) and dual-handle range sliders (`RangeSliderFloat`, `RangeSliderInt`) with machined pill thumbs, center grip notches, optional tick marks, floating drag callouts, and **double-click / Ctrl+Click inline numeric editing**.
+  - **Buttons**: `Primary`, `Secondary`, `Subtle` (`Ghost`), and `Destructive` (`Danger`) variants, compact buttons (`ButtonCompact`), square icon buttons (`IconButton`), and extended `ButtonEx` options with animated loading spinners and shortcut badges.
+  - **Dropdowns & Multi-Selects**: Single-select (`Dropdown`) and tag-summarized multi-select (`MultiDropdown`) popovers with integrated live search filters and SVG icons.
+  - **Color Pickers**: HSV saturation-value square, hue/alpha bars, hex input, curated swatch palette, and full-row `ColorPickerRow` helper.
+  - **Text Inputs & Keybinds**: Icon-prefixed text and password inputs (`InputText` with visibility toggle) and interactive key/mouse binding pills (`KeybindWidget` with `Hold` / `Toggle` / `Always On` context menu).
+- **Automatic Card Sizing & Fixed Application Shell**:
+  - Fixed `1137 × 699` outer menu dimensions with collapsible `220px` / `64px` sidebar navigation.
+  - `BeginGroupbox` automatically sizes its height to fit child widgets when `height <= 0.0f`, eliminating manual pixel height estimation and clipped content.
+  - `CollapsibleGroupbox` with animated chevron rotation and vertical space reclamation.
+- **On-Demand SVG Icon Atlas**:
+  - Embedded LunaSVG rasterization pipeline packing over 2,077 Lucide vector icons dynamically into DirectX 11 texture memory with per-monitor DPI scaling.
+- **JSON Configuration & Key Verification**:
+  - Atomic profile persistence (`ConfigManager`) with Base64 import/export and automatic Theme/Accent state serialization.
+  - Optional asynchronous license verification modal (`KeySystem`) with DPAPI-encrypted local credential storage.
 
 ---
 
@@ -43,36 +53,33 @@ All third-party dependencies are fetched automatically during CMake configuratio
 
 ---
 
-## Building
-
-Clone the repository and build using standard CMake commands:
+## Building & Verification
 
 ```bash
 # Clone repository
 git clone https://github.com/VPROJECT-max/parallax-imgui.git
 cd parallax-imgui
 
-# Configure build directory
+# Configure and build Release targets
 cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-
-# Compile library, demo, and test suite
 cmake --build build --config Release
 ```
 
-### Running Tests
-
-Execute the automated headless verification suite:
+### Running the Headless Test Suite
 
 ```bash
 .\build\Release\test_headless.exe
 ```
 
-The test runner validates:
-1. Collapsible groupbox layout expansion and space reclamation.
-2. JSON configuration manager serialization, atomic file writes, and Base64 export/import.
-3. Asynchronous key system verification and failure rejection.
+The automated test suite verifies:
+1. Semantic Versioning (`1.1.0`) constants and `1137 × 699` fixed window dimensions.
+2. Theme Engine transitions (`Graphite` Dark ↔ `Porcelain` Light) and Accent Preset token derivation.
+3. Auto-sizing `Groupbox` content fitting and `CollapsibleGroupbox` space reclamation.
+4. Headless rendering of all redesigned custom widgets across Dark and Light themes.
+5. JSON `ConfigManager` atomic profile persistence, Theme/Accent serialization, and Base64 import/export.
+6. Asynchronous `KeySystem` rejection and VIP authentication flows.
 
-### Launching the Demonstration
+### Launching the DirectX 11 Showcase
 
 ```bash
 .\build\Release\parallax_demo_dx11.exe
@@ -82,67 +89,70 @@ The test runner validates:
 
 ## Quick Start
 
-The following snippet demonstrates basic initialization and rendering of a Parallax interface within an existing DirectX 11 ImGui application:
-
 ```cpp
 #include <parallax/parallax.hpp>
 
-// 1. Initialize Parallax with your existing DirectX 11 device and context
 void OnDeviceCreated(ID3D11Device* device, ID3D11DeviceContext* context) {
     parallax::Init(device, context);
+
+    // Optional: Configure default theme and accent preset
+    parallax::SetTheme(parallax::ThemeMode::Dark);          // Graphite Dark (default) or ThemeMode::Light (Porcelain)
+    parallax::SetAccentPreset(parallax::AccentPreset::Sage); // Sage (default), Monochrome, Copper, SteelBlue, Custom
 }
 
-// 2. Render interface during your application's frame loop
 void RenderUI() {
     static bool menuOpen = true;
     static int activeTab = 0;
 
-    // Optional: Render floating toast notifications and watermark
     parallax::RenderNotifications();
-    parallax::Watermark("APPLICATION v1.0", "Active Session", true, true);
+    parallax::Watermark("PARALLAX v1.1.0", "Active Session", true, true);
 
-    // Render fixed-dimension application window
-    if (parallax::BeginWindow("Parallax Dashboard", &menuOpen)) {
-        // Collapsible navigation sidebar
+    if (parallax::BeginWindow("Parallax Application", &menuOpen)) {
+        // Collapsible sidebar navigation
         if (parallax::BeginNavBar()) {
-            if (parallax::NavTab("shield", "Security", activeTab == 0)) activeTab = 0;
-            if (parallax::NavTab("sliders", "Settings", activeTab == 1)) activeTab = 1;
+            if (parallax::NavTab("sliders", "Components", activeTab == 0)) activeTab = 0;
+            if (parallax::NavTab("palette", "Appearance", activeTab == 1)) activeTab = 1;
             parallax::EndNavBar();
         }
 
-        // Two-column responsive layout
+        // Header controls (Accent selector + Dark/Light theme switcher)
+        parallax::AccentSelector("HeaderAccent");
+        ImGui::SameLine(0.0f, 8.0f);
+        parallax::ThemeSwitcher("HeaderTheme");
+
+        // Two-column responsive grid with auto-sizing groupboxes
         parallax::BeginGrid(2);
 
-        if (parallax::BeginGroupbox("Protection Settings", "shield")) {
-            static bool realTimeProtection = true;
-            parallax::Checkbox("Real-time Shield", &realTimeProtection);
+        if (parallax::BeginGroupbox("Interactive Controls", "sliders")) {
+            parallax::GroupboxDescription("Auto-sized card with chained rows and precision sliders.");
 
-            static float sensitivity = 1.0f;
-            parallax::SliderFloat("Scan Sensitivity", &sensitivity, 0.1f, 5.0f);
+            static bool enabled = true;
+            static int hotkey = 0;
+            parallax::ControlRow("Enable Module", &enabled)
+                .Description("Toggle primary feature with an inline keybind")
+                .Keybind(&hotkey)
+                .Render();
+
+            static float sensitivity = 1.25f;
+            parallax::SliderFloat("Sensitivity", &sensitivity, 0.1f, 5.0f, "%.2fx");
 
             parallax::EndGroupbox();
         }
 
         parallax::NextColumn();
 
-        if (parallax::BeginGroupbox("Configuration", "sliders")) {
-            static std::string apiKey = "sk-live-default";
-            parallax::InputText("License Key", apiKey, "key", "Enter key...", 0.0f, true);
-
-            if (parallax::Button("Save Configuration", "check", parallax::ButtonVariant::Primary)) {
-                parallax::Notify(parallax::NotificationLevel::Success, "Saved", "Settings updated.");
+        if (parallax::BeginGroupbox("Actions", "zap")) {
+            if (parallax::Button("Apply Changes", "check", parallax::ButtonVariant::Primary)) {
+                parallax::Notify(parallax::NotificationLevel::Success, "Saved", "Configuration applied.");
             }
-
             parallax::EndGroupbox();
         }
 
         parallax::EndGrid();
-
         parallax::EndWindow();
     }
 }
 
-// 3. Clean up on shutdown
 void OnDeviceDestroyed() {
     parallax::Shutdown();
 }
@@ -150,54 +160,9 @@ void OnDeviceDestroyed() {
 
 ---
 
-## Architecture
+## Versioning Policy
 
-The library is organized into self-contained modules:
-
-- **Core (`parallax::core`)**: Global context management, high-DPI scaling computations, style metrics, and typography loaders.
-- **Rendering Backend (`parallax::dx11`)**: Standalone Win32/D3D11 host implementation with dark-mode window framing and swap chain presentation.
-- **Vector Icon Pipeline (`parallax::icons`)**: Dynamic texture packing atlas that resolves Lucide SVG icons from disk, rasterizes them to target pixel dimensions via LunaSVG, and uploads sub-rectangles to D3D11 textures.
-- **Animation System (`parallax::anim`)**: Spring simulators and easing functions driving smooth numeric transitions across frame deltas.
-- **Layout Manager (`parallax::layout`)**: Coordinate tracking for sidebars, navigation tabs, grid reflows, and groupbox containers.
-- **Widget Implementations (`parallax::widgets`)**: Immediate-mode control definitions handling pointer interactions, state caches, and rendering primitives.
-- **Configuration Engine (`parallax::config`)**: Type-erased variable binding table serializing state to JSON via atomic temporary file swapping.
-- **Authorization Module (`parallax::auth`)**: Asynchronous license validation modal with support for custom verification callbacks.
-
----
-
-## Project Structure
-
-```text
-parallax-imgui/
-├── assets/                  # Inter font family definitions and branding SVGs
-│   ├── fonts/               # Static Inter font weights (.ttf)
-│   └── logo.svg             # Application vector logo
-├── configs/                 # Runtime directory for saved JSON profiles
-├── docs/                    # Technical specifications and developer notes
-├── examples/
-│   └── demo_dx11/           # Standalone DirectX 11 reference application
-├── icons/                   # 2,077 Lucide SVG vector icons
-├── include/parallax/        # Public API headers
-│   ├── anim/                # Spring physics and easing engines
-│   ├── auth/                # Optional Key authorization system
-│   ├── config/              # JSON configuration engine
-│   ├── core/                # Context, style definitions, and typography
-│   ├── dx11/                # DirectX 11 host and rendering abstractions
-│   ├── icons/               # SVG rasterization and dynamic atlas
-│   ├── input/               # Global hotkey dispatching
-│   ├── layout/              # Windows, navbars, sub-tabs, and grids
-│   └── widgets/             # Checkboxes, sliders, dropdowns, inputs, buttons
-├── src/                     # Implementation files
-├── tests/                   # Headless automated verification suite
-├── CMakeLists.txt           # Build configuration script
-└── README.md
-```
-
----
-
-## Current Status
-
-Parallax is currently in a stable development checkpoint. Core layout math, icon alignment, component state management, and configuration persistence have been audited and verified through automated test suites. Future development will focus on extended documentation, additional backend targets, and expanded widget primitives.
+Parallax follows **Semantic Versioning (`MAJOR.MINOR.PATCH`)**. See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and version history.
 
 ---
 

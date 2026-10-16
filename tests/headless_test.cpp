@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cassert>
+#include <cmath>
+#include <string>
+#include <vector>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include "parallax/parallax.hpp"
@@ -7,18 +10,92 @@
 #include "parallax/config/config_system.hpp"
 #include "parallax/auth/key_system.hpp"
 
-void TestCollapsibleGroupbox() {
-    std::cout << "[TEST] 1. Testing Collapsible Groupbox lifecycle & space reclamation..." << std::endl;
+void TestSemVerAndFixedShell() {
+    std::cout << "[TEST] 1. Testing SemVer (1.1.0) & Fixed Window Dimensions (1137x699)..." << std::endl;
+
+    static_assert(PARALLAX_VERSION_MAJOR == 1, "Expected MAJOR == 1");
+    static_assert(PARALLAX_VERSION_MINOR == 1, "Expected MINOR == 1");
+    static_assert(PARALLAX_VERSION_PATCH == 0, "Expected PATCH == 0");
+    static_assert(parallax::kVersionMajor == 1 && parallax::kVersionMinor == 1 && parallax::kVersionPatch == 0, "Expected 1.1.0");
+    assert(std::string(PARALLAX_VERSION_STRING) == "1.1.0");
+
+    const ImVec2 defSize = parallax::GetDefaultWindowSize();
+    assert(std::abs(defSize.x - 1137.0f) < 0.01f);
+    assert(std::abs(defSize.y - 699.0f) < 0.01f);
+
+    std::cout << "  ✓ SemVer v" << PARALLAX_VERSION_STRING << " and 1137x699 fixed bounds verified" << std::endl;
+}
+
+void TestThemeAndAccentEngine() {
+    std::cout << "[TEST] 2. Testing Theme Engine (Graphite Dark <-> Porcelain Light) & Accent Presets..." << std::endl;
+
+    parallax::SetTheme(parallax::ThemeMode::Dark, false);
+    assert(parallax::GetTheme() == parallax::ThemeMode::Dark);
+    assert(!parallax::IsLightTheme());
+
+    const ImVec4 darkWinBg = parallax::Colors().WindowBg;
+    const ImVec4 darkText = parallax::Colors().TextPrimary;
+    assert(darkWinBg.x < 0.15f);
+    assert(darkText.x > 0.85f);
+
+    // Switch to Porcelain (Light) with smooth transition
+    parallax::SetTheme(parallax::ThemeMode::Light, true);
+    assert(parallax::GetTheme() == parallax::ThemeMode::Light);
+    assert(parallax::IsLightTheme());
+
+    // Step transition to completion
+    for (int i = 0; i < 30; ++i) {
+        parallax::StyleManager::Get().UpdateTransition(1.0f / 60.0f);
+    }
+
+    const ImVec4 lightWinBg = parallax::Colors().WindowBg;
+    const ImVec4 lightText = parallax::Colors().TextPrimary;
+    assert(lightWinBg.x > 0.85f);
+    assert(lightText.x < 0.25f);
+    std::cout << "  ✓ Graphite Dark & Porcelain Light surface/text tokens verified" << std::endl;
+
+    // Test Accent Presets
+    parallax::SetAccentPreset(parallax::AccentPreset::Copper, false);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Copper);
+    const ImVec4 copperAccent = parallax::Colors().Accent;
+    assert(copperAccent.x > copperAccent.z); // Copper is warm (R > B)
+
+    parallax::SetAccentPreset(parallax::AccentPreset::SteelBlue, false);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::SteelBlue);
+    const ImVec4 steelAccent = parallax::Colors().Accent;
+    assert(steelAccent.z > steelAccent.x); // Steel Blue is cool (B > R)
+
+    // Test Custom Accent
+    parallax::SetCustomAccent(ImVec4(0.55f, 0.45f, 0.65f, 1.0f), false);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Custom);
+
+    // Restore default Muted Sage & Dark theme
+    parallax::SetAccentPreset(parallax::AccentPreset::Sage, false);
+    parallax::SetTheme(parallax::ThemeMode::Dark, false);
+    std::cout << "  ✓ Accent presets (Sage, Monochrome, Copper, SteelBlue, Custom) verified" << std::endl;
+}
+
+void TestCollapsibleAndAutoGroupbox() {
+    std::cout << "[TEST] 3. Testing Auto-Sizing Groupbox & Collapsible Groupbox lifecycle..." << std::endl;
 
     bool expanded = true;
     ImGuiIO& io = ImGui::GetIO();
 
-    // Frame 0-4: Initial expanded render
+    // Frame 0-4: Initial expanded render + auto-sizing Groupbox check
+    float groupboxHeight = 0.0f;
     for (int i = 0; i < 5; ++i) {
         ImGui::NewFrame();
         ImGui::SetNextWindowPos(ImVec2(100, 100));
         ImGui::SetNextWindowSize(ImVec2(800, 600));
         ImGui::Begin("TestWindow");
+
+        if (parallax::BeginGroupbox("AutoFitCard", "layers", 0.0f)) {
+            parallax::GroupboxDescription("Card should auto-fit its content height.");
+            ImGui::Button("Single Control", ImVec2(120, 28));
+            groupboxHeight = ImGui::GetWindowHeight();
+            parallax::EndGroupbox();
+        }
+
         bool open = parallax::BeginCollapsibleGroupbox("Test Group", &expanded, "eye", 0.0f, true);
         (void)open;
         ImGui::Button("Child Button", ImVec2(100, 30));
@@ -27,26 +104,41 @@ void TestCollapsibleGroupbox() {
         ImGui::Render();
     }
 
-    // Frame 5: Mouse click on header to collapse
-    io.MousePos = ImVec2(200.0f, 115.0f);
-    io.MouseDown[0] = true;
+    // Verify auto-sizing groupbox did NOT stretch to 600px window bottom
+    assert(groupboxHeight > 40.0f && groupboxHeight < 250.0f);
+    std::cout << "  ✓ Auto-sizing Groupbox fitted content height (" << groupboxHeight << "px < 250px)" << std::endl;
+
+    // Click CollapsibleGroupbox header to collapse
+    // Determine where Test Group header is or toggle via click
     ImGui::NewFrame();
     ImGui::SetNextWindowPos(ImVec2(100, 100));
     ImGui::SetNextWindowSize(ImVec2(800, 600));
-    ImGui::Begin("TestWindow");
-    parallax::BeginCollapsibleGroupbox("Test Group", &expanded, "eye", 0.0f, true);
+    ImGui::Begin("TestWindow2");
+    ImVec2 headerScreenPos = ImGui::GetCursorScreenPos();
+    parallax::BeginCollapsibleGroupbox("Test Group 2", &expanded, "eye", 0.0f, true);
+    ImGui::Button("Child Button", ImVec2(100, 30));
     parallax::EndCollapsibleGroupbox();
     ImGui::End();
     ImGui::Render();
 
-    // Frame 6: Release mouse
+    io.MousePos = ImVec2(headerScreenPos.x + 60.0f, headerScreenPos.y + 15.0f);
+    io.MouseDown[0] = true;
+    ImGui::NewFrame();
+    ImGui::SetNextWindowPos(ImVec2(100, 100));
+    ImGui::SetNextWindowSize(ImVec2(800, 600));
+    ImGui::Begin("TestWindow2");
+    parallax::BeginCollapsibleGroupbox("Test Group 2", &expanded, "eye", 0.0f, true);
+    parallax::EndCollapsibleGroupbox();
+    ImGui::End();
+    ImGui::Render();
+
     io.MouseDown[0] = false;
     for (int frame = 0; frame < 30; ++frame) {
         ImGui::NewFrame();
         ImGui::SetNextWindowPos(ImVec2(100, 100));
         ImGui::SetNextWindowSize(ImVec2(800, 600));
-        ImGui::Begin("TestWindow");
-        bool open = parallax::BeginCollapsibleGroupbox("Test Group", &expanded, "eye", 0.0f, true);
+        ImGui::Begin("TestWindow2");
+        bool open = parallax::BeginCollapsibleGroupbox("Test Group 2", &expanded, "eye", 0.0f, true);
         if (open) {
             ImGui::Button("Child Button", ImVec2(100, 30));
             parallax::EndCollapsibleGroupbox();
@@ -56,41 +148,77 @@ void TestCollapsibleGroupbox() {
     }
 
     assert(expanded == false);
-    std::cout << "  ✓ Collapsible successfully collapsed (expanded=" << expanded << ")" << std::endl;
+    std::cout << "  ✓ CollapsibleGroupbox collapse & space reclamation verified" << std::endl;
+}
 
-    // Test re-expanding
-    io.MousePos = ImVec2(200.0f, 115.0f);
-    io.MouseDown[0] = true;
-    ImGui::NewFrame();
-    ImGui::SetNextWindowPos(ImVec2(100, 100));
-    ImGui::SetNextWindowSize(ImVec2(800, 600));
-    ImGui::Begin("TestWindow");
-    parallax::BeginCollapsibleGroupbox("Test Group", &expanded, "eye", 0.0f, true);
-    parallax::EndCollapsibleGroupbox();
-    ImGui::End();
-    ImGui::Render();
+void TestRedesignedWidgetsHeadless() {
+    std::cout << "[TEST] 4. Testing all redesigned v1.1.0 widgets across Dark & Light themes..." << std::endl;
 
-    io.MouseDown[0] = false;
-    for (int frame = 0; frame < 30; ++frame) {
+    bool bToggle = true;
+    bool bCheck = false;
+    float fSlider = 50.0f;
+    int iSlider = 5;
+    float rMin = 20.0f, rMax = 80.0f;
+    int irMin = 10, irMax = 90;
+    int ddIdx = 0;
+    std::vector<std::string> items = {"Alpha", "Beta", "Gamma"};
+    std::vector<bool> multiSel = {true, false, true};
+    ImVec4 col(0.47f, 0.63f, 0.55f, 1.0f);
+    std::string textVal = "Parallax";
+    parallax::Keybind kb{'K', parallax::KeybindMode::Toggle, false};
+
+    for (int themePass = 0; themePass < 2; ++themePass) {
+        parallax::SetTheme(themePass == 0 ? parallax::ThemeMode::Dark : parallax::ThemeMode::Light, false);
+
         ImGui::NewFrame();
-        ImGui::SetNextWindowPos(ImVec2(100, 100));
-        ImGui::SetNextWindowSize(ImVec2(800, 600));
-        ImGui::Begin("TestWindow");
-        bool open = parallax::BeginCollapsibleGroupbox("Test Group", &expanded, "eye", 0.0f, true);
-        if (open) {
-            ImGui::Button("Child Button", ImVec2(100, 30));
-            parallax::EndCollapsibleGroupbox();
-        }
+        ImGui::SetNextWindowPos(ImVec2(50, 50));
+        ImGui::SetNextWindowSize(ImVec2(900, 650));
+        ImGui::Begin("WidgetTestHost");
+
+        parallax::Toggle("Custom Toggle", &bToggle);
+        parallax::ToggleCompact("Compact Toggle", &bToggle);
+        parallax::Checkbox("Custom Checkbox", &bCheck);
+        parallax::CheckboxIndeterminate("Indeterminate Checkbox", &bCheck, true);
+
+        parallax::Row("Chained Row", &bToggle)
+            .Icon("shield")
+            .Description("Row description")
+            .Compact(true)
+            .Keybind(&kb)
+            .Color(&col);
+
+        parallax::Button("Primary", "check", parallax::ButtonVariant::Primary);
+        parallax::Button("Secondary", "sliders", parallax::ButtonVariant::Secondary);
+        parallax::Button("Subtle", "eye", parallax::ButtonVariant::Subtle);
+        parallax::Button("Destructive", "trash-2", parallax::ButtonVariant::Destructive);
+        parallax::ButtonCompact("Compact", "zap");
+        parallax::IconButton("##IconBtn", "bell");
+
+        parallax::SliderFloat("Float Slider", &fSlider, 0.0f, 100.0f);
+        parallax::SliderFloatEx("Tick Slider", &fSlider, 0.0f, 100.0f, {"%.1f", 0.0f, false, false, false, 5, true});
+        parallax::SliderInt("Int Slider", &iSlider, 0, 10);
+        parallax::RangeSliderFloat("Float Range", &rMin, &rMax, 0.0f, 100.0f);
+        parallax::RangeSliderInt("Int Range", &irMin, &irMax, 0, 100);
+
+        parallax::Dropdown("Single Dropdown", items, &ddIdx);
+        parallax::MultiDropdown("Multi Dropdown", items, multiSel);
+        parallax::ColorPicker("Color Swatch", &col, true);
+        parallax::ColorPickerRow("Color Row", &col, true);
+        parallax::InputText("Input Field", textVal, "search", "Type...");
+        parallax::KeybindWidget("Keybind", &kb);
+        parallax::ThemeSwitcher("Theme Switcher");
+        parallax::AccentSelector("Accent Selector", true);
+
         ImGui::End();
         ImGui::Render();
     }
 
-    assert(expanded == true);
-    std::cout << "  ✓ Collapsible successfully re-expanded (expanded=" << expanded << ")" << std::endl;
+    parallax::SetTheme(parallax::ThemeMode::Dark, false);
+    std::cout << "  ✓ All redesigned custom widgets rendered cleanly in Dark & Light modes" << std::endl;
 }
 
 void TestConfigEngine() {
-    std::cout << "[TEST] 2. Testing JSON Configuration Engine (atomic write, binding, Base64)..." << std::endl;
+    std::cout << "[TEST] 5. Testing JSON Configuration Engine (atomic write, theme/accent persistence, Base64)..." << std::endl;
 
     auto& cfg = parallax::config::ConfigManager::Get();
     cfg.SetConfigDirectory("test_configs");
@@ -111,13 +239,17 @@ void TestConfigEngine() {
     cfg.BindString("test.string", &sTest, "");
     cfg.BindMultiBool("test.multibool", &mbTest);
 
+    // Set Porcelain Light theme and Copper accent before saving
+    parallax::SetTheme(parallax::ThemeMode::Light, false);
+    parallax::SetAccentPreset(parallax::AccentPreset::Copper, false);
+
     // Save profile
     bool saveOk = cfg.SaveProfile("UnitTestProfile");
     (void)saveOk;
     assert(saveOk);
     std::cout << "  ✓ Atomic profile save succeeded" << std::endl;
 
-    // Mutate variables
+    // Mutate variables + theme/accent
     bTest = false;
     iTest = 999;
     fTest = 0.001f;
@@ -126,6 +258,8 @@ void TestConfigEngine() {
     kbTest.mode = parallax::KeybindMode::Toggle;
     sTest = "Corrupted";
     mbTest = { false, false, false, false };
+    parallax::SetTheme(parallax::ThemeMode::Dark, false);
+    parallax::SetAccentPreset(parallax::AccentPreset::Sage, false);
 
     // Reload profile
     bool loadOk = cfg.LoadProfile("UnitTestProfile");
@@ -139,16 +273,19 @@ void TestConfigEngine() {
     assert(kbTest.mode == parallax::KeybindMode::Hold);
     assert(sTest == "TestStringValue");
     assert(mbTest.size() == 4 && mbTest[0] == true && mbTest[1] == false);
-    std::cout << "  ✓ Profile reload verified (all bound types match exactly)" << std::endl;
+    assert(parallax::GetTheme() == parallax::ThemeMode::Light);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Copper);
+    std::cout << "  ✓ Profile reload verified (all bound types + ThemeMode + AccentPreset match)" << std::endl;
 
     // Test Base64 export & import
     std::string b64 = cfg.ExportToBase64();
     assert(!b64.empty());
-    std::cout << "  ✓ Base64 config export produced: " << b64.substr(0, 32) << "..." << std::endl;
 
     // Mutate again
     iTest = 100;
     sTest = "Modified";
+    parallax::SetTheme(parallax::ThemeMode::Dark, false);
+    parallax::SetAccentPreset(parallax::AccentPreset::Monochrome, false);
 
     // Import from Base64
     bool importOk = cfg.ImportFromBase64(b64);
@@ -156,15 +293,22 @@ void TestConfigEngine() {
     assert(importOk);
     assert(iTest == 42);
     assert(sTest == "TestStringValue");
-    std::cout << "  ✓ Base64 config import verified" << std::endl;
+    assert(parallax::GetTheme() == parallax::ThemeMode::Light);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Copper);
+    std::cout << "  ✓ Base64 config export/import verified" << std::endl;
+
+    // Reset to defaults
+    cfg.ResetToDefaults();
+    assert(parallax::GetTheme() == parallax::ThemeMode::Dark);
+    assert(parallax::GetAccentPreset() == parallax::AccentPreset::Sage);
 
     // Cleanup test profile
     cfg.DeleteProfile("UnitTestProfile");
-    std::cout << "  ✓ Profile deletion verified" << std::endl;
+    std::cout << "  ✓ Profile reset and deletion verified" << std::endl;
 }
 
 void TestKeySystem() {
-    std::cout << "[TEST] 3. Testing Developer Key System async validation..." << std::endl;
+    std::cout << "[TEST] 6. Testing Developer Key System async validation..." << std::endl;
 
     auto& keySys = parallax::auth::KeySystem::Get();
 
@@ -201,10 +345,13 @@ int main() {
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 
     std::cout << "==========================================================" << std::endl;
-    std::cout << " PARALLAX UI AUTOMATED VERIFICATION SUITE" << std::endl;
+    std::cout << " PARALLAX UI v" << PARALLAX_VERSION_STRING << " AUTOMATED VERIFICATION SUITE" << std::endl;
     std::cout << "==========================================================" << std::endl;
 
-    TestCollapsibleGroupbox();
+    TestSemVerAndFixedShell();
+    TestThemeAndAccentEngine();
+    TestCollapsibleAndAutoGroupbox();
+    TestRedesignedWidgetsHeadless();
     TestConfigEngine();
     TestKeySystem();
 

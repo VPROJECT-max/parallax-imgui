@@ -16,6 +16,7 @@ public:
 class Groupbox {
 public:
     static bool Begin(const char* title, const char* icon = nullptr, float height = 0.0f);
+    static void Description(const char* text);
     static void End();
 };
 

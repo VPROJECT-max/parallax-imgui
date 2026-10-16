@@ -95,6 +95,51 @@ The automated test suite verifies:
 
 ---
 
+## Standalone SDK & Packaging
+
+Parallax is engineered to be consumed as a standalone compiled C++ SDK without requiring internal source files.
+
+### Packaging the SDK Package (`sdk/`)
+
+```bash
+cmake --build build --config Release --target package_sdk
+```
+
+This packages:
+- `sdk/include/parallax/`: All public C++20 headers.
+- `sdk/include/imgui/`: Dear ImGui v1.93.0 docking headers.
+- `sdk/lib/parallax.lib`: 20.08 MB unified static library (combines Parallax, ImGui, LunaSVG, and PlutoVG).
+- `sdk/lib/modular/`: Individual component static libraries.
+- `sdk/assets/`: Inter font family, official logo, and 2,077 SVG icon assets.
+- `sdk/cmake/ParallaxConfig.cmake`: Standard CMake package definition for `find_package(Parallax REQUIRED)`.
+
+### Verifying the Standalone Consumer Test
+
+The project includes an independent consumer project (`examples/standalone_consumer`) that compiles strictly against the packaged SDK with zero access to `src/`:
+
+```bash
+# Configure, build, and run the consumer verification test
+cmake -B examples/standalone_consumer/build -S examples/standalone_consumer
+cmake --build examples/standalone_consumer/build --config Release
+.\examples\standalone_consumer\build\Release\consumer_app.exe --test
+```
+
+---
+
+## Documentation Website & AI Agent Specifications
+
+Parallax includes a complete static documentation suite:
+
+```bash
+# Generate documentation website and AI specifications
+cmake --build build --config Release --target build_docs
+```
+
+- **Documentation Website**: Open [`docs/index.html`](docs/index.html) in any web browser to view the interactive portal featuring AMOLED and Light themes, Prism.js syntax highlighting, search, and a searchable 2,078 SVG icon catalog.
+- **AI Agent Specification**: [`docs/llms.txt`](docs/llms.txt) and [`docs/llms-full.txt`](docs/llms-full.txt) provide structured, machine-readable specifications enabling autonomous coding assistants to build Parallax applications without internal codebase knowledge.
+
+---
+
 ## Quick Start
 
 ```cpp
@@ -113,7 +158,7 @@ void RenderUI() {
     static int activeTab = 0;
 
     parallax::RenderNotifications();
-    parallax::Watermark("PARALLAX v1.1.0", "Active Session", true, true);
+    parallax::Watermark("PARALLAX v1.2.0", "Active Session", true, true);
 
     if (parallax::BeginWindow("Parallax Application", &menuOpen)) {
         // Collapsible sidebar navigation

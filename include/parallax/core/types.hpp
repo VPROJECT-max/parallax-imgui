@@ -10,6 +10,7 @@
 #define PARALLAX_VERSION_MINOR 2
 #define PARALLAX_VERSION_PATCH 0
 #define PARALLAX_VERSION_STRING "1.2.0"
+#define PARALLAX_VERSION_WIDE L"1.2.0"
 
 namespace parallax {
 

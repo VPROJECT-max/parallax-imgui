@@ -1,0 +1,34 @@
+# Parallax UI — Public API Documentation for AI Agents
+> High-performance C++20, DirectX 11, Dear ImGui UI framework and design system (v1.2.0).
+
+## Core Capabilities
+- Fixed 1137x699 calibrated window canvas with spring-animated show/hide transitions.
+- AMOLED Black (#000000), Graphite Dark, and Porcelain Light theme engine.
+- Canonical primary brand accent #9998F6 (RGB: 153, 152, 246).
+- 5-layer luminance surface hierarchy preventing component blending.
+- 2,078 on-demand high-DPI rasterized SVG icons via LunaSVG dynamic atlas.
+- Tactile widgets: Pill switches, checkboxes, single & range sliders, dropdowns, multi-select, color pickers, password inputs, keybinds (keyboard + M1-M5).
+- Atomic JSON configuration engine with debounced auto-save.
+- Asynchronous developer key verification system.
+- Standalone DirectX 11 host window or hook into existing DX11 Present swap chain.
+
+## Documentation Index
+- [Getting Started](markdown/getting-started.md): Installation, requirements, CMake linking, minimal app.
+- [Core Architecture](markdown/core-api.md): Initialization, DPI, window shell, navigation, subtabs, grids, groupboxes.
+- [Widget Catalog](markdown/widgets.md): Complete widget signatures, params, callbacks, return values.
+- [Appearance & Themes](markdown/appearance.md): AMOLED Black, 5-layer surface tokens, #9998F6 accent, Inter fonts.
+- [Advanced Systems](markdown/advanced.md): JSON config persistence, key system, search spotlight, host vs hook.
+- [SVG Icon Catalog](markdown/icons.md): Referencing 2,078 icons by slug, on-demand atlas, tinting.
+- [API Reference](markdown/reference.md): Public headers, structs, classes, enums, constants.
+- [AI Agent Guide](markdown/ai-agent-guide.md): Critical rules, pitfalls, copy-paste boilerplate.
+
+## Primary Entry Point Header
+```cpp
+#include <parallax/parallax.hpp>
+```
+
+## CMake Linking Target
+```cmake
+find_package(Parallax REQUIRED)
+target_link_libraries(my_app PRIVATE Parallax::Parallax)
+```

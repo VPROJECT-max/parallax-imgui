@@ -32,3 +32,9 @@ imgui.ini
 *.ilk
 test_configs/
 configs/*.tmp
+
+# Generated SDK package
+sdk/
+
+# Local wallpaper assets with external/unconfirmed licensing
+assets/*.jpg

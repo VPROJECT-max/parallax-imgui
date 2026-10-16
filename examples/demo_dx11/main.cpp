@@ -1,6 +1,7 @@
 #include "parallax/parallax.hpp"
 #include <imgui_internal.h>
 #include <windows.h>
+#include <wincodec.h>
 #include <string>
 #include <vector>
 #include <deque>
@@ -9,12 +10,136 @@
 #include <algorithm>
 #include <cmath>
 
+#pragma comment(lib, "windowscodecs.lib")
+
+static ID3D11ShaderResourceView* LoadTextureFromFileWIC(ID3D11Device* device, const wchar_t* filename, int& outWidth, int& outHeight) {
+    outWidth = 0;
+    outHeight = 0;
+    if (!device || !filename) return nullptr;
+
+    IWICImagingFactory* pFactory = nullptr;
+    HRESULT hr = CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pFactory));
+    if (FAILED(hr)) return nullptr;
+
+    IWICBitmapDecoder* pDecoder = nullptr;
+    hr = pFactory->CreateDecoderFromFilename(filename, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, &pDecoder);
+    if (FAILED(hr)) {
+        pFactory->Release();
+        return nullptr;
+    }
+
+    IWICBitmapFrameDecode* pFrame = nullptr;
+    hr = pDecoder->GetFrame(0, &pFrame);
+    if (FAILED(hr)) {
+        pDecoder->Release();
+        pFactory->Release();
+        return nullptr;
+    }
+
+    IWICFormatConverter* pConverter = nullptr;
+    hr = pFactory->CreateFormatConverter(&pConverter);
+    if (FAILED(hr)) {
+        pFrame->Release();
+        pDecoder->Release();
+        pFactory->Release();
+        return nullptr;
+    }
+
+    hr = pConverter->Initialize(
+        pFrame,
+        GUID_WICPixelFormat32bppRGBA,
+        WICBitmapDitherTypeNone,
+        nullptr,
+        0.0f,
+        WICBitmapPaletteTypeCustom
+    );
+    if (FAILED(hr)) {
+        pConverter->Release();
+        pFrame->Release();
+        pDecoder->Release();
+        pFactory->Release();
+        return nullptr;
+    }
+
+    UINT width = 0, height = 0;
+    hr = pConverter->GetSize(&width, &height);
+    if (FAILED(hr) || width == 0 || height == 0) {
+        pConverter->Release();
+        pFrame->Release();
+        pDecoder->Release();
+        pFactory->Release();
+        return nullptr;
+    }
+
+    UINT rowPitch = width * 4;
+    UINT imageSize = rowPitch * height;
+    std::vector<BYTE> buffer(imageSize);
+    hr = pConverter->CopyPixels(nullptr, rowPitch, imageSize, buffer.data());
+    pConverter->Release();
+    pFrame->Release();
+    pDecoder->Release();
+    pFactory->Release();
+
+    if (FAILED(hr)) return nullptr;
+
+    D3D11_TEXTURE2D_DESC desc{};
+    desc.Width = width;
+    desc.Height = height;
+    desc.MipLevels = 1;
+    desc.ArraySize = 1;
+    desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count = 1;
+    desc.Usage = D3D11_USAGE_IMMUTABLE;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    D3D11_SUBRESOURCE_DATA initData{};
+    initData.pSysMem = buffer.data();
+    initData.SysMemPitch = rowPitch;
+
+    ID3D11Texture2D* pTexture = nullptr;
+    hr = device->CreateTexture2D(&desc, &initData, &pTexture);
+    if (FAILED(hr)) return nullptr;
+
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+    srvDesc.Format = desc.Format;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.MipLevels = 1;
+
+    ID3D11ShaderResourceView* pSRV = nullptr;
+    hr = device->CreateShaderResourceView(pTexture, &srvDesc, &pSRV);
+    pTexture->Release();
+
+    if (SUCCEEDED(hr)) {
+        outWidth = static_cast<int>(width);
+        outHeight = static_cast<int>(height);
+        return pSRV;
+    }
+    return nullptr;
+}
+
 int RunDemo(HINSTANCE hInstance) {
-    // 1. Initialize standalone DirectX 11 Host window
+    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
+    // 1. Initialize standalone DirectX 11 Host window (1400x850 viewport showcasing aurora background)
     parallax::dx11::D3D11Host host;
-    if (!host.InitStandalone(hInstance, 1200, 750, L"Parallax UI v" L"1.1.0 — C++20 DirectX 11 Interface Framework")) {
+    if (!host.InitStandalone(hInstance, 1400, 850, L"Parallax UI v" PARALLAX_VERSION_WIDE L" — C++20 DirectX 11 Interface Framework")) {
         MessageBoxW(nullptr, L"Failed to initialize DirectX 11 Host Window.", L"Error", MB_ICONERROR);
+        CoUninitialize();
         return 1;
+    }
+
+    // Load aurora starry sky landscape background texture
+    int bgWidth = 0, bgHeight = 0;
+    ID3D11ShaderResourceView* bgTextureSRV = nullptr;
+    const wchar_t* candidateBgPaths[] = {
+        L"assets/bannalpsee-switzerland-aurora-borealis-starry-sky-landscape-3840x2160-3938.jpg",
+        L"../../assets/bannalpsee-switzerland-aurora-borealis-starry-sky-landscape-3840x2160-3938.jpg",
+        L"../assets/bannalpsee-switzerland-aurora-borealis-starry-sky-landscape-3840x2160-3938.jpg"
+    };
+    for (const auto* path : candidateBgPaths) {
+        bgTextureSRV = LoadTextureFromFileWIC(host.GetDevice(), path, bgWidth, bgHeight);
+        if (bgTextureSRV) break;
     }
 
     // 2. Initialize Parallax UI Library (Loads Inter Fonts, Design Tokens & SVG Atlas)
@@ -24,7 +149,7 @@ int RunDemo(HINSTANCE hInstance) {
     parallax::Notify(
         parallax::NotificationLevel::Success,
         "Parallax v" PARALLAX_VERSION_STRING " Ready",
-        "Graphite & Porcelain themes, Muted Sage accent engine, and redesigned components initialized.",
+        "AMOLED, Graphite & Porcelain themes, #9998F6 brand accent, and redesigned components initialized.",
         4.5f
     );
 
@@ -198,6 +323,37 @@ int RunDemo(HINSTANCE hInstance) {
 
     // 4. Main message and render loop
     host.RunMainLoop([&]() {
+        // -----------------------------------------------------------------
+        // Wallpaper Background Rendering (Cover Aspect Crop + Scrim)
+        // -----------------------------------------------------------------
+        ImDrawList* bgDrawList = ImGui::GetBackgroundDrawList();
+        const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+        if (bgTextureSRV && displaySize.x > 0.0f && displaySize.y > 0.0f && bgWidth > 0 && bgHeight > 0) {
+            const float vpAspect = displaySize.x / displaySize.y;
+            const float imgAspect = static_cast<float>(bgWidth) / static_cast<float>(bgHeight);
+            ImVec2 uv0(0.0f, 0.0f);
+            ImVec2 uv1(1.0f, 1.0f);
+
+            if (vpAspect > imgAspect) {
+                // Viewport is wider than image: fit width, crop vertical
+                const float visibleRatio = (displaySize.y / displaySize.x) * imgAspect;
+                const float cropY = (1.0f - visibleRatio) * 0.5f;
+                uv0.y = cropY;
+                uv1.y = 1.0f - cropY;
+            } else {
+                // Viewport is taller than image: fit height, crop horizontal
+                const float visibleRatio = (displaySize.x / displaySize.y) / imgAspect;
+                const float cropX = (1.0f - visibleRatio) * 0.5f;
+                uv0.x = cropX;
+                uv1.x = 1.0f - cropX;
+            }
+
+            bgDrawList->AddImage(reinterpret_cast<ImTextureID>(bgTextureSRV), ImVec2(0.0f, 0.0f), displaySize, uv0, uv1);
+
+            // Subtle dark scrim overlay to ensure 100% menu readability & AMOLED contrast
+            bgDrawList->AddRectFilled(ImVec2(0.0f, 0.0f), displaySize, IM_COL32(0, 0, 0, 80));
+        }
+
         if (spotlightTimer > 0.0f) {
             spotlightTimer -= ImGui::GetIO().DeltaTime;
             if (spotlightTimer < 0.0f) spotlightTimer = 0.0f;
@@ -234,6 +390,14 @@ int RunDemo(HINSTANCE hInstance) {
             parallax::PopFont();
             ImGui::End();
         }
+
+        // Center Parallax window within host viewport on first launch
+        const float curDpi = parallax::GetDpiScale();
+        ImGui::SetNextWindowPos(
+            ImVec2(std::max(0.0f, (displaySize.x - 1137.0f * curDpi) * 0.5f),
+                   std::max(0.0f, (displaySize.y - 699.0f * curDpi) * 0.5f)),
+            ImGuiCond_FirstUseEver
+        );
 
         // Render Parallax Window (Strictly fixed 1137x699 logical dimensions)
         if (parallax::BeginWindow("Parallax UI Architecture", &menuOpen)) {
@@ -1165,6 +1329,12 @@ int RunDemo(HINSTANCE hInstance) {
     });
 
     // 5. Cleanup
+    if (bgTextureSRV) {
+        bgTextureSRV->Release();
+        bgTextureSRV = nullptr;
+    }
+    CoUninitialize();
+
     parallax::Shutdown();
     host.Shutdown();
 

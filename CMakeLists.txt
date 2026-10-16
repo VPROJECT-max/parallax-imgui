@@ -101,6 +101,7 @@ target_link_libraries(parallax PUBLIC
     dxgi
     d3dcompiler
     dwmapi
+    windowscodecs
 )
 
 # -----------------------------------------------------------------------------
@@ -127,3 +128,21 @@ add_custom_command(TARGET parallax_demo_dx11 POST_BUILD
         "$<TARGET_FILE_DIR:parallax_demo_dx11>/assets"
     COMMENT "Copying 2,077 SVG icons and assets to output directory"
 )
+
+# -----------------------------------------------------------------------------
+# 5. SDK Packaging & Documentation Targets
+# -----------------------------------------------------------------------------
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_FOUND)
+    add_custom_target(package_sdk
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/scripts/package_sdk.py"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Packaging Parallax UI Standalone SDK"
+    )
+
+    add_custom_target(build_docs
+        COMMAND ${Python3_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/scripts/build_docs.py"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Generating Parallax UI Documentation Suite"
+    )
+endif()

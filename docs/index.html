@@ -1,836 +1,647 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="amoled">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parallax UI Library — Phase 3 Custom UI/UX Overhaul</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallax UI — C++20 DirectX 11 Interface Documentation</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/logo.svg">
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Prism.js Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-base: #000000;
+            --bg-header: #050507;
+            --bg-sidebar: #07080a;
+            --bg-surface: #0a0b0e;
+            --bg-card: #0f1015;
+            --bg-widget: #14161c;
+            --bg-hover: #1c1f28;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.16);
+            --text-primary: #f5f6fa;
+            --text-secondary: #9ea3b5;
+            --text-muted: #62677b;
+            --accent-primary: #9998F6;
+            --accent-glow: rgba(153, 152, 246, 0.25);
+            --accent-hover: #b0aff8;
+            --code-bg: #07080b;
+            --sidebar-width: 280px;
+        }
+
+        [data-theme="light"] {
+            --bg-base: #f8f9fa;
+            --bg-header: #ffffff;
+            --bg-sidebar: #ffffff;
+            --bg-surface: #f1f3f5;
+            --bg-card: #ffffff;
+            --bg-widget: #e9ecef;
+            --bg-hover: #dee2e6;
+            --border-subtle: rgba(0, 0, 0, 0.08);
+            --border-hover: rgba(0, 0, 0, 0.16);
+            --text-primary: #1a1a24;
+            --text-secondary: #495057;
+            --text-muted: #868e96;
+            --accent-primary: #7574ea;
+            --accent-glow: rgba(117, 116, 234, 0.20);
+            --accent-hover: #5d5cdb;
+            --code-bg: #f1f3f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.6;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100%;
+        }
+
+        .brand {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .brand img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .brand-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-version {
+            font-size: 11px;
+            padding: 2px 6px;
+            background: rgba(153, 152, 246, 0.15);
+            color: var(--accent-primary);
+            border-radius: 4px;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .nav-list {
+            overflow-y: auto;
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .nav-category {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 12px 12px 6px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: rgba(153, 152, 246, 0.12);
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* Main Workspace Container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg-surface);
+        }
+
+        /* Top Bar */
+        .topbar {
+            height: 56px;
+            background: var(--bg-header);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            gap: 16px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 480px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 36px;
+            background: var(--bg-widget);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 0 12px 0 36px;
+            color: var(--text-primary);
+            font-size: 13.5px;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 10px;
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: var(--text-muted);
+            stroke-width: 2;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .btn-icon {
+            background: var(--bg-widget);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .btn-icon:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        /* Content Area */
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 60px 80px;
+        }
+
+        .doc-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .doc-content h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .doc-content h2 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin: 36px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+        }
+
+        .doc-content h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 24px 0 10px;
+            color: var(--accent-primary);
+        }
+
+        .doc-content p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            font-size: 14.5px;
+        }
+
+        .doc-content ul, .doc-content ol {
+            margin: 0 0 16px 24px;
+            color: var(--text-secondary);
+            font-size: 14.5px;
+        }
+
+        .doc-content li {
+            margin-bottom: 6px;
+        }
+
+        .doc-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13.5px;
+        }
+
+        .doc-content th, .doc-content td {
+            padding: 10px 14px;
+            border: 1px solid var(--border-subtle);
+            text-align: left;
+        }
+
+        .doc-content th {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .doc-content tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .doc-content code:not(pre code) {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-primary);
+        }
+
+        .code-block-container {
+            position: relative;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            background: var(--code-bg);
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        pre[class*="language-"] {
+            margin: 0;
+            padding: 16px;
+            background: transparent !important;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        /* Icon Explorer Grid */
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .icon-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .icon-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: 0 4px 12px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .icon-card svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .icon-slug {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Toast Popup */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent-primary);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            transform: translateY(8px);
+            z-index: 1000;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-badge">P</div>
-      <div>
-        <div class="brand-title">PARALLAX</div>
-      </div>
-      <span class="version-pill">v3.0</span>
-    </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="brand">
+            <img src="../assets/logo.svg" alt="Parallax Logo">
+            <span class="brand-title">PARALLAX UI</span>
+            <span class="brand-version">v1.2.0</span>
+        </div>
 
-    <nav class="nav-links">
-      <div class="nav-group-title">Getting Started</div>
-      <a href="#overview" class="nav-link active">Overview</a>
-      <a href="#quickstart" class="nav-link">CMake Quick Start</a>
-
-      <div class="nav-group-title">Interactive Playgrounds</div>
-      <a href="#widget-playground" class="nav-link">Phase 3 Custom UI Showcase</a>
-      <a href="#layout-simulator" class="nav-link">Layout Presets & Resizing Simulator</a>
-
-      <div class="nav-group-title">Phase 3: Custom UI/UX Overhaul</div>
-      <a href="#typography-engine" class="nav-link">Typography Engine (Inter) <span class="badge badge-chain">NEW</span></a>
-      <a href="#custom-buttons" class="nav-link">Custom Button Family</a>
-      <a href="#custom-inputs" class="nav-link">Custom Text Inputs & Search</a>
-      <a href="#toast-notifications" class="nav-link">Toast Notification System</a>
-      <a href="#watermark-system" class="nav-link">Watermark Status Pill</a>
-      <a href="#layout-presets-engine" class="nav-link">Layout Presets & Fixed Dimensions</a>
-
-      <div class="nav-group-title">Phase 4: Key System & Config Engine</div>
-      <a href="#key-system-core" class="nav-link">Developer Key System <span class="badge badge-chain">NEW</span></a>
-      <a href="#config-engine" class="nav-link">JSON Configuration Engine <span class="badge badge-chain">NEW</span></a>
-      <a href="#config-sharing" class="nav-link">Base64 Config Sharing</a>
-
-      <div class="nav-group-title">Phase 2: Chained Widgets</div>
-      <a href="#chaining-api" class="nav-link">Declarative Chaining API <span class="badge badge-chain">RAYFIELD</span></a>
-      <a href="#toggles-checkboxes" class="nav-link">Animated Switches & Toggles</a>
-      <a href="#keybind-system" class="nav-link">Inline Keybind System</a>
-      <a href="#color-picker" class="nav-link">Color Picker & Palettes</a>
-      <a href="#dropdowns" class="nav-link">Searchable Dropdowns</a>
-      <a href="#sliders" class="nav-link">Sliders & Range Sliders</a>
-      <a href="#collapsible" class="nav-link">Collapsible Groupboxes</a>
-
-      <div class="nav-group-title">Phase 1 Core Architecture</div>
-      <a href="#dx11-host" class="nav-link">DirectX 11 Host & Input</a>
-      <a href="#typing-safety" class="nav-link">Typing Safety (VK_RSHIFT)</a>
-      <a href="#animation-engine" class="nav-link">Harmonic Spring Physics</a>
-      <a href="#svg-pipeline" class="nav-link">Dynamic SVG Atlas (2,077)</a>
-
-      <div class="nav-group-title">Ecosystem</div>
-      <a href="#mcp-roadmap" class="nav-link">MCP Server Roadmap</a>
-    </nav>
-  </aside>
-
-  <!-- Main Documentation Content -->
-  <main class="main-wrapper">
-    <!-- Hero Header -->
-    <header class="header-hero" id="overview">
-      <div class="hero-tag">DirectX 11 &bull; Dear ImGui &bull; C++20</div>
-      <h1 class="hero-title">Parallax UI Library</h1>
-      <p class="hero-desc">
-        A professional, high-performance C++20 UI/UX library engineered for DirectX 11 and Dear ImGui.
-        Strictly UI/UX only — zero cheat or memory functions. <strong>Phase 3 delivers a complete custom UI/UX overhaul</strong>:
-        eliminating the recognizable Dear ImGui bitmap styling with the <strong>Inter</strong> typography system, custom button variants,
-        floating watermark, toast notification engine, search inputs with focus glows, and 3 game-category layout presets with responsive resizing.
-      </p>
-    </header>
-
-    <!-- Phase 3 Custom UI & Widget Playground -->
-    <section class="doc-section" id="widget-playground">
-      <h2 class="section-title">
-        Phase 3 Custom UI & Widget Showcase
-        <span class="badge badge-new">LIVE BROWSER TEST</span>
-      </h2>
-      <p>Test the custom tactile controls, spring recoil animations, live toast triggers, and Inter typography in your browser:</p>
-
-      <div class="widget-playground">
-        <!-- Row 1: Phase 3 New Custom Controls -->
-        <div class="grid-2" style="margin-bottom: 20px;">
-          <!-- Custom Buttons & Text Input -->
-          <div class="parallax-groupbox">
-            <div class="parallax-groupbox-header"><span>Custom Buttons & Text Inputs (Phase 3)</span></div>
+        <nav class="nav-list" id="navList">
+            <div class="nav-category">Documentation</div>
+            <a class="nav-item active" onclick="loadPage('getting-started.md')">Getting Started</a>
+            <a class="nav-item" onclick="loadPage('core-api.md')">Core Architecture</a>
+            <a class="nav-item" onclick="loadPage('widgets.md')">Widget Catalog</a>
+            <a class="nav-item" onclick="loadPage('appearance.md')">Appearance & Themes</a>
+            <a class="nav-item" onclick="loadPage('advanced.md')">Advanced Systems</a>
+            <a class="nav-item" onclick="loadPage('reference.md')">Public API Reference</a>
             
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-              Spring hover scaling, active recoil, and custom draw-list geometry:
-            </p>
-            <div class="btn-row">
-              <button class="parallax-btn parallax-btn-primary" id="demo-primary-btn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                Primary
-              </button>
-              <button class="parallax-btn parallax-btn-secondary">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                Secondary
-              </button>
-              <button class="parallax-btn parallax-btn-danger">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                Danger
-              </button>
-              <button class="parallax-btn parallax-btn-ghost">Ghost</button>
+            <div class="nav-category">Assets & AI Tools</div>
+            <a class="nav-item" onclick="loadIconGallery()">SVG Icon Explorer (2,078)</a>
+            <a class="nav-item" onclick="loadPage('ai-agent-guide.md')">AI Agent Integration</a>
+            <a class="nav-item" href="llms.txt" target="_blank">llms.txt Spec ↗</a>
+            <a class="nav-item" href="llms-full.txt" target="_blank">llms-full.txt Unified ↗</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main class="main-container">
+        <!-- Top Toolbar -->
+        <header class="topbar">
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" id="searchBox" placeholder="Search documentation, widgets, APIs... (Press / to focus)" onkeyup="handleSearch(this.value)">
             </div>
 
-            <p style="font-size: 12px; color: var(--text-muted); margin: 12px 0 6px;">
-              Custom Input with prefix icon, clear button, and focus accent glow:
-            </p>
-            <div class="parallax-input-container">
-              <span class="input-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </span>
-              <input type="text" class="parallax-custom-input" id="demo-search-input" placeholder="Search feature, keybind, or weapon..." value="Aimbot Smoothing">
-              <button class="input-clear-btn" id="demo-clear-btn" style="display: flex;">✕</button>
+            <div class="topbar-actions">
+                <button class="btn-icon" onclick="toggleTheme()" id="themeToggleBtn">
+                    <span id="themeLabel">AMOLED</span>
+                </button>
+                <a class="btn-icon" href="https://github.com/VPROJECT-max/parallax-imgui" target="_blank">
+                    GitHub ↗
+                </a>
             </div>
+        </header>
 
-            <div style="margin-top: 14px;">
-              <span class="row-desc" style="display: block; margin-bottom: 6px;">Watermark Status Pill Preview:</span>
-              <div class="watermark-demo-box">
-                <div class="parallax-watermark-pill">
-                  <div class="status-dot-pulse"></div>
-                  <span class="watermark-title">PARALLAX</span>
-                  <span class="watermark-stat">144.0 FPS</span>
-                  <span class="watermark-time">6.94 ms</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Toast Notification Spawner -->
-          <div class="parallax-groupbox">
-            <div class="parallax-groupbox-header"><span>Toast Notification Engine (Phase 3)</span></div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-              Trigger spring-animated toast alerts with auto-dismiss progress bars:
-            </p>
-            <div class="btn-row">
-              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-info" style="font-size: 12px; padding: 6px 12px;">Spawn Info</button>
-              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-success" style="font-size: 12px; padding: 6px 12px; border-color: rgba(34,197,94,0.4); color: #86efac;">Spawn Success</button>
-              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-warning" style="font-size: 12px; padding: 6px 12px; border-color: rgba(245,158,11,0.4); color: #fde047;">Spawn Warning</button>
-              <button class="parallax-btn parallax-btn-secondary" id="btn-toast-error" style="font-size: 12px; padding: 6px 12px; border-color: rgba(239,68,68,0.4); color: #fca5a5;">Spawn Error</button>
-            </div>
-
-            <div class="toast-preview-stack" id="toast-preview-stack">
-              <!-- Initial Toast Sample -->
-              <div class="parallax-toast toast-success">
-                <div class="toast-header">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span class="toast-title">Profile Loaded</span>
-                </div>
-                <div class="toast-message">Legit-Competitive preset synchronized from local cloud.</div>
-                <div class="toast-progress-bar" style="width: 70%;"></div>
-              </div>
-            </div>
-          </div>
+        <!-- Scrollable Document Content Area -->
+        <div class="content-scroll" id="contentScroll">
+            <article class="doc-content" id="docContent">
+                <!-- Rendered dynamically -->
+            </article>
         </div>
+    </main>
 
-        <div class="grid-2">
-          <!-- Column 1: Chained Rows -->
-          <div>
-            <div class="parallax-groupbox">
-              <div class="parallax-groupbox-header"><span>Declarative Chained Rows</span></div>
+    <!-- Toast Notification -->
+    <div id="toast">Copied to clipboard!</div>
 
-              <!-- Pill Toggle Row with Keybind & Color Swatch -->
-              <div class="parallax-row" id="row-bbox">
-                <div class="row-left">
-                  <div class="row-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </div>
-                  <div class="row-text">
-                    <span class="row-label">Bounding Box Overlay</span>
-                    <span class="row-desc">Dynamic 2D/3D boxes with color and keybind</span>
-                  </div>
-                </div>
-                <div class="row-right">
-                  <button class="parallax-keybind-btn" id="key-bbox" title="Click to bind hotkey">[ B ]</button>
-                  <div class="parallax-color-swatch" id="swatch-bbox" style="background-color: #6366f1;" title="Color Picker"></div>
-                  <div class="parallax-toggle active" id="toggle-bbox">
-                    <div class="parallax-toggle-thumb"></div>
-                  </div>
-                </div>
-              </div>
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cmake.min.js"></script>
 
-              <!-- Checkbox Row with Color Swatch -->
-              <div class="parallax-row" id="row-snap">
-                <div class="row-left">
-                  <div class="row-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-                  </div>
-                  <div class="row-text">
-                    <span class="row-label">Target Snaplines</span>
-                    <span class="row-desc">Directional trajectory vector to target</span>
-                  </div>
-                </div>
-                <div class="row-right">
-                  <div class="parallax-color-swatch" id="swatch-snap" style="background-color: #ef4444;" title="Color Picker"></div>
-                  <div class="parallax-checkbox" id="check-snap"></div>
-                </div>
-              </div>
+    <script>
+        const docs = {"getting-started.md": "# Getting Started with Parallax UI\n\nParallax is a high-performance C++20 user-interface framework designed for DirectX 11 and Dear ImGui. It provides a cohesive design system, an AMOLED-optimized 5-layer surface hierarchy, animated navigation, custom interactive widgets, layout presets, JSON configuration persistence, and an optional asynchronous key verification system.\n\n---\n\n## System Requirements\n\n- **Operating System:** Windows 10 / Windows 11 (64-bit)\n- **C++ Compiler:** MSVC 19.30+ (Visual Studio 2022) with `/std:c++20`\n- **Graphics API:** DirectX 11 (Feature Level 11_0+)\n- **Required System Libraries:**\n  - `d3d11.lib`\n  - `dxgi.lib`\n  - `d3dcompiler.lib`\n  - `dwmapi.lib`\n  - `windowscodecs.lib`\n\n---\n\n## SDK Installation & Structure\n\nParallax is distributed as a standalone compiled SDK containing precompiled static libraries, public C++20 headers, and runtime assets.\n\n```\nsdk/\n\u251c\u2500\u2500 include/\n\u2502   \u251c\u2500\u2500 parallax/       # Public Parallax C++ headers\n\u2502   \u2514\u2500\u2500 imgui/          # Dear ImGui headers (v1.93.0 docking)\n\u251c\u2500\u2500 lib/\n\u2502   \u251c\u2500\u2500 parallax.lib    # Unified standalone static library (includes ImGui, LunaSVG, PlutoVG)\n\u2502   \u2514\u2500\u2500 modular/        # Individual libraries (parallax_core.lib, imgui.lib, lunasvg.lib, plutovg.lib)\n\u251c\u2500\u2500 assets/\n\u2502   \u251c\u2500\u2500 fonts/          # Inter font family (Regular, Medium, SemiBold, Bold)\n\u2502   \u251c\u2500\u2500 icons/          # 2,077 SVG icons\n\u2502   \u2514\u2500\u2500 logo.svg        # Official Parallax brand SVG mark\n\u2514\u2500\u2500 cmake/\n    \u251c\u2500\u2500 ParallaxConfig.cmake\n    \u2514\u2500\u2500 ParallaxConfigVersion.cmake\n```\n\n---\n\n## CMake Integration\n\nAdd the Parallax SDK to your project using standard CMake packages:\n\n```cmake\ncmake_minimum_required(VERSION 3.20)\nproject(my_application LANGUAGES CXX C)\n\nset(CMAKE_CXX_STANDARD 20)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\n\n# Point CMake to your Parallax SDK folder\nlist(APPEND CMAKE_PREFIX_PATH \"${CMAKE_CURRENT_SOURCE_DIR}/sdk\")\nfind_package(Parallax REQUIRED)\n\nadd_executable(my_application main.cpp)\ntarget_link_libraries(my_application PRIVATE Parallax::Parallax)\n\n# Copy runtime assets next to your executable\nadd_custom_command(TARGET my_application POST_BUILD\n    COMMAND ${CMAKE_COMMAND} -E copy_directory\n        \"${PARALLAX_ASSETS_DIR}/fonts\" \"$<TARGET_FILE_DIR:my_application>/assets/fonts\"\n    COMMAND ${CMAKE_COMMAND} -E copy_directory\n        \"${PARALLAX_ASSETS_DIR}/icons\" \"$<TARGET_FILE_DIR:my_application>/icons\"\n)\n```\n\n---\n\n## First Application (Declarative WindowBuilder)\n\n```cpp\n#include <parallax/parallax.hpp>\n#include <windows.h>\n\nint WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {\n    // 1. Initialize DirectX 11 standalone host window\n    parallax::dx11::D3D11Host host;\n    if (!host.InitStandalone(hInstance, 1280, 800, L\"My Parallax Application\")) {\n        return 1;\n    }\n\n    // 2. Initialize Parallax UI Engine\n    parallax::Init(host.GetDevice(), host.GetContext());\n\n    // 3. Application State\n    bool menuOpen = true;\n    bool enableFeature = true;\n    float frequency = 440.0f;\n\n    // 4. Construct Window Declaratively\n    parallax::WindowBuilder builder(\"Control Panel\");\n    builder.WithTheme(parallax::ThemeMode::Amoled)\n           .WithAccent(parallax::AccentPreset::Parallax)\n           .AddTab(\"sliders\", \"Synthesizer\", [&](parallax::TabContext& ctx) {\n               ctx.BeginGrid(2);\n               ctx.Groupbox(\"Oscillator\", [&]() {\n                   ctx.Toggle(\"Enable Generator\", &enableFeature);\n                   ctx.SliderFloat(\"Frequency (Hz)\", &frequency, 20.0f, 2000.0f, \"%.1f Hz\");\n               }, \"activity\");\n               ctx.EndGrid();\n           });\n\n    // 5. Run Render Loop\n    host.RunMainLoop([&]() {\n        builder.Render(&menuOpen);\n    });\n\n    // 6. Clean Shutdown\n    parallax::Shutdown();\n    host.Shutdown();\n    return 0;\n}\n```\n\n---\n\n## Rendering Lifecycle\n\n1. **Host Setup:** Initialize host window and DirectX 11 swap chain (`D3D11Host::InitStandalone` or `InitExisting`).\n2. **Library Init:** Call `parallax::Init(device, context)` once. This loads fonts, initializes the design tokens, and prepares the LunaSVG texture atlas.\n3. **Per-Frame Loop:**\n   - Update input and keybinds: `parallax::UpdateKeybindState(bind)`.\n   - Update configuration auto-save: `parallax::config::ConfigManager::Get().Update(dt)`.\n   - Update key verification status: `parallax::auth::KeySystem::Get().Update()`.\n   - Render toasts and watermarks: `parallax::RenderNotifications()`, `parallax::Watermark(...)`.\n   - Render main window: `builder.Render(&menuOpen)` or `parallax::BeginWindow(...)` / `parallax::EndWindow()`.\n4. **Shutdown:** Call `parallax::Shutdown()` before destroying device context or swap chain.\n", "core-api.md": "# Core Architecture & Lifecycle API\n\nThe Core API manages library initialization, DPI scaling, the fixed 1137x699 window shell, navigation bars, sub-tabs, and layout grids.\n\n---\n\n## Header Inclusion\n\n```cpp\n#include <parallax/parallax.hpp>\n```\n\n---\n\n## Lifecycle Functions\n\n### `parallax::Init`\nInitializes the Parallax UI framework, typography, design token style engine, and on-demand SVG icon atlas.\n```cpp\nvoid Init(ID3D11Device* device, ID3D11DeviceContext* context);\n```\n- **Parameters:**\n  - `device`: Valid Direct3D 11 device pointer.\n  - `context`: Immediate device context pointer.\n- **Preconditions:** Dear ImGui context must already be created (`ImGui::CreateContext()`) and ImGui DX11 backend initialized.\n- **Lifetime:** Must be called once during startup.\n\n### `parallax::Shutdown`\nReleases all DirectX 11 textures, font objects, cached icon atlas allocations, and animation manager resources.\n```cpp\nvoid Shutdown();\n```\n- **Preconditions:** Call before releasing the Direct3D 11 device and destroying the ImGui context.\n\n---\n\n## DPI Scaling\n\n### `parallax::SetDpiScale` / `parallax::GetDpiScale`\n```cpp\nvoid SetDpiScale(float scale);\nfloat GetDpiScale();\n```\n- Standard baseline scale is `1.0f` (96 DPI). For high-DPI displays (e.g. 144 DPI = `1.5f`, 192 DPI = `2.0f`), set the scale prior to or during execution.\n\n---\n\n## Window Shell Architecture\n\n### Fixed 1137x699 Logical Dimensions\nParallax enforces a strict, calibrated design canvas of **1137 \u00d7 699 logical pixels** (scaled by DPI). This guarantees that complex controls, multi-column grids, profile cards, and navigation sidebars maintain mathematically balanced visual rhythm without arbitrary clipping.\n\n### `parallax::BeginWindow` / `parallax::EndWindow`\n```cpp\nbool BeginWindow(const char* title, bool* p_open = nullptr, ImGuiWindowFlags flags = 0);\nvoid EndWindow();\n```\n- **Parameters:**\n  - `title`: Window identifier and caption.\n  - `p_open`: Pointer to visibility boolean. Supports smooth spring-animated open and close scaling transitions.\n  - `flags`: Optional additional ImGui window flags.\n- **Return Value:** Returns `true` if the window content is visible and should be submitted. Always call `EndWindow()` if `BeginWindow()` returns `true`.\n\n---\n\n## Navigation & Sidebars\n\n### `parallax::BeginNavBar` / `parallax::EndNavBar`\n```cpp\nbool BeginNavBar();\nvoid EndNavBar();\n```\n- Renders the primary navigation surface. Supports collapsed icon-only mode and expanded mode with spring-damper physics.\n\n### `parallax::NavTab`\n```cpp\nbool NavTab(const char* icon, const char* label, bool selected, const char* badge = nullptr);\n```\n- **Parameters:**\n  - `icon`: SVG icon slug from the 2,078-icon catalog (e.g. `\"sliders\"`, `\"shield\"`, `\"palette\"`).\n  - `label`: Human-readable tab label.\n  - `selected`: `true` if this tab is currently active.\n  - `badge`: Optional badge text (e.g. `\"NEW\"`, `\"v1.2\"`, `\"9+\"`).\n- **Return Value:** Returns `true` if clicked.\n\n### Navigation Position & State Controls\n```cpp\nvoid SetNavSide(NavSide side);       // NavSide::Left, NavSide::Right, NavSide::Top, NavSide::Bottom\nNavSide GetNavSide();\nbool IsNavExpanded();\nvoid SetNavExpanded(bool expanded);\nvoid ToggleNavExpanded();\nfloat GetNavWidth();\n```\n\n---\n\n## Sub-Tabs\n\n### `parallax::BeginSubTabs` / `parallax::EndSubTabs` / `parallax::SubTab`\n```cpp\nbool BeginSubTabs(SubTabPlacement placement = SubTabPlacement::TopHorizontal);\nvoid EndSubTabs();\nbool SubTab(const char* label, bool selected);\n```\n- Renders secondary segmented pill navigation within a workspace tab.\n\n---\n\n## Layout Grid & Groupboxes\n\n### `parallax::BeginGrid` / `parallax::NextColumn` / `parallax::EndGrid`\n```cpp\nvoid BeginGrid(int columns = 2, float spacing = 12.0f);\nvoid NextColumn();\nvoid EndGrid();\n```\n- Multi-column proportional grid system. Balances card widths across available workspace width.\n\n### `parallax::BeginGroupbox` / `parallax::EndGroupbox`\n```cpp\nbool BeginGroupbox(const char* title, const char* icon = nullptr, float height = 0.0f);\nvoid GroupboxDescription(const char* text);\nvoid EndGroupbox();\n```\n- Creates an auto-sizing or fixed-height card surface. If `height == 0.0f`, the groupbox automatically sizes itself to fit its content with zero dead chrome.\n", "widgets.md": "# Widget Catalog & Component API\n\nParallax includes a comprehensive collection of custom-designed, animated immediate-mode widgets and fluent declarative chaining builders.\n\n---\n\n## Buttons & Interactive Actions\n\n### `parallax::Button`\n```cpp\nbool Button(const char* label, const char* icon = nullptr, ButtonVariant variant = ButtonVariant::Secondary, const ImVec2& size = ImVec2(0.0f, 0.0f));\n```\n- **Variants:**\n  - `ButtonVariant::Primary`: Filled with primary brand accent color. High emphasis.\n  - `ButtonVariant::Secondary`: Outlined widget surface with subtle border. Standard action.\n  - `ButtonVariant::Ghost`: Transparent resting state, highlights on hover.\n  - `ButtonVariant::Destructive`: Danger red styling for irreversible operations.\n- **Example:**\n```cpp\nif (parallax::Button(\"Save Configuration\", \"check\", parallax::ButtonVariant::Primary)) {\n    // Save logic\n}\n```\n\n### `parallax::ButtonCompact` / `parallax::IconButton`\n```cpp\nbool ButtonCompact(const char* label, const char* icon = nullptr, ButtonVariant variant = ButtonVariant::Secondary);\nbool IconButton(const char* id, const char* icon, ButtonVariant variant = ButtonVariant::Ghost, float dimension = 30.0f, const char* tooltip = nullptr);\n```\n\n---\n\n## Toggles & Checkboxes (Fluent `ControlRow`)\n\nThe `ControlRow` API enables chained configuration of switches, checkboxes, descriptions, tooltips, and embedded secondary controls.\n\n```cpp\nparallax::Row(\"Enable Feature\", &featureBool)\n    .Style(parallax::ToggleStyle::PillSwitch) // or ToggleStyle::Checkbox\n    .Description(\"Detailed explanation of this feature\")\n    .Tooltip(\"Quick tooltip guidance\")\n    .Disabled(false)\n    .Compact(false)\n    .OnChange([](bool newState) {\n        // Callback executed on toggle\n    });\n```\n\n---\n\n## Sliders & Range Sliders\n\n### `parallax::SliderFloat` / `parallax::SliderInt`\n```cpp\nbool SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = \"%.2f\", float width = 0.0f, bool twoLine = false);\nbool SliderInt(const char* label, int* v, int v_min, int v_max, const char* format = \"%d\", float width = 0.0f, bool twoLine = false);\n```\n- Features tactile spring-damper thumb physics, animated track filling, and direct numeric input on `Ctrl+Click`.\n\n### `parallax::RangeSliderFloat` / `parallax::RangeSliderInt`\n```cpp\nbool RangeSliderFloat(const char* label, float* v_min, float* v_max, float min_limit, float max_limit, const char* format = \"%.2f\", float width = 0.0f);\nbool RangeSliderInt(const char* label, int* v_min, int* v_max, int min_limit, int max_limit, const char* format = \"%d\", float width = 0.0f);\n```\n- Dual-thumb range selector with automatic collision prevention (`*v_min <= *v_max`).\n\n---\n\n## Dropdowns & Multi-Select\n\n### `parallax::Dropdown`\n```cpp\nbool Dropdown(const char* label, const std::vector<std::string>& items, int* selected_index, const std::vector<std::string>& item_icons = {}, float width = 0.0f);\n```\n- Single-selection dropdown with optional SVG icon support for each entry.\n\n### `parallax::MultiDropdown`\n```cpp\nbool MultiDropdown(const char* label, const std::vector<std::string>& items, std::vector<bool>& selected_states, const std::vector<std::string>& item_icons = {}, float width = 0.0f);\n```\n- Multi-selection dropdown displaying summary badges (e.g. `\"All\"`, `\"None\"`, `\"2 Selected\"`).\n\n---\n\n## Color Pickers\n\n### `parallax::ColorPicker` / `parallax::ColorPickerRow`\n```cpp\nbool ColorPicker(const char* label, ImVec4* color, bool hasAlpha = true);\nbool ColorPickerRow(const char* label, ImVec4* color, bool hasAlpha = true);\n```\n- Integrated inline color swatch with popup editor supporting RGB, HSV, Hex, and alpha transparency channels.\n\n---\n\n## Text Inputs & Password Masking\n\n### `parallax::InputText`\n```cpp\nbool InputText(const char* label, std::string& text, const char* icon = nullptr, const char* placeholder = nullptr, float width = 0.0f, bool isPassword = false);\n```\n- Clean single-line text input with leading SVG icon, placeholder text, clear button, and password masking toggle.\n\n---\n\n## Keybinds & Mouse Binding\n\n### `parallax::Keybind` Struct\n```cpp\nstruct Keybind {\n    int vkey{0};\n    KeybindMode mode{KeybindMode::Hold}; // Hold, Toggle, AlwaysOn\n    bool active{false};\n};\n```\n\n### `parallax::KeybindWidget` / `parallax::KeybindRow`\n```cpp\nbool KeybindWidget(const char* label, parallax::Keybind* keybind);\nbool KeybindRow(const char* label, const char* description, parallax::Keybind* keybind);\n```\n- Supports full keyboard capture, modifier combinations, and mouse buttons (`M1` through `M5`).\n- Click-release gating prevents accidental re-binding on mouse assignment.\n\n### `parallax::UpdateKeybindState`\nCall once per frame in your main loop to advance hold/toggle state:\n```cpp\nparallax::UpdateKeybindState(myKeybind);\n```\n\n---\n\n## Collapsible Groupboxes\n\n```cpp\nbool BeginCollapsibleGroupbox(const char* title, bool* p_expanded, const char* icon = nullptr, float defaultHeight = 0.0f, bool centered = true);\nvoid EndCollapsibleGroupbox();\n```\n- Animated expandable card. When collapsed, space is reclaimed immediately for smooth layout transitions.\n\n---\n\n## Notification Toasts & Watermarks\n\n### `parallax::Notify`\n```cpp\nvoid Notify(NotificationLevel level, const std::string& title, const std::string& message, float duration = 4.0f);\n```\n- Levels: `NotificationLevel::Success`, `NotificationLevel::Info`, `NotificationLevel::Warning`, `NotificationLevel::Danger`.\n\n### `parallax::RenderNotifications`\nCall once at the end of your frame to draw active toasts with spring slide-in transitions:\n```cpp\nparallax::RenderNotifications();\n```\n\n### `parallax::Watermark`\n```cpp\nvoid Watermark(const char* title, const char* user = nullptr, bool showFps = true, bool showTime = true);\n```\n- Floating status pill pinned to the viewport corner displaying framerate and system clock.\n", "appearance.md": "# Appearance, Themes & Design System\n\nParallax features a strict 5-layer surface hierarchy, true `#000000` AMOLED support, the canonical `#9998F6` brand accent, and spring physics.\n\n---\n\n## Theme Engine (3 Presets)\n\n### Theme Modes\n```cpp\nenum class ThemeMode : uint8_t {\n    Amoled = 0, // Pure Black AMOLED (#000000 - Default)\n    Dark,       // Graphite Dark\n    Light       // Porcelain Light\n};\n```\n\n### Functions\n```cpp\nvoid SetTheme(ThemeMode mode, bool animate = true);\nThemeMode GetTheme() noexcept;\nvoid ToggleTheme(bool animate = true);\nbool IsLightTheme() noexcept;\n```\n\n---\n\n## 5-Layer Surface Hierarchy (AMOLED Black)\n\nTo ensure interface components never blend into background canvases, Parallax employs a mathematically calibrated 5-layer luminance hierarchy:\n\n| Surface Layer | AMOLED Color | Purpose |\n|---|---|---|\n| **Layer 1: Base Window** | `#000000` | Outer window background canvas |\n| **Layer 2: Header Surface** | `#050507` | Pinned top workspace navigation bar |\n| **Layer 3: Content Canvas** | `#0A0B0E` | Main tab scrolling workspace |\n| **Layer 4: Card Surface** | `#0F1015` | Groupbox & collapsible card backgrounds |\n| **Layer 5: Inner Controls** | `#14161C` | Input fields, dropdowns, slider tracks |\n| **Interactive Hover** | `#1C1F28` | Hovered and active control surfaces |\n\n---\n\n## Accent Color Engine\n\n### Canonical Primary Brand Accent\n- **Hex:** `#9998F6`\n- **RGB:** `153, 152, 246`\n- **ImVec4:** `(153.0f / 255.0f, 152.0f / 255.0f, 246.0f / 255.0f, 1.0f)`\n\n### Accent Presets\n```cpp\nenum class AccentPreset : uint8_t {\n    Parallax = 0,   // Exact Primary Accent (#9998F6) - Default\n    Sage,           // Muted Sage (#78A18B)\n    Monochrome,     // Monochrome / Graphite\n    Copper,         // Desaturated Copper (#C48A6A)\n    SteelBlue,      // Steel Blue (#6E91B0)\n    Custom          // User-defined RGB color\n};\n\nvoid SetAccentPreset(AccentPreset preset, bool animate = true);\nAccentPreset GetAccentPreset() noexcept;\nvoid SetCustomAccent(const ImVec4& color, bool animate = true);\nImVec4 GetCustomAccent() noexcept;\n```\n\n---\n\n## Typography & Inter Fonts\n\nParallax automatically resolves and loads the official **Inter** font family across 4 weights:\n- Regular (`14.5px`)\n- Medium (`15.0px`)\n- SemiBold (`16.5px`)\n- Bold (`18.5px`)\n- Title (`22.0px`)\n\n```cpp\nparallax::PushFont(parallax::FontWeight::SemiBold);\nImGui::Text(\"Highlighted Heading\");\nparallax::PopFont();\n```\n\n---\n\n## Animation Engine & Spring Physics\n\nParallax provides built-in easing and damped harmonic spring solvers:\n\n```cpp\n// Easing interpolation\nfloat val = parallax::AnimFloat(ImGuiID id, float target, float duration = 0.25f, anim::EasingPreset preset = anim::EasingPreset::EaseOutQuint);\n\n// Physical spring simulation\nfloat springVal = parallax::SpringFloat(ImGuiID id, float target, const anim::SpringConfig& config = {100.0f, 20.0f, 1.0f});\n```\n", "advanced.md": "# Advanced Systems & Architecture\n\n---\n\n## JSON Configuration Engine (`ConfigManager`)\n\nParallax includes an atomic profile configuration manager that binds runtime variables to persistent JSON storage.\n\n```cpp\n#include <parallax/config/config_system.hpp>\n\nauto& cfg = parallax::config::ConfigManager::Get();\ncfg.SetConfigDirectory(\"configs\");\n\n// Bind variables\ncfg.BindBool(\"aimbot_enabled\", &aimbotEnabled, true);\ncfg.BindFloat(\"aimbot_fov\", &aimbotFov, 90.0f);\ncfg.BindKeybind(\"aimbot_key\", &aimKey);\n\n// Atomic save/load\ncfg.SaveProfile(\"Default\");\ncfg.LoadProfile(\"Default\");\n\n// Base64 sharing\nstd::string shareCode = cfg.ExportToBase64();\ncfg.ImportFromBase64(shareCode);\n\n// Main loop debounced auto-save update\ncfg.Update(ImGui::GetIO().DeltaTime);\n```\n\n---\n\n## Developer Key Verification System (`KeySystem`)\n\nAn asynchronous authentication module supporting background verification, local license caching, and modal dialogs.\n\n```cpp\n#include <parallax/auth/key_system.hpp>\n\nauto& keySys = parallax::auth::KeySystem::Get();\n\n// Set custom verifier lambda\nkeySys.SetVerifier([](const std::string& key) {\n    return key == \"PRLX-2026-VIP\" || key == \"PRLX-DEMO-PRO\";\n});\n\n// Start non-blocking verification\nkeySys.StartVerification(\"PRLX-2026-VIP\");\n\n// Main loop update\nkeySys.Update();\n\nif (keySys.IsAuthenticated()) {\n    // Grant access to licensed features\n}\n\n// Render authentication modal dialog\nbool showModal = true;\nkeySys.RenderModal(&showModal);\n```\n\n---\n\n## Standalone Host vs Game / CAD Hook Mode\n\nThe `D3D11Host` supports two operational paradigms:\n\n### Mode A: Standalone Host Window\nSpins up a native Win32 window with Direct3D 11 swap chain and message pump:\n```cpp\nparallax::dx11::D3D11Host host;\nhost.InitStandalone(hInstance, 1280, 800, L\"Standalone Host\");\n```\n\n### Mode B: Existing Swap Chain Hook\nAttaches to an existing Direct3D 11 Present hook (e.g. game overlay, CAD tool, emulator):\n```cpp\nparallax::dx11::D3D11Host host;\nhost.InitExisting(device, context, swapChain);\n\n// Inside your IDXGISwapChain::Present hook:\nhost.BeginFrame();\n// Render Parallax UI\nhost.EndFrame(false);\n```\n", "icons.md": "# SVG Icon System & Texture Atlas\n\nParallax includes a high-performance, on-demand rasterized SVG icon subsystem backed by LunaSVG and Direct3D 11 shelf packing.\n\n---\n\n## Key Features\n\n- **2,078 Embedded Icons:** Full Lucide SVG catalog.\n- **On-Demand Rasterization:** Icons are rasterized to high-DPI bitmaps on first reference and packed into a dynamic 2D shelf atlas texture. Unused icons consume zero GPU memory.\n- **Theme Tinting:** Monochromatic SVG icons adapt dynamically to active text, accent, or muted colors.\n- **Multi-Color Brand Logos:** Support for `preserveColors = true` to render full-fidelity multi-color SVGs (such as the official Parallax brand logo).\n- **High-DPI Super-Sampling:** Automatically supersampled up to 256px resolution for crisp rendering on 4K displays.\n\n---\n\n## Drawing Icons\n\n### High-Level Immediate Icon\n```cpp\nparallax::Icon(\"search\", ImVec2(20.0f, 20.0f), parallax::Colors().Accent);\n```\n\n### Direct ImDrawList Drawing\n```cpp\nImDrawList* drawList = ImGui::GetWindowDrawList();\nparallax::Context::Get().Icons().DrawIcon(\n    drawList,\n    \"sliders\",\n    screenPos,\n    ImVec2(18.0f, 18.0f),\n    parallax::Colors().TextPrimary\n);\n```\n\n---\n\n## Icon Identifiers\n\nIcons are referenced purely by their string slug (e.g. `\"sliders\"`, `\"shield\"`, `\"activity\"`, `\"check\"`). No file paths or extensions are required. Use the interactive Icon Gallery in this documentation to search, preview, and copy icon slugs.\n", "reference.md": "# Complete Public API Reference\n\n---\n\n## Public Header Map\n\n| Header | Description |\n|---|---|\n| `<parallax/parallax.hpp>` | Primary entry point; includes all core systems, widgets, and builders |\n| `<parallax/core/types.hpp>` | Version constants, `ThemeMode`, `AccentPreset`, `UserProfile`, `NavSide` |\n| `<parallax/core/style.hpp>` | `StyleColors`, `StyleMetrics`, and `StyleManager` design tokens |\n| `<parallax/core/typography.hpp>` | Font weights, Inter font family management |\n| `<parallax/layout/window.hpp>` | `WindowShell` fixed 1137x699 container |\n| `<parallax/layout/navbar.hpp>` | Primary navigation bar & tab indicators |\n| `<parallax/layout/grid.hpp>` | Proportional multi-column grid and groupbox cards |\n| `<parallax/widgets/button.hpp>` | Standard, compact, and icon button controls |\n| `<parallax/widgets/chain.hpp>` | `ControlRow` fluent toggle/checkbox chaining builder |\n| `<parallax/widgets/slider.hpp>` | Single and dual-range scalar sliders |\n| `<parallax/widgets/dropdown.hpp>` | Single and multi-select popup dropdowns |\n| `<parallax/widgets/keybind.hpp>` | Keyboard & mouse button binding engine |\n| `<parallax/widgets/notification.hpp>` | Toast notification system |\n| `<parallax/dx11/d3d11_host.hpp>` | Direct3D 11 host window and swap chain wrapper |\n| `<parallax/config/config_system.hpp>` | JSON configuration profile engine |\n| `<parallax/auth/key_system.hpp>` | Asynchronous developer license verification |\n\n---\n\n## Version Constants\n\n```cpp\n#define PARALLAX_VERSION_MAJOR 1\n#define PARALLAX_VERSION_MINOR 2\n#define PARALLAX_VERSION_PATCH 0\n#define PARALLAX_VERSION_STRING \"1.2.0\"\n#define PARALLAX_VERSION_WIDE L\"1.2.0\"\n```\n", "ai-agent-guide.md": "# AI Coding Assistant Integration Guide\n\nThis guide provides precise, rule-based instructions for AI coding assistants implementing interfaces using Parallax UI.\n\n---\n\n## Golden Rules for AI Agents\n\n1. **Fixed Window Shell:** Never attempt to resize the main window beyond **1137 \u00d7 699**. Parallax automatically enforces this canvas size.\n2. **Layout Boundaries:** Do not call raw `ImGui::SetCursorPos()` or `SetCursorScreenPos()` to extend window bounds. Use standard layout builders: `BeginGroupbox()`, `BeginGrid()`, `NextColumn()`, and `Dummy()`.\n3. **Scrolling Isolation:** If creating scrollable child windows, always specify `ImGuiWindowFlags_NoScrollWithMouse` and synchronize scrolling with `ImGui::SetNextWindowScroll()`.\n4. **Theme Surface Hierarchy:** Always respect the 5-layer surface tokens. Use `parallax::Colors().ContentBg` for workspaces, `CardBg` for cards, and `WidgetBg` for interactive controls.\n5. **No Private Headers:** Never `#include` files from `src/` or depend on LunaSVG or nlohmann_json directly. Everything required is exposed cleanly in `<parallax/parallax.hpp>`.\n\n---\n\n## Copy-Paste Integration Boilerplate\n\n```cpp\n#include <parallax/parallax.hpp>\n#include <windows.h>\n\nint WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int) {\n    parallax::dx11::D3D11Host host;\n    if (!host.InitStandalone(hInstance, 1280, 800, L\"Application\")) return 1;\n\n    parallax::Init(host.GetDevice(), host.GetContext());\n\n    bool open = true;\n    bool toggle = true;\n    float slider = 50.0f;\n\n    parallax::WindowBuilder builder(\"Control Panel\");\n    builder.WithTheme(parallax::ThemeMode::Amoled)\n           .WithAccent(parallax::AccentPreset::Parallax)\n           .AddTab(\"sliders\", \"Settings\", [&](parallax::TabContext& ctx) {\n               ctx.BeginGrid(2);\n               ctx.Groupbox(\"Configuration\", [&]() {\n                   ctx.Toggle(\"Feature Active\", &toggle);\n                   ctx.SliderFloat(\"Threshold\", &slider, 0.0f, 100.0f);\n               }, \"settings\");\n               ctx.EndGrid();\n           });\n\n    host.RunMainLoop([&]() {\n        builder.Render(&open);\n    });\n\n    parallax::Shutdown();\n    host.Shutdown();\n    return 0;\n}\n```\n"};
+        const iconsCatalog = [{"slug": "a-arrow-down", "category": "General"}, {"slug": "a-arrow-up", "category": "General"}, {"slug": "a-large-small", "category": "General"}, {"slug": "accessibility", "category": "General"}, {"slug": "activity", "category": "Hardware & System"}, {"slug": "activity-square", "category": "Hardware & System"}, {"slug": "ad", "category": "General"}, {"slug": "air-vent", "category": "General"}, {"slug": "airplay", "category": "General"}, {"slug": "alarm-check", "category": "General"}, {"slug": "alarm-clock", "category": "General"}, {"slug": "alarm-clock-check", "category": "General"}, {"slug": "alarm-clock-minus", "category": "General"}, {"slug": "alarm-clock-off", "category": "General"}, {"slug": "alarm-clock-plus", "category": "General"}, {"slug": "alarm-minus", "category": "General"}, {"slug": "alarm-plus", "category": "General"}, {"slug": "alarm-smoke", "category": "General"}, {"slug": "album", "category": "General"}, {"slug": "alert-circle", "category": "Security & Auth"}, {"slug": "alert-octagon", "category": "Security & Auth"}, {"slug": "alert-triangle", "category": "Security & Auth"}, {"slug": "align-center", "category": "General"}, {"slug": "align-center-horizontal", "category": "General"}, {"slug": "align-center-vertical", "category": "General"}, {"slug": "align-end-horizontal", "category": "General"}, {"slug": "align-end-vertical", "category": "General"}, {"slug": "align-horizontal-distribute-center", "category": "General"}, {"slug": "align-horizontal-distribute-end", "category": "General"}, {"slug": "align-horizontal-distribute-start", "category": "General"}, {"slug": "align-horizontal-justify-center", "category": "General"}, {"slug": "align-horizontal-justify-end", "category": "General"}, {"slug": "align-horizontal-justify-start", "category": "General"}, {"slug": "align-horizontal-space-around", "category": "General"}, {"slug": "align-horizontal-space-between", "category": "General"}, {"slug": "align-justify", "category": "General"}, {"slug": "align-left", "category": "General"}, {"slug": "align-right", "category": "General"}, {"slug": "align-start-horizontal", "category": "General"}, {"slug": "align-start-vertical", "category": "General"}, {"slug": "align-vertical-distribute-center", "category": "General"}, {"slug": "align-vertical-distribute-end", "category": "General"}, {"slug": "align-vertical-distribute-start", "category": "General"}, {"slug": "align-vertical-justify-center", "category": "General"}, {"slug": "align-vertical-justify-end", "category": "General"}, {"slug": "align-vertical-justify-start", "category": "General"}, {"slug": "align-vertical-space-around", "category": "General"}, {"slug": "align-vertical-space-between", "category": "General"}, {"slug": "ambulance", "category": "General"}, {"slug": "ampersand", "category": "General"}, {"slug": "ampersands", "category": "General"}, {"slug": "amphora", "category": "General"}, {"slug": "anchor", "category": "General"}, {"slug": "angle", "category": "General"}, {"slug": "angry", "category": "General"}, {"slug": "annoyed", "category": "General"}, {"slug": "antenna", "category": "General"}, {"slug": "anvil", "category": "General"}, {"slug": "aperture", "category": "General"}, {"slug": "app-window", "category": "General"}, {"slug": "app-window-mac", "category": "General"}, {"slug": "apple", "category": "General"}, {"slug": "archive", "category": "General"}, {"slug": "archive-restore", "category": "General"}, {"slug": "archive-x", "category": "General"}, {"slug": "area-chart", "category": "General"}, {"slug": "armchair", "category": "General"}, {"slug": "arrow-big-down", "category": "UI & Controls"}, {"slug": "arrow-big-down-dash", "category": "UI & Controls"}, {"slug": "arrow-big-left", "category": "UI & Controls"}, {"slug": "arrow-big-left-dash", "category": "UI & Controls"}, {"slug": "arrow-big-right", "category": "UI & Controls"}, {"slug": "arrow-big-right-dash", "category": "UI & Controls"}, {"slug": "arrow-big-up", "category": "UI & Controls"}, {"slug": "arrow-big-up-dash", "category": "UI & Controls"}, {"slug": "arrow-down", "category": "UI & Controls"}, {"slug": "arrow-down-0-1", "category": "UI & Controls"}, {"slug": "arrow-down-01", "category": "UI & Controls"}, {"slug": "arrow-down-1-0", "category": "UI & Controls"}, {"slug": "arrow-down-10", "category": "UI & Controls"}, {"slug": "arrow-down-a-z", "category": "UI & Controls"}, {"slug": "arrow-down-az", "category": "UI & Controls"}, {"slug": "arrow-down-circle", "category": "UI & Controls"}, {"slug": "arrow-down-from-line", "category": "UI & Controls"}, {"slug": "arrow-down-left", "category": "UI & Controls"}, {"slug": "arrow-down-left-from-circle", "category": "UI & Controls"}, {"slug": "arrow-down-left-from-square", "category": "UI & Controls"}, {"slug": "arrow-down-left-square", "category": "UI & Controls"}, {"slug": "arrow-down-narrow-wide", "category": "UI & Controls"}, {"slug": "arrow-down-right", "category": "UI & Controls"}, {"slug": "arrow-down-right-from-circle", "category": "UI & Controls"}, {"slug": "arrow-down-right-from-square", "category": "UI & Controls"}, {"slug": "arrow-down-right-square", "category": "UI & Controls"}, {"slug": "arrow-down-square", "category": "UI & Controls"}, {"slug": "arrow-down-to-dot", "category": "UI & Controls"}, {"slug": "arrow-down-to-line", "category": "UI & Controls"}, {"slug": "arrow-down-up", "category": "UI & Controls"}, {"slug": "arrow-down-wide-narrow", "category": "UI & Controls"}, {"slug": "arrow-down-z-a", "category": "UI & Controls"}, {"slug": "arrow-down-za", "category": "UI & Controls"}, {"slug": "arrow-left", "category": "UI & Controls"}, {"slug": "arrow-left-circle", "category": "UI & Controls"}, {"slug": "arrow-left-from-line", "category": "UI & Controls"}, {"slug": "arrow-left-right", "category": "UI & Controls"}, {"slug": "arrow-left-square", "category": "UI & Controls"}, {"slug": "arrow-left-to-line", "category": "UI & Controls"}, {"slug": "arrow-right", "category": "UI & Controls"}, {"slug": "arrow-right-circle", "category": "UI & Controls"}, {"slug": "arrow-right-from-line", "category": "UI & Controls"}, {"slug": "arrow-right-left", "category": "UI & Controls"}, {"slug": "arrow-right-square", "category": "UI & Controls"}, {"slug": "arrow-right-to-line", "category": "UI & Controls"}, {"slug": "arrow-up", "category": "UI & Controls"}, {"slug": "arrow-up-0-1", "category": "UI & Controls"}, {"slug": "arrow-up-01", "category": "UI & Controls"}, {"slug": "arrow-up-1-0", "category": "UI & Controls"}, {"slug": "arrow-up-10", "category": "UI & Controls"}, {"slug": "arrow-up-a-z", "category": "UI & Controls"}, {"slug": "arrow-up-az", "category": "UI & Controls"}, {"slug": "arrow-up-circle", "category": "UI & Controls"}, {"slug": "arrow-up-down", "category": "UI & Controls"}, {"slug": "arrow-up-from-dot", "category": "UI & Controls"}, {"slug": "arrow-up-from-line", "category": "UI & Controls"}, {"slug": "arrow-up-left", "category": "UI & Controls"}, {"slug": "arrow-up-left-from-circle", "category": "UI & Controls"}, {"slug": "arrow-up-left-from-square", "category": "UI & Controls"}, {"slug": "arrow-up-left-square", "category": "UI & Controls"}, {"slug": "arrow-up-narrow-wide", "category": "UI & Controls"}, {"slug": "arrow-up-right", "category": "UI & Controls"}, {"slug": "arrow-up-right-from-circle", "category": "UI & Controls"}, {"slug": "arrow-up-right-from-square", "category": "UI & Controls"}, {"slug": "arrow-up-right-square", "category": "UI & Controls"}, {"slug": "arrow-up-square", "category": "UI & Controls"}, {"slug": "arrow-up-to-line", "category": "UI & Controls"}, {"slug": "arrow-up-wide-narrow", "category": "UI & Controls"}, {"slug": "arrow-up-z-a", "category": "UI & Controls"}, {"slug": "arrow-up-za", "category": "UI & Controls"}, {"slug": "arrows-up-from-line", "category": "General"}, {"slug": "asterisk", "category": "General"}, {"slug": "asterisk-square", "category": "General"}, {"slug": "astroid", "category": "General"}, {"slug": "at-sign", "category": "Communication"}, {"slug": "atom", "category": "General"}, {"slug": "audio-lines", "category": "General"}, {"slug": "audio-lines-off", "category": "General"}, {"slug": "audio-lines-x", "category": "General"}, {"slug": "audio-waveform", "category": "General"}, {"slug": "award", "category": "General"}, {"slug": "axe", "category": "General"}, {"slug": "axis-3-d", "category": "General"}, {"slug": "axis-3d", "category": "General"}, {"slug": "baby", "category": "General"}, {"slug": "backpack", "category": "General"}, {"slug": "badge", "category": "General"}, {"slug": "badge-alert", "category": "General"}, {"slug": "badge-cent", "category": "General"}, {"slug": "badge-check", "category": "General"}, {"slug": "badge-dollar-sign", "category": "General"}, {"slug": "badge-euro", "category": "General"}, {"slug": "badge-help", "category": "General"}, {"slug": "badge-indian-rupee", "category": "General"}, {"slug": "badge-info", "category": "General"}, {"slug": "badge-japanese-yen", "category": "General"}, {"slug": "badge-minus", "category": "General"}, {"slug": "badge-percent", "category": "General"}, {"slug": "badge-plus", "category": "General"}, {"slug": "badge-pound-sterling", "category": "General"}, {"slug": "badge-question-mark", "category": "General"}, {"slug": "badge-russian-ruble", "category": "General"}, {"slug": "badge-swiss-franc", "category": "General"}, {"slug": "badge-turkish-lira", "category": "General"}, {"slug": "badge-x", "category": "General"}, {"slug": "baggage-claim", "category": "General"}, {"slug": "balloon", "category": "General"}, {"slug": "ban", "category": "General"}, {"slug": "banana", "category": "General"}, {"slug": "bandage", "category": "General"}, {"slug": "banknote", "category": "General"}, {"slug": "banknote-arrow-down", "category": "General"}, {"slug": "banknote-arrow-up", "category": "General"}, {"slug": "banknote-check", "category": "General"}, {"slug": "banknote-x", "category": "General"}, {"slug": "bar-chart", "category": "General"}, {"slug": "bar-chart-2", "category": "General"}, {"slug": "bar-chart-3", "category": "General"}, {"slug": "bar-chart-4", "category": "General"}, {"slug": "bar-chart-big", "category": "General"}, {"slug": "bar-chart-horizontal", "category": "General"}, {"slug": "bar-chart-horizontal-big", "category": "General"}, {"slug": "barcode", "category": "General"}, {"slug": "barrel", "category": "General"}, {"slug": "baseline", "category": "General"}, {"slug": "bath", "category": "General"}, {"slug": "battery", "category": "Hardware & System"}, {"slug": "battery-charging", "category": "Hardware & System"}, {"slug": "battery-full", "category": "Hardware & System"}, {"slug": "battery-low", "category": "Hardware & System"}, {"slug": "battery-medium", "category": "Hardware & System"}, {"slug": "battery-plus", "category": "Hardware & System"}, {"slug": "battery-warning", "category": "Hardware & System"}, {"slug": "beaker", "category": "General"}, {"slug": "bean", "category": "General"}, {"slug": "bean-off", "category": "General"}, {"slug": "bed", "category": "General"}, {"slug": "bed-double", "category": "General"}, {"slug": "bed-single", "category": "General"}, {"slug": "beef", "category": "General"}, {"slug": "beef-off", "category": "General"}, {"slug": "beer", "category": "General"}, {"slug": "beer-off", "category": "General"}, {"slug": "bell", "category": "Communication"}, {"slug": "bell-check", "category": "Communication"}, {"slug": "bell-dot", "category": "Communication"}, {"slug": "bell-electric", "category": "Communication"}, {"slug": "bell-minus", "category": "Communication"}, {"slug": "bell-off", "category": "Communication"}, {"slug": "bell-plus", "category": "Communication"}, {"slug": "bell-ring", "category": "Communication"}, {"slug": "between-horizonal-end", "category": "General"}, {"slug": "between-horizonal-start", "category": "General"}, {"slug": "between-horizontal-end", "category": "General"}, {"slug": "between-horizontal-start", "category": "General"}, {"slug": "between-vertical-end", "category": "General"}, {"slug": "between-vertical-start", "category": "General"}, {"slug": "biceps-flexed", "category": "General"}, {"slug": "bike", "category": "General"}, {"slug": "binary", "category": "General"}, {"slug": "binoculars", "category": "General"}, {"slug": "biohazard", "category": "General"}, {"slug": "bird", "category": "General"}, {"slug": "birdhouse", "category": "General"}, {"slug": "bitcoin", "category": "General"}, {"slug": "blend", "category": "General"}, {"slug": "blender", "category": "General"}, {"slug": "blinds", "category": "General"}, {"slug": "blocks", "category": "General"}, {"slug": "bluetooth", "category": "Hardware & System"}, {"slug": "bluetooth-connected", "category": "Hardware & System"}, {"slug": "bluetooth-off", "category": "Hardware & System"}, {"slug": "bluetooth-searching", "category": "Hardware & System"}, {"slug": "bold", "category": "General"}, {"slug": "bolt", "category": "General"}, {"slug": "bomb", "category": "General"}, {"slug": "bone", "category": "General"}, {"slug": "bone-fracture", "category": "General"}, {"slug": "book", "category": "General"}, {"slug": "book-a", "category": "General"}, {"slug": "book-alert", "category": "General"}, {"slug": "book-audio", "category": "General"}, {"slug": "book-check", "category": "General"}, {"slug": "book-copy", "category": "General"}, {"slug": "book-dashed", "category": "General"}, {"slug": "book-down", "category": "General"}, {"slug": "book-headphones", "category": "General"}, {"slug": "book-heart", "category": "General"}, {"slug": "book-image", "category": "General"}, {"slug": "book-key", "category": "General"}, {"slug": "book-lock", "category": "General"}, {"slug": "book-marked", "category": "General"}, {"slug": "book-minus", "category": "General"}, {"slug": "book-open", "category": "General"}, {"slug": "book-open-check", "category": "General"}, {"slug": "book-open-text", "category": "General"}, {"slug": "book-plus", "category": "General"}, {"slug": "book-search", "category": "General"}, {"slug": "book-template", "category": "General"}, {"slug": "book-text", "category": "General"}, {"slug": "book-type", "category": "General"}, {"slug": "book-up", "category": "General"}, {"slug": "book-up-2", "category": "General"}, {"slug": "book-user", "category": "General"}, {"slug": "book-x", "category": "General"}, {"slug": "bookmark", "category": "General"}, {"slug": "bookmark-check", "category": "General"}, {"slug": "bookmark-minus", "category": "General"}, {"slug": "bookmark-off", "category": "General"}, {"slug": "bookmark-plus", "category": "General"}, {"slug": "bookmark-x", "category": "General"}, {"slug": "boom-box", "category": "General"}, {"slug": "bot", "category": "General"}, {"slug": "bot-message-square", "category": "General"}, {"slug": "bot-off", "category": "General"}, {"slug": "bottle-wine", "category": "General"}, {"slug": "bow-arrow", "category": "General"}, {"slug": "box", "category": "General"}, {"slug": "box-select", "category": "General"}, {"slug": "boxes", "category": "General"}, {"slug": "braces", "category": "General"}, {"slug": "brackets", "category": "General"}, {"slug": "brain", "category": "General"}, {"slug": "brain-circuit", "category": "General"}, {"slug": "brain-cog", "category": "General"}, {"slug": "brick-wall", "category": "General"}, {"slug": "brick-wall-fire", "category": "General"}, {"slug": "brick-wall-shield", "category": "General"}, {"slug": "bridge", "category": "General"}, {"slug": "briefcase", "category": "General"}, {"slug": "briefcase-business", "category": "General"}, {"slug": "briefcase-conveyor-belt", "category": "General"}, {"slug": "briefcase-medical", "category": "General"}];
+        let currentPage = 'getting-started.md';
 
-              <!-- Disabled Row -->
-              <div class="parallax-row disabled">
-                <div class="row-left">
-                  <div class="row-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                  </div>
-                  <div class="row-text">
-                    <span class="row-label">Hardware Depth Pass (Locked)</span>
-                    <span class="row-desc">Requires DirectX 12 or Vulkan compute</span>
-                  </div>
-                </div>
-                <div class="row-right">
-                  <div class="parallax-toggle">
-                    <div class="parallax-toggle-thumb"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2200);
+        }
 
-            <!-- Collapsible Groupbox Showcase -->
-            <div class="parallax-groupbox">
-              <div class="parallax-collapsible-header" id="col-header-demo">
-                <div class="card-title" style="margin: 0; font-size: 13px;">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-                  <span class="col-title" style="color: #fff;">Collapsible Audio Groupbox</span>
-                </div>
-                <span id="col-arrow" style="font-size: 12px; color: var(--text-muted); transition: transform 0.2s ease;">▼</span>
-              </div>
-              <div class="parallax-collapsible-body" id="col-body-demo" style="max-height: 200px; margin-top: 10px;">
-                <div class="parallax-row" style="margin-bottom: 0;">
-                  <div class="row-left">
-                    <div class="row-text">
-                      <span class="row-label">Hit Confirmation Sound</span>
-                      <span class="row-desc">High-frequency acoustic feedback ping</span>
+        function copyCode(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Copied to clipboard!");
+            });
+        }
+
+        function toggleTheme() {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'amoled' ? 'light' : 'amoled';
+            document.documentElement.setAttribute('data-theme', next);
+            document.getElementById('themeLabel').textContent = next === 'amoled' ? 'AMOLED' : 'Light';
+        }
+
+        // Simple Markdown parser to avoid external runtime bundlers
+        function parseMarkdown(md) {
+            let html = md;
+
+            // Headers
+            html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+            // Code blocks
+            html = html.replace(/```(cpp|cmake|bash)?\n([\s\S]*?)```/gm, function(match, lang, code) {
+                const cleanCode = code.trim();
+                const displayLang = lang ? lang.toUpperCase() : 'CODE';
+                const escaped = cleanCode.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                return `<div class="code-block-container">
+                    <div class="code-block-header">
+                        <span>${displayLang}</span>
+                        <button class="copy-btn" onclick="copyCode(decodeURIComponent('${encodeURIComponent(cleanCode)}'))">Copy</button>
                     </div>
-                  </div>
-                  <div class="row-right">
-                    <div class="parallax-toggle active" id="toggle-sound">
-                      <div class="parallax-toggle-thumb"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    <pre><code class="language-${lang || 'cpp'}">${escaped}</code></pre>
+                </div>`;
+            });
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Bold & Italics
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Horizontal rule
+            html = html.replace(/^---$/gim, '<hr style="border:0; border-top:1px solid var(--border-subtle); margin:28px 0;">');
+
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" style="color:var(--accent-primary); text-decoration:none;">$1</a>');
+
+            // Unordered Lists
+            html = html.replace(/^\s*-\s+(.*$)/gim, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+            // Paragraphs
+            html = html.split('\n\n').map(p => {
+                if (p.trim().startsWith('<h') || p.trim().startsWith('<div') || p.trim().startsWith('<ul') || p.trim().startsWith('<table') || p.trim().startsWith('<hr')) {
+                    return p;
+                }
+                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('\n');
+
+            return html;
+        }
+
+        function loadPage(pageName) {
+            currentPage = pageName;
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.textContent.toLowerCase().includes(pageName.replace('.md','').replace('-',' '))) {
+                    el.classList.add('active');
+                }
+            });
+
+            const content = docs[pageName] || "# Page Not Found";
+            document.getElementById('docContent').innerHTML = parseMarkdown(content);
+            document.getElementById('contentScroll').scrollTop = 0;
+            Prism.highlightAll();
+        }
+
+        function loadIconGallery() {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let html = `<h1>SVG Icon Catalog (2,078 Icons)</h1>
+            <p>Parallax embeds 2,078 SVG icons from Lucide. Icons are rasterized on-demand into an efficient Direct3D 11 shelf atlas texture. Click any card to copy its slug.</p>
+            <div style="margin: 20px 0;">
+                <input type="text" class="search-input" placeholder="Filter icons (e.g. search, settings, arrow, user)..." onkeyup="filterIcons(this.value)">
             </div>
-          </div>
+            <div class="icon-grid" id="iconGrid">`;
 
-          <!-- Column 2: Sliders & Selectors -->
-          <div>
-            <!-- Sliders -->
-            <div class="parallax-groupbox">
-              <div class="parallax-groupbox-header"><span>Smooth Spring Sliders</span></div>
+            iconsCatalog.forEach(ic => {
+                html += `<div class="icon-card" onclick="copyCode('${ic.slug}')">
+                    <div style="font-size:20px; color:var(--accent-primary);">⚡</div>
+                    <span class="icon-slug">${ic.slug}</span>
+                </div>`;
+            });
 
-              <!-- Float Slider -->
-              <div class="parallax-slider-wrap">
-                <div class="slider-header">
-                  <span class="slider-label">Field of View (FOV)</span>
-                  <span class="slider-val" id="fov-val">90.0°</span>
-                </div>
-                <div class="parallax-slider-track" id="fov-track">
-                  <div class="parallax-slider-fill" id="fov-fill" style="width: 50%;"></div>
-                  <div class="parallax-slider-thumb" id="fov-thumb" style="left: 50%;"></div>
-                </div>
-              </div>
+            html += `</div>`;
+            document.getElementById('docContent').innerHTML = html;
+        }
 
-              <!-- Dual-Thumb Range Slider -->
-              <div class="parallax-slider-wrap" style="margin-top: 18px;">
-                <div class="slider-header">
-                  <span class="slider-label">Render Distance Range</span>
-                  <span class="slider-val" id="range-val">20m – 350m</span>
-                </div>
-                <div class="range-track" id="range-track">
-                  <div class="range-fill" id="range-fill" style="left: 10%; width: 60%;"></div>
-                  <div class="range-thumb" id="thumb-min" style="left: 10%;"></div>
-                  <div class="range-thumb" id="thumb-max" style="left: 70%;"></div>
-                </div>
-              </div>
-            </div>
+        function filterIcons(query) {
+            const q = query.toLowerCase();
+            const grid = document.getElementById('iconGrid');
+            const filtered = iconsCatalog.filter(ic => ic.slug.toLowerCase().includes(q));
+            let html = '';
+            filtered.forEach(ic => {
+                html += `<div class="icon-card" onclick="copyCode('${ic.slug}')">
+                    <div style="font-size:20px; color:var(--accent-primary);">⚡</div>
+                    <span class="icon-slug">${ic.slug}</span>
+                </div>`;
+            });
+            grid.innerHTML = html;
+        }
 
-            <!-- Dropdown Selectors -->
-            <div class="parallax-groupbox">
-              <div class="parallax-groupbox-header"><span>Dropdown Selectors</span></div>
+        function handleSearch(query) {
+            if (!query.trim()) return;
+            const q = query.toLowerCase();
+            for (const [page, text] of Object.entries(docs)) {
+                if (text.toLowerCase().includes(q)) {
+                    loadPage(page);
+                    break;
+                }
+            }
+        }
 
-              <div class="parallax-dropdown-wrap">
-                <span class="slider-label" style="display: block; margin-bottom: 6px;">Target Priority Bone</span>
-                <div class="parallax-dropdown-box" id="dropdown-box">
-                  <span id="selected-bone-text">Head Target</span>
-                  <span style="font-size: 10px; color: var(--text-muted);">▼</span>
-                </div>
-                <div class="parallax-dropdown-menu" id="dropdown-menu">
-                  <input type="text" class="dropdown-search" placeholder="Search bones..." id="dropdown-search">
-                  <div class="dropdown-item selected" data-value="Head Target">🎯 Head Target</div>
-                  <div class="dropdown-item" data-value="Neck / Spine">🦴 Neck / Spine</div>
-                  <div class="dropdown-item" data-value="Upper Torso">🛡️ Upper Torso</div>
-                  <div class="dropdown-item" data-value="Pelvis">⚡ Pelvis</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        // Keyboard navigation (/ to focus search)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '/' && document.activeElement !== document.getElementById('searchBox')) {
+                e.preventDefault();
+                document.getElementById('searchBox').focus();
+            }
+        });
 
-    <!-- Phase 3: Typography Engine (Inter) -->
-    <section id="typography-engine" class="doc-section">
-      <h2 class="section-title">
-        Typography Engine & Inter Font Hierarchy
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        Parallax completely replaces Dear ImGui's default bitmap font with the modern, high-legibility <strong>Inter</strong> font family.
-        Fonts are rasterized on-demand for display DPI scaling with automatic fallback to Windows Segoe UI:
-      </p>
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">Inter Hierarchy</div>
-          <p>Structured weights: <code>Regular</code> (14px), <code>Medium</code> (14px), <code>SemiBold</code> (14px), <code>Bold</code> (15px), <code>Title</code> (18px), and <code>Caption</code> (11px).</p>
-        </div>
-        <div class="card">
-          <div class="card-title">DPI Auto-Scaling</div>
-          <p>Ratios adjust glyph rasterization dynamically. Calling <code>RebuildFonts(dpiScale)</code> hot-reloads the DirectX 11 GPU texture atlas without restarting.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Scoped Font RAII</div>
-          <p>Convenient helper <code>parallax::ScopedFont</code> automatically pops font upon exiting scope, preventing ImGui font stack mismatches.</p>
-        </div>
-      </div>
-      <pre><code>// Initialize typography engine during DirectX 11 startup:
-parallax::Typography::Init(1.0f);
-
-// In rendering code:
-{
-    parallax::ScopedFont font(parallax::FontWeight::Bold);
-    ImGui::Text("Crisp Inter Typography");
-}
-// Or manual push/pop:
-parallax::Typography::PushFont(parallax::FontWeight::Title);
-ImGui::Text("Executive Summary");
-parallax::Typography::PopFont();</code></pre>
-    </section>
-
-    <!-- Phase 3: Custom Button Family -->
-    <section id="custom-buttons" class="doc-section">
-      <h2 class="section-title">
-        Custom Button Family & Micro-Interactions
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        Designed from the ground up to eliminate default ImGui beveling. Buttons feature spring-animated hover scales, tactile active recoils, and custom gradient accents:
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Primary & Secondary</div>
-          <p><strong>Primary:</strong> Radiant accent fill with subtle glow shadow.<br><strong>Secondary:</strong> Dark card surface with soft 1px border highlight.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Danger & Ghost</div>
-          <p><strong>Danger:</strong> Crimson warning tint for destructive actions.<br><strong>Ghost:</strong> Zero border transparent surface for low-friction toolbars.</p>
-        </div>
-      </div>
-      <pre><code>// Primary button with SVG icon:
-if (parallax::Button("Launch Session", "play", parallax::ButtonVariant::Primary, ImVec2(160, 36))) {
-    // Action triggered
-}
-
-// Danger confirmation button:
-if (parallax::Button("Reset Profiles", "trash", parallax::ButtonVariant::Danger)) {
-    // Destructive action
-}</code></pre>
-    </section>
-
-    <!-- Phase 3: Custom Text Inputs & Search -->
-    <section id="custom-inputs" class="doc-section">
-      <h2 class="section-title">
-        Custom Text Inputs & Search
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        Text and search fields feature animated focus accent glows, integrated prefix icons, and interactive one-click clear buttons:
-      </p>
-      <pre><code>static char searchBuf[128] = "Default Search";
-
-// Custom search input with prefix SVG icon and one-click clear button:
-parallax::InputText("##GlobalSearch", searchBuf, sizeof(searchBuf), "search", /*isPassword=*/false, /*showClearButton=*/true);
-
-// Password masked input:
-static char passwordBuf[64] = "";
-parallax::InputText("##ApiKey", passwordBuf, sizeof(passwordBuf), "key", /*isPassword=*/true);</code></pre>
-    </section>
-
-    <!-- Phase 3: Toast Notification System -->
-    <section id="toast-notifications" class="doc-section">
-      <h2 class="section-title">
-        Toast Notification System
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        A thread-safe, frame-rate independent toast alert engine with spring slide-in transitions and automatic countdown progress bars:
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">4 Notification Levels</div>
-          <p>Supports <code>Info</code>, <code>Success</code>, <code>Warning</code>, and <code>Error</code> with level-specific icons and border accents.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Auto-Dismiss Countdown</div>
-          <p>Smoothly animates progress line along bottom edge and auto-expires based on configured duration in seconds.</p>
-        </div>
-      </div>
-      <pre><code>// Spawning notifications from any thread or callback:
-parallax::Notify("Profile Saved", "User configuration written to disk.", parallax::NotificationLevel::Success, 3.5f);
-parallax::Notify("DXGI Reset", "Recreating swap chain render targets.", parallax::NotificationLevel::Warning, 4.0f);
-
-// Inside your main frame loop (typically at the very end of Present):
-parallax::RenderNotifications();</code></pre>
-    </section>
-
-    <!-- Phase 3: Watermark Status Pill -->
-    <section id="watermark-system" class="doc-section">
-      <h2 class="section-title">
-        Floating Watermark Status Pill
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        A sleek, floating HUD watermark featuring a pulsing live status dot, application title, live FPS counter, and frame time:
-      </p>
-      <pre><code>// Render floating status pill at top-right or custom screen coordinates:
-parallax::Watermark("PARALLAX", "TK", /*showFps=*/true, /*showFrameTime=*/true, /*bgAlpha=*/0.92f);</code></pre>
-    </section>
-
-    <!-- Phase 3: Layout Presets & Resizing Engine -->
-    <section id="layout-presets-engine" class="doc-section">
-      <h2 class="section-title">
-        Layout Presets & Resizing Engine
-        <span class="badge badge-chain">PHASE 3</span>
-      </h2>
-      <p>
-        Parallax provides 3 game-category layout presets engineered for different screen densities and tactical scenarios:
-      </p>
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">ModernSidebar</div>
-          <p>200px left sidebar with integrated user profile card, search input, and full category text labels. Ideal for extensive configuration suites.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">CompactTactical</div>
-          <p>68px icon-only dock designed for compact HUD overlays, tactical shooters, and high-DPI esports displays.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">MinimalTabbed</div>
-          <p>Horizontal top tab bar with zero sidebar, maximizing usable horizontal space for dense telemetry and tables.</p>
-        </div>
-      </div>
-      <div class="callout">
-        <strong>10 Critical Resizing Rules:</strong>
-        Parallax enforces a default size of <strong>980&times;640</strong>, hard min bounds of <strong>740&times;480</strong>, and max bounds of <strong>1920&times;1080</strong>.
-        Features responsive column reflow, automated text ellipsis, bounded popups, and an ergonomic bottom-right diagonal drag grip.
-      </div>
-      <pre><code>// Strict Fixed Dimensions — 1137x699 logical pixels enforced at all times:
-parallax::BeginWindow("Parallax Control System", &isOpen);
-// Resize handles and manual corner scaling permanently disabled.
-// Internal columns reflow deterministically within 1137x699 space.</code></pre>
-    </section>
-
-    <!-- Phase 4: Developer Key System -->
-    <section id="key-system-core" class="doc-section">
-      <h2 class="section-title">
-        Developer Key System & Licensing
-        <span class="badge badge-chain">PHASE 4</span>
-      </h2>
-      <p>
-        A modular cryptographic authorization system designed for professional developer seat management and licensing. Features non-blocking asynchronous validation (zero frame latency impact), masked password inputs with show/hide eye toggle, and persistent license storage.
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Asynchronous Non-Blocking Verification</div>
-          <p>Runs verification on a background worker thread with <code>std::future</code>. The UI stays at 60/144/240 FPS with physical harmonic spinner animation.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Persistent Machine Licensing</div>
-          <p>Stores validated credentials locally with optional auto-login on startup. Provides clear Success (emerald) and Error (crimson) banners.</p>
-        </div>
-      </div>
-      <pre><code>// 1. Configure custom verification callback:
-auto& keySys = parallax::auth::KeySystem::Get();
-keySys.SetVerifier([](const std::string& key) -> bool {
-    // Check against your remote licensing API or crypto signature:
-    return key.rfind("PRLX-", 0) == 0 && key.length() >= 10;
-});
-
-// 2. Open branded modal dialog or inspect auth state:
-if (!keySys.IsAuthenticated()) {
-    keySys.RenderModal(&showModal);
-}</code></pre>
-    </section>
-
-    <!-- Phase 4: JSON Configuration Engine -->
-    <section id="config-engine" class="doc-section">
-      <h2 class="section-title">
-        JSON Configuration Engine & Profile Manager
-        <span class="badge badge-chain">PHASE 4</span>
-      </h2>
-      <p>
-        Production-grade, schema-driven configuration management built on <code>nlohmann/json</code>. Supports stable variable identifiers, type-safe bindings for all Parallax widget types, profile management (Default, Legit, Rage), and atomic disk persistence.
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Atomic Disk Writes</div>
-          <p>Writes configuration to <code>.tmp</code> file before replacing the target <code>.json</code> profile. Eliminates corrupted configuration files caused by crashes or sudden power termination.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Debounced Auto-Save</div>
-          <p>Automatically triggers debounced disk writes 1.5 seconds after any setting change, minimizing disk I/O while ensuring state persistence.</p>
-        </div>
-      </div>
-      <pre><code>// 1. Bind variables with stable string keys during initialization:
-auto& cfg = parallax::config::ConfigManager::Get();
-cfg.BindBool("visuals.box_esp", &boxEsp, true);
-cfg.BindColor("visuals.box_color", &boxColor, ImVec4(0.388f, 0.400f, 0.945f, 1.0f));
-cfg.BindKeybind("aim.trigger_key", &triggerKey);
-cfg.BindFloat("aim.fov", &fovValue, 90.0f);
-
-// 2. Save, load, or render full Profile Manager UI:
-cfg.SaveProfile("Legit_Tournament");
-cfg.LoadProfile("Legit_Tournament");
-
-// In your settings tab:
-cfg.RenderConfigTab();</code></pre>
-    </section>
-
-    <!-- Phase 4: Base64 Config Sharing -->
-    <section id="config-sharing" class="doc-section">
-      <h2 class="section-title">
-        Base64 Configuration Sharing
-        <span class="badge badge-chain">PHASE 4</span>
-      </h2>
-      <p>
-        Export complete profiles as compact, single-line RFC 4648 Base64 strings to share via Discord, forums, or text files, and import them with one click:
-      </p>
-      <pre><code>// Copy active configuration code to system clipboard:
-parallax::config::ConfigManager::Get().CopyConfigToClipboard();
-
-// Import Base64 string directly from clipboard:
-parallax::config::ConfigManager::Get().ImportConfigFromClipboard();</code></pre>
-    </section>
-
-    <!-- Declarative Chaining API -->
-    <section id="chaining-api" class="doc-section">
-      <h2 class="section-title">
-        Declarative Chaining API
-        <span class="badge badge-chain">C++20</span>
-      </h2>
-      <p>
-        Inspired by Rayfield's developer experience, Parallax allows you to express rich, multi-control settings rows in a single readable chain:
-      </p>
-      <pre><code>// Clean declarative syntax — compiles with 0 allocations per frame
-parallax::Row("Bounding Box Overlay", &boxEnabled)
-    .Icon("eye")
-    .Description("Draw crisp dynamic 2D/3D bounding boxes")
-    .Tooltip("Toggles bounding boxes around detected targets")
-    .Keybind(&boxKey)
-    .Color(&boxColor)
-    .OnChange([](bool enabled) {
-        printf("Bounding Box toggled: %s\n", enabled ? "ON" : "OFF");
-    });</code></pre>
-      <div class="callout">
-        <strong>Automatic Move-Semantics Rendering:</strong>
-        The temporary <code>parallax::ControlRow</code> object created by <code>parallax::Row(...)</code> automatically renders itself upon destruction at the semicolon.
-        Zero boilerplate, zero dangling references, and full RAII safety.
-      </div>
-    </section>
-
-    <!-- Animated Switches & Toggles -->
-    <section id="toggles-checkboxes" class="doc-section">
-      <h2 class="section-title">Animated Checkboxes & Pill Switches</h2>
-      <p>
-        Checkboxes and pill-switches feature frame-rate independent spring physics, subtle hover highlights, and dedicated disabled states:
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Pill-Switch Toggle</div>
-          <p>Smooth spring interpolation between on/off positions with soft glow accent feedback.</p>
-          <pre><code>parallax::Toggle("Master Enable", &active);</code></pre>
-        </div>
-        <div class="card">
-          <div class="card-title">Antialiased Checkbox</div>
-          <p>Crisp checkmark rendered with DirectX 11 subpixel antialiasing and spring border scaling.</p>
-          <pre><code>parallax::Checkbox("Draw Snaplines", &snaplines);</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <!-- Inline Keybind System -->
-    <section id="keybind-system" class="doc-section">
-      <h2 class="section-title">Inline Keybind System</h2>
-      <p>
-        Parallax provides a compact keyboard hotkey button designed to fit natively inside control rows without disrupting layout:
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Modes & State Evaluation</div>
-          <p>Supports <code>Hold</code>, <code>Toggle</code>, and <code>AlwaysOn</code> modes. Evaluates keyboard keys and mouse buttons (VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1/2).</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Input Capture Safety</div>
-          <p>While the keybind popup is listening for a key, the global Parallax menu hotkeys (Right Shift / Insert) are suppressed, preventing the menu from closing prematurely.</p>
-        </div>
-      </div>
-      <pre><code>parallax::Keybind myKey{ 'F', parallax::KeybindMode::Toggle, false };
-
-// Inside render loop:
-parallax::UpdateKeybindState(myKey);
-if (myKey.active) {
-    // Hotkey is active!
-}
-
-// Inline widget rendering:
-parallax::KeybindWidget("##MyKeybind", &myKey);</code></pre>
-    </section>
-
-    <!-- Color Picker & Palettes -->
-    <section id="color-picker" class="doc-section">
-      <h2 class="section-title">Precision Color Picker</h2>
-      <p>
-        A space-efficient color swatch that expands into a full animated picker popup:
-      </p>
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-title">SV Box & Hue Bar</div>
-          <p>High-precision 2D saturation/value box and vertical hue rainbow slider.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">HEX / RGB Inputs</div>
-          <p>Direct manual hex code entry (e.g. <code>#6366F1</code>) and integer channel editors.</p>
-        </div>
-        <div class="card">
-          <div class="card-title">Palette Swatches</div>
-          <p>10 curated theme swatches plus right-click HEX copy/paste support.</p>
-        </div>
-      </div>
-      <pre><code>ImVec4 myColor{ 0.38f, 0.58f, 0.98f, 1.0f };
-parallax::ColorPicker("##MyColor", &myColor, /*hasAlpha=*/true);</code></pre>
-    </section>
-
-    <!-- Sliders & Range Sliders -->
-    <section id="sliders" class="doc-section">
-      <h2 class="section-title">Sliders & Dual-Thumb Range Sliders</h2>
-      <p>
-        Tactile sliders with spring-animated thumb positions, drag-activated floating tooltips, and double-click manual entry:
-      </p>
-      <pre><code>// Float & Int Sliders
-parallax::SliderFloat("FOV", &fov, 60.0f, 120.0f, "%.1f deg");
-parallax::SliderInt("Max Targets", &targets, 1, 16, "%d units");
-
-// 2-Line Slider Layout
-parallax::SliderFloat("Aim Smoothing", &smooth, 1.0f, 20.0f, "%.1f", 0.0f, /*twoLine=*/true);
-
-// Dual-Thumb Range Sliders with minimum gap constraint
-parallax::RangeSliderFloat("Render Distance", &minDist, &maxDist, 0.0f, 500.0f, "%.0f m");
-parallax::RangeSliderInt("Ping Filter", &minPing, &maxPing, 0, 250, "%d ms");</code></pre>
-    </section>
-
-    <!-- Collapsible Groupboxes -->
-    <section id="collapsible" class="doc-section">
-      <h2 class="section-title">Collapsible Groupboxes</h2>
-      <p>
-        Smooth spring-animated height expansion with child clipping and centered or left-aligned headers:
-      </p>
-      <pre><code>bool isExpanded = true;
-if (parallax::BeginCollapsibleGroupbox("Visual Overlays", &isExpanded, "eye", /*defaultHeight=*/0.0f, /*centered=*/true)) {
-    parallax::Row("Bounding Box", &boxEnabled);
-    parallax::Row("Snaplines", &snapEnabled);
-    parallax::EndCollapsibleGroupbox();
-}</code></pre>
-    </section>
-
-    <!-- Live Layout & Motion Simulator -->
-    <section class="doc-section" id="layout-simulator">
-      <h2 class="section-title">Layout Presets & Resizing Simulator</h2>
-      <p>Test Parallax's game-category layout presets, multi-dock layout engine, and spring transitions directly in your browser:</p>
-
-      <div class="simulator-box">
-        <div class="sim-controls" style="flex-wrap: wrap;">
-          <span style="font-size: 13px; color: var(--text-muted); align-self: center;">Dock Side:</span>
-          <button class="sim-btn active" data-side="left">Left</button>
-          <button class="sim-btn" data-side="right">Right</button>
-          <button class="sim-btn" data-side="top">Top</button>
-          <button class="sim-btn" data-side="bottom">Bottom</button>
-
-          <span style="font-size: 13px; color: var(--text-muted); align-self: center; margin-left: 12px;">Size Tier:</span>
-          <button class="sim-btn" data-tier="compact">Compact (720x480)</button>
-          <button class="sim-btn active" data-tier="standard">Standard (900x600)</button>
-          <button class="sim-btn" data-tier="expanded">Expanded (1080x720)</button>
-
-          <button id="simToggleBtn" class="sim-btn" style="margin-left: auto; border-color: var(--accent); color: var(--accent-hover);">
-            Simulate Close (Insert / RShift)
-          </button>
-
-          <!-- Phase 3 Layout Presets -->
-          <div style="display: flex; gap: 8px; align-items: center; width: 100%; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06);">
-            <span style="font-size: 13px; color: var(--text-muted);">Presets (Phase 3):</span>
-            <button class="sim-btn active" data-preset="modern">Modern Sidebar (200px)</button>
-            <button class="sim-btn" data-preset="compact">Compact Tactical (68px)</button>
-            <button class="sim-btn" data-preset="minimal">Minimal Tabbed (Top)</button>
-          </div>
-        </div>
-
-        <div class="sim-viewport">
-          <div id="mockWindow" class="mock-window" style="width: 520px; height: 340px; position: relative;">
-            <div id="mockNav" class="mock-nav">
-              <div style="font-size: 11px; font-weight: 700; color: #fff; padding: 4px 8px; margin-bottom: 4px;">PARALLAX</div>
-              <div class="mock-nav-item active">&#9670; Chained Rows</div>
-              <div class="mock-nav-item">&#9672; Selectors</div>
-              <div class="mock-nav-item">&#9672; Collapsible</div>
-              <div class="mock-nav-item">&#9672; Safety</div>
-              <div style="margin-top: auto; padding: 6px 8px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-muted);">
-                Alex Mercer (Pro)
-              </div>
-            </div>
-            <div class="mock-content">
-              <div style="display: flex; gap: 8px;">
-                <div style="flex: 1; height: 26px; background: #191c26; border-radius: 4px; border: 1px solid var(--border); padding: 4px 8px; font-size: 11px; color: var(--text-muted);">Search...</div>
-                <div style="width: 26px; height: 26px; background: #191c26; border-radius: 4px; border: 1px solid var(--border);"></div>
-              </div>
-              <div style="display: flex; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; font-size: 12px;">
-                <span style="color: var(--accent-hover); font-weight: 600;">Overview</span>
-                <span style="color: var(--text-muted);">Docking</span>
-                <span style="color: var(--text-muted);">Physics</span>
-                <span style="color: var(--text-muted);">Icons</span>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1;">
-                <div style="background: #191c26; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 11px;">
-                  <strong style="color: #fff;">Chained Rows</strong>
-                  <div style="color: var(--text-muted); margin-top: 4px;">Pill-toggles, keybinds, color swatches.</div>
-                </div>
-                <div style="background: #191c26; border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 11px;">
-                  <strong style="color: #fff;">Spring Motion</strong>
-                  <div style="color: var(--text-muted); margin-top: 4px;">k=100, c=20 harmonic physics.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Ergonomic Corner Resize Grip -->
-            <div class="mock-window-resize-grip" title="Ergonomic Diagonal Resize Grip">
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><line x1="8" y1="1" x2="1" y2="8" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/><line x1="9" y1="5" x2="5" y2="9" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/></svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Start -->
-    <section id="quickstart" class="doc-section">
-      <h2 class="section-title">CMake Quick Start</h2>
-      <p>Targeting modern C++20 with zero manual dependency installation:</p>
-      <pre><code># CMakeLists.txt
-cmake_minimum_required(VERSION 3.20)
-project(MyParallaxApp LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-add_subdirectory(parallax-imgui)
-
-add_executable(MyApp main.cpp)
-target_link_libraries(MyApp PRIVATE parallax)</code></pre>
-    </section>
-
-    <!-- DirectX 11 Host & Typing Safety -->
-    <section id="dx11-host" class="doc-section">
-      <h2 class="section-title">DirectX 11 Host & Input Module</h2>
-      <p>
-        The <code>parallax::dx11::D3D11Host</code> module handles Win32 window message loops, swap chain recreation, and safe buffer resizing:
-      </p>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Safe WM_SIZE Resizing</div>
-          <p>Releases render target views prior to <code>ResizeBuffers</code> and cleanly reconstructs views to prevent DXGI texture leaks or crashes.</p>
-        </div>
-        <div class="card" id="typing-safety">
-          <div class="card-title">Typing Safety (VK_RSHIFT)</div>
-          <p>When <code>ImGui::GetIO().WantTextInput</code> is active, <code>VK_RSHIFT</code> toggle events are filtered so capital typing functions without closing the menu.</p>
-        </div>
-      </div>
-      <pre><code>// Customizing toggle hotkeys
-parallax::AddToggleKey(VK_RSHIFT, /*ignoreWhenTyping=*/true);
-parallax::AddToggleKey(VK_INSERT, /*ignoreWhenTyping=*/false);</code></pre>
-    </section>
-
-    <!-- Animation & Easing Engine -->
-    <section id="animation-engine" class="doc-section">
-      <h2 class="section-title">Harmonic Spring Physics & Easing</h2>
-      <p>Frame-rate independent animations indexed by <code>ImGuiID</code> with continuous delta-time integration:</p>
-      <pre><code>// Damped harmonic spring physics (k=100, c=20)
-float animVal = parallax::SpringFloat(ImGui::GetID("##MyWidget"), targetVal);
-
-// Cubic Bezier ease-out-quint animation
-float easeVal = parallax::AnimFloat(ImGui::GetID("##MyTabFade"), 1.0f, 0.25f, parallax::anim::EasingPreset::EaseOutQuint);
-
-// Global animation speed multiplier
-parallax::SetSpeedMultiplier(parallax::SpeedMultiplier::Fast); // Fast, Normal, Relaxed, Off</code></pre>
-    </section>
-
-    <!-- On-Demand SVG Icon Pipeline -->
-    <section id="svg-pipeline" class="doc-section">
-      <h2 class="section-title">Dynamic SVG Atlas (2,077 Icons)</h2>
-      <p>
-        Powered by LunaSVG, requested icons are rasterized on-demand at native display DPI and packed into a dynamic DirectX 11 Texture Atlas:
-      </p>
-      <pre><code>// Draw any of the 2,077 icons with dynamic tinting
-parallax::Icon("shield", ImVec2(24, 24), colors.Accent);
-parallax::Icon("activity", ImVec2(24, 24), ImVec4(0.2f, 0.8f, 0.4f, 1.0f));
-
-// Graceful missing icon fallback (embedded procedural shield)
-parallax::Icon("non_existent_icon"); // Never crashes</code></pre>
-    </section>
-
-    <!-- MCP Server Roadmap -->
-    <section id="mcp-roadmap" class="doc-section">
-      <h2 class="section-title">MCP Server Specification & Roadmap</h2>
-      <div class="callout">
-        <strong>Model Context Protocol (MCP) Integration:</strong>
-        Full specification is documented in <code>MCP_SERVER_SPEC.md</code>. In subsequent phases, <code>parallax-mcp</code> will connect AI pair programmers directly to live running DirectX 11 Parallax instances for live inspection, color token tuning, automated screenshot capture, and UI scaffolding.
-      </div>
-    </section>
-  </main>
-
-  <script src="app.js"></script>
+        // Initial Load
+        loadPage('getting-started.md');
+    </script>
 </body>
 </html>

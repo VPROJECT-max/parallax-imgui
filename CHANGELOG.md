@@ -25,6 +25,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - Case-insensitive, space-separated token matching in `HeaderWidgets::SearchBar`.
   - Floating results popover with tab badges, metadata subheadings, and hover animations.
   - Selecting a search result navigates to the target tab, automatically expands collapsible cards (`CollapsibleGroupbox`), spotlights the section with an animated pulsing accent outline, and resets the search query without affecting widget states. Pressing `Escape` clears the query.
+- **Standalone SDK Distribution & CMake Packaging (`package_sdk`)**:
+  - Full self-contained SDK packaging target producing `sdk/` containing public C++ headers (`include/parallax`), Dear ImGui headers (`include/imgui`), unified all-in-one `lib/parallax.lib` (20.08 MB containing Parallax, ImGui, LunaSVG, and PlutoVG), modular libraries (`lib/modular/`), runtime assets (`assets/fonts`, `assets/icons`, `assets/logo.svg`), and `cmake/ParallaxConfig.cmake`.
+- **Public-API-Only Standalone Consumer Test (`examples/standalone_consumer`)**:
+  - Independent standalone CMake consumer project that builds against only `sdk/` artifacts with zero access to private implementation files in `src/`.
+  - Dual operational mode: interactive DirectX 11 application and automated headless test (`--test`) verifying initialization, window creation, widgets, theming, and clean shutdown.
+- **Comprehensive Documentation Suite & AI Agent Specifications (`build_docs`)**:
+  - Static developer documentation website (`docs/index.html`) featuring AMOLED Black and Light themes, Prism.js syntax highlighting, copyable code snippets, responsive layout, and full-text search.
+  - Interactive SVG Icon Explorer cataloging all 2,078 vector icons with real-time filtering and copyable slugs.
+  - Machine-readable `docs/llms.txt` and `docs/llms-full.txt` specifications optimized for AI coding assistants.
+  - Complete Markdown documentation across 8 structured topic guides (`docs/markdown/`).
+- **DirectX 11 Showcase Wallpaper Background**:
+  - Integrated native Windows Imaging Component (WIC) hardware-accelerated texture decoder for `assets/bannalpsee-switzerland-aurora-borealis-starry-sky-landscape-3840x2160-3938.jpg`.
+  - Aspect-ratio preserving viewport cover crop with subtle dark scrim overlay ensuring pristine AMOLED contrast and menu readability.
 - **Keybind Simulation & Diagnostics Suite**:
   - Added testable simulation hooks `SimulateKeyState(int vkey, bool isDown)` and `ClearSimulatedKeys()` for headless automated verification.
   - Added first-class `KeybindRow(label, description, bind)` layout helper with full `ItemSize`/`ItemAdd` layout registration.

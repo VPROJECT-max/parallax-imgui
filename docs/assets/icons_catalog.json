@@ -1,0 +1,8314 @@
+[
+  {
+    "slug": "a-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "a-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "a-large-small",
+    "category": "General"
+  },
+  {
+    "slug": "accessibility",
+    "category": "General"
+  },
+  {
+    "slug": "activity",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "activity-square",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "ad",
+    "category": "General"
+  },
+  {
+    "slug": "air-vent",
+    "category": "General"
+  },
+  {
+    "slug": "airplay",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-check",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-clock",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-clock-check",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-clock-minus",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-clock-off",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-clock-plus",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-minus",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-plus",
+    "category": "General"
+  },
+  {
+    "slug": "alarm-smoke",
+    "category": "General"
+  },
+  {
+    "slug": "album",
+    "category": "General"
+  },
+  {
+    "slug": "alert-circle",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "alert-octagon",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "alert-triangle",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "align-center",
+    "category": "General"
+  },
+  {
+    "slug": "align-center-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "align-center-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "align-end-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "align-end-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-distribute-center",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-distribute-end",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-distribute-start",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-justify-center",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-justify-end",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-justify-start",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-space-around",
+    "category": "General"
+  },
+  {
+    "slug": "align-horizontal-space-between",
+    "category": "General"
+  },
+  {
+    "slug": "align-justify",
+    "category": "General"
+  },
+  {
+    "slug": "align-left",
+    "category": "General"
+  },
+  {
+    "slug": "align-right",
+    "category": "General"
+  },
+  {
+    "slug": "align-start-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "align-start-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-distribute-center",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-distribute-end",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-distribute-start",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-justify-center",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-justify-end",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-justify-start",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-space-around",
+    "category": "General"
+  },
+  {
+    "slug": "align-vertical-space-between",
+    "category": "General"
+  },
+  {
+    "slug": "ambulance",
+    "category": "General"
+  },
+  {
+    "slug": "ampersand",
+    "category": "General"
+  },
+  {
+    "slug": "ampersands",
+    "category": "General"
+  },
+  {
+    "slug": "amphora",
+    "category": "General"
+  },
+  {
+    "slug": "anchor",
+    "category": "General"
+  },
+  {
+    "slug": "angle",
+    "category": "General"
+  },
+  {
+    "slug": "angry",
+    "category": "General"
+  },
+  {
+    "slug": "annoyed",
+    "category": "General"
+  },
+  {
+    "slug": "antenna",
+    "category": "General"
+  },
+  {
+    "slug": "anvil",
+    "category": "General"
+  },
+  {
+    "slug": "aperture",
+    "category": "General"
+  },
+  {
+    "slug": "app-window",
+    "category": "General"
+  },
+  {
+    "slug": "app-window-mac",
+    "category": "General"
+  },
+  {
+    "slug": "apple",
+    "category": "General"
+  },
+  {
+    "slug": "archive",
+    "category": "General"
+  },
+  {
+    "slug": "archive-restore",
+    "category": "General"
+  },
+  {
+    "slug": "archive-x",
+    "category": "General"
+  },
+  {
+    "slug": "area-chart",
+    "category": "General"
+  },
+  {
+    "slug": "armchair",
+    "category": "General"
+  },
+  {
+    "slug": "arrow-big-down",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-down-dash",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-left-dash",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-right-dash",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-up",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-big-up-dash",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-0-1",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-01",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-1-0",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-10",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-a-z",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-az",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-from-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-left-from-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-left-from-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-left-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-narrow-wide",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-right-from-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-right-from-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-right-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-to-dot",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-to-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-up",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-wide-narrow",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-z-a",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-down-za",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left-from-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-left-to-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right-from-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-right-to-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-0-1",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-01",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-1-0",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-10",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-a-z",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-az",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-down",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-from-dot",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-from-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-left-from-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-left-from-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-left-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-narrow-wide",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-right-from-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-right-from-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-right-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-to-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-wide-narrow",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-z-a",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrow-up-za",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "arrows-up-from-line",
+    "category": "General"
+  },
+  {
+    "slug": "asterisk",
+    "category": "General"
+  },
+  {
+    "slug": "asterisk-square",
+    "category": "General"
+  },
+  {
+    "slug": "astroid",
+    "category": "General"
+  },
+  {
+    "slug": "at-sign",
+    "category": "Communication"
+  },
+  {
+    "slug": "atom",
+    "category": "General"
+  },
+  {
+    "slug": "audio-lines",
+    "category": "General"
+  },
+  {
+    "slug": "audio-lines-off",
+    "category": "General"
+  },
+  {
+    "slug": "audio-lines-x",
+    "category": "General"
+  },
+  {
+    "slug": "audio-waveform",
+    "category": "General"
+  },
+  {
+    "slug": "award",
+    "category": "General"
+  },
+  {
+    "slug": "axe",
+    "category": "General"
+  },
+  {
+    "slug": "axis-3-d",
+    "category": "General"
+  },
+  {
+    "slug": "axis-3d",
+    "category": "General"
+  },
+  {
+    "slug": "baby",
+    "category": "General"
+  },
+  {
+    "slug": "backpack",
+    "category": "General"
+  },
+  {
+    "slug": "badge",
+    "category": "General"
+  },
+  {
+    "slug": "badge-alert",
+    "category": "General"
+  },
+  {
+    "slug": "badge-cent",
+    "category": "General"
+  },
+  {
+    "slug": "badge-check",
+    "category": "General"
+  },
+  {
+    "slug": "badge-dollar-sign",
+    "category": "General"
+  },
+  {
+    "slug": "badge-euro",
+    "category": "General"
+  },
+  {
+    "slug": "badge-help",
+    "category": "General"
+  },
+  {
+    "slug": "badge-indian-rupee",
+    "category": "General"
+  },
+  {
+    "slug": "badge-info",
+    "category": "General"
+  },
+  {
+    "slug": "badge-japanese-yen",
+    "category": "General"
+  },
+  {
+    "slug": "badge-minus",
+    "category": "General"
+  },
+  {
+    "slug": "badge-percent",
+    "category": "General"
+  },
+  {
+    "slug": "badge-plus",
+    "category": "General"
+  },
+  {
+    "slug": "badge-pound-sterling",
+    "category": "General"
+  },
+  {
+    "slug": "badge-question-mark",
+    "category": "General"
+  },
+  {
+    "slug": "badge-russian-ruble",
+    "category": "General"
+  },
+  {
+    "slug": "badge-swiss-franc",
+    "category": "General"
+  },
+  {
+    "slug": "badge-turkish-lira",
+    "category": "General"
+  },
+  {
+    "slug": "badge-x",
+    "category": "General"
+  },
+  {
+    "slug": "baggage-claim",
+    "category": "General"
+  },
+  {
+    "slug": "balloon",
+    "category": "General"
+  },
+  {
+    "slug": "ban",
+    "category": "General"
+  },
+  {
+    "slug": "banana",
+    "category": "General"
+  },
+  {
+    "slug": "bandage",
+    "category": "General"
+  },
+  {
+    "slug": "banknote",
+    "category": "General"
+  },
+  {
+    "slug": "banknote-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "banknote-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "banknote-check",
+    "category": "General"
+  },
+  {
+    "slug": "banknote-x",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-2",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-3",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-4",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-big",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "bar-chart-horizontal-big",
+    "category": "General"
+  },
+  {
+    "slug": "barcode",
+    "category": "General"
+  },
+  {
+    "slug": "barrel",
+    "category": "General"
+  },
+  {
+    "slug": "baseline",
+    "category": "General"
+  },
+  {
+    "slug": "bath",
+    "category": "General"
+  },
+  {
+    "slug": "battery",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-charging",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-full",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-low",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-medium",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-plus",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "battery-warning",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "beaker",
+    "category": "General"
+  },
+  {
+    "slug": "bean",
+    "category": "General"
+  },
+  {
+    "slug": "bean-off",
+    "category": "General"
+  },
+  {
+    "slug": "bed",
+    "category": "General"
+  },
+  {
+    "slug": "bed-double",
+    "category": "General"
+  },
+  {
+    "slug": "bed-single",
+    "category": "General"
+  },
+  {
+    "slug": "beef",
+    "category": "General"
+  },
+  {
+    "slug": "beef-off",
+    "category": "General"
+  },
+  {
+    "slug": "beer",
+    "category": "General"
+  },
+  {
+    "slug": "beer-off",
+    "category": "General"
+  },
+  {
+    "slug": "bell",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-dot",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-electric",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-minus",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-off",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "bell-ring",
+    "category": "Communication"
+  },
+  {
+    "slug": "between-horizonal-end",
+    "category": "General"
+  },
+  {
+    "slug": "between-horizonal-start",
+    "category": "General"
+  },
+  {
+    "slug": "between-horizontal-end",
+    "category": "General"
+  },
+  {
+    "slug": "between-horizontal-start",
+    "category": "General"
+  },
+  {
+    "slug": "between-vertical-end",
+    "category": "General"
+  },
+  {
+    "slug": "between-vertical-start",
+    "category": "General"
+  },
+  {
+    "slug": "biceps-flexed",
+    "category": "General"
+  },
+  {
+    "slug": "bike",
+    "category": "General"
+  },
+  {
+    "slug": "binary",
+    "category": "General"
+  },
+  {
+    "slug": "binoculars",
+    "category": "General"
+  },
+  {
+    "slug": "biohazard",
+    "category": "General"
+  },
+  {
+    "slug": "bird",
+    "category": "General"
+  },
+  {
+    "slug": "birdhouse",
+    "category": "General"
+  },
+  {
+    "slug": "bitcoin",
+    "category": "General"
+  },
+  {
+    "slug": "blend",
+    "category": "General"
+  },
+  {
+    "slug": "blender",
+    "category": "General"
+  },
+  {
+    "slug": "blinds",
+    "category": "General"
+  },
+  {
+    "slug": "blocks",
+    "category": "General"
+  },
+  {
+    "slug": "bluetooth",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "bluetooth-connected",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "bluetooth-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "bluetooth-searching",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "bold",
+    "category": "General"
+  },
+  {
+    "slug": "bolt",
+    "category": "General"
+  },
+  {
+    "slug": "bomb",
+    "category": "General"
+  },
+  {
+    "slug": "bone",
+    "category": "General"
+  },
+  {
+    "slug": "bone-fracture",
+    "category": "General"
+  },
+  {
+    "slug": "book",
+    "category": "General"
+  },
+  {
+    "slug": "book-a",
+    "category": "General"
+  },
+  {
+    "slug": "book-alert",
+    "category": "General"
+  },
+  {
+    "slug": "book-audio",
+    "category": "General"
+  },
+  {
+    "slug": "book-check",
+    "category": "General"
+  },
+  {
+    "slug": "book-copy",
+    "category": "General"
+  },
+  {
+    "slug": "book-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "book-down",
+    "category": "General"
+  },
+  {
+    "slug": "book-headphones",
+    "category": "General"
+  },
+  {
+    "slug": "book-heart",
+    "category": "General"
+  },
+  {
+    "slug": "book-image",
+    "category": "General"
+  },
+  {
+    "slug": "book-key",
+    "category": "General"
+  },
+  {
+    "slug": "book-lock",
+    "category": "General"
+  },
+  {
+    "slug": "book-marked",
+    "category": "General"
+  },
+  {
+    "slug": "book-minus",
+    "category": "General"
+  },
+  {
+    "slug": "book-open",
+    "category": "General"
+  },
+  {
+    "slug": "book-open-check",
+    "category": "General"
+  },
+  {
+    "slug": "book-open-text",
+    "category": "General"
+  },
+  {
+    "slug": "book-plus",
+    "category": "General"
+  },
+  {
+    "slug": "book-search",
+    "category": "General"
+  },
+  {
+    "slug": "book-template",
+    "category": "General"
+  },
+  {
+    "slug": "book-text",
+    "category": "General"
+  },
+  {
+    "slug": "book-type",
+    "category": "General"
+  },
+  {
+    "slug": "book-up",
+    "category": "General"
+  },
+  {
+    "slug": "book-up-2",
+    "category": "General"
+  },
+  {
+    "slug": "book-user",
+    "category": "General"
+  },
+  {
+    "slug": "book-x",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark-check",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark-minus",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark-off",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark-plus",
+    "category": "General"
+  },
+  {
+    "slug": "bookmark-x",
+    "category": "General"
+  },
+  {
+    "slug": "boom-box",
+    "category": "General"
+  },
+  {
+    "slug": "bot",
+    "category": "General"
+  },
+  {
+    "slug": "bot-message-square",
+    "category": "General"
+  },
+  {
+    "slug": "bot-off",
+    "category": "General"
+  },
+  {
+    "slug": "bottle-wine",
+    "category": "General"
+  },
+  {
+    "slug": "bow-arrow",
+    "category": "General"
+  },
+  {
+    "slug": "box",
+    "category": "General"
+  },
+  {
+    "slug": "box-select",
+    "category": "General"
+  },
+  {
+    "slug": "boxes",
+    "category": "General"
+  },
+  {
+    "slug": "braces",
+    "category": "General"
+  },
+  {
+    "slug": "brackets",
+    "category": "General"
+  },
+  {
+    "slug": "brain",
+    "category": "General"
+  },
+  {
+    "slug": "brain-circuit",
+    "category": "General"
+  },
+  {
+    "slug": "brain-cog",
+    "category": "General"
+  },
+  {
+    "slug": "brick-wall",
+    "category": "General"
+  },
+  {
+    "slug": "brick-wall-fire",
+    "category": "General"
+  },
+  {
+    "slug": "brick-wall-shield",
+    "category": "General"
+  },
+  {
+    "slug": "bridge",
+    "category": "General"
+  },
+  {
+    "slug": "briefcase",
+    "category": "General"
+  },
+  {
+    "slug": "briefcase-business",
+    "category": "General"
+  },
+  {
+    "slug": "briefcase-conveyor-belt",
+    "category": "General"
+  },
+  {
+    "slug": "briefcase-medical",
+    "category": "General"
+  },
+  {
+    "slug": "bring-to-front",
+    "category": "General"
+  },
+  {
+    "slug": "broccoli",
+    "category": "General"
+  },
+  {
+    "slug": "broom",
+    "category": "General"
+  },
+  {
+    "slug": "broom-sparkles",
+    "category": "General"
+  },
+  {
+    "slug": "brush",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "brush-cleaning",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "bubbles",
+    "category": "General"
+  },
+  {
+    "slug": "bug",
+    "category": "General"
+  },
+  {
+    "slug": "bug-off",
+    "category": "General"
+  },
+  {
+    "slug": "bug-play",
+    "category": "General"
+  },
+  {
+    "slug": "building",
+    "category": "General"
+  },
+  {
+    "slug": "building-2",
+    "category": "General"
+  },
+  {
+    "slug": "bus",
+    "category": "General"
+  },
+  {
+    "slug": "bus-front",
+    "category": "General"
+  },
+  {
+    "slug": "cable",
+    "category": "General"
+  },
+  {
+    "slug": "cable-car",
+    "category": "General"
+  },
+  {
+    "slug": "cake",
+    "category": "General"
+  },
+  {
+    "slug": "cake-slice",
+    "category": "General"
+  },
+  {
+    "slug": "calculator",
+    "category": "General"
+  },
+  {
+    "slug": "calendar",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-1",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-check",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-check-2",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-clock",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-cog",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-days",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-fold",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-heart",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-minus",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-minus-2",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-off",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-plus",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-plus-2",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-range",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-search",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-sync",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-x",
+    "category": "General"
+  },
+  {
+    "slug": "calendar-x-2",
+    "category": "General"
+  },
+  {
+    "slug": "calendars",
+    "category": "General"
+  },
+  {
+    "slug": "camera",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "camera-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "can",
+    "category": "General"
+  },
+  {
+    "slug": "can-soda",
+    "category": "General"
+  },
+  {
+    "slug": "candlestick-chart",
+    "category": "General"
+  },
+  {
+    "slug": "candy",
+    "category": "General"
+  },
+  {
+    "slug": "candy-cane",
+    "category": "General"
+  },
+  {
+    "slug": "candy-off",
+    "category": "General"
+  },
+  {
+    "slug": "cannabis",
+    "category": "General"
+  },
+  {
+    "slug": "cannabis-off",
+    "category": "General"
+  },
+  {
+    "slug": "captions",
+    "category": "General"
+  },
+  {
+    "slug": "captions-off",
+    "category": "General"
+  },
+  {
+    "slug": "car",
+    "category": "General"
+  },
+  {
+    "slug": "car-battery",
+    "category": "General"
+  },
+  {
+    "slug": "car-front",
+    "category": "General"
+  },
+  {
+    "slug": "car-taxi-front",
+    "category": "General"
+  },
+  {
+    "slug": "caravan",
+    "category": "General"
+  },
+  {
+    "slug": "card-sim",
+    "category": "General"
+  },
+  {
+    "slug": "carrot",
+    "category": "General"
+  },
+  {
+    "slug": "carton",
+    "category": "General"
+  },
+  {
+    "slug": "carton-off",
+    "category": "General"
+  },
+  {
+    "slug": "case-lower",
+    "category": "General"
+  },
+  {
+    "slug": "case-sensitive",
+    "category": "General"
+  },
+  {
+    "slug": "case-upper",
+    "category": "General"
+  },
+  {
+    "slug": "cassette-tape",
+    "category": "General"
+  },
+  {
+    "slug": "cast",
+    "category": "General"
+  },
+  {
+    "slug": "castle",
+    "category": "General"
+  },
+  {
+    "slug": "cat",
+    "category": "General"
+  },
+  {
+    "slug": "cctv",
+    "category": "General"
+  },
+  {
+    "slug": "cctv-off",
+    "category": "General"
+  },
+  {
+    "slug": "chart-area",
+    "category": "General"
+  },
+  {
+    "slug": "chart-bar",
+    "category": "General"
+  },
+  {
+    "slug": "chart-bar-big",
+    "category": "General"
+  },
+  {
+    "slug": "chart-bar-decreasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-bar-increasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-bar-stacked",
+    "category": "General"
+  },
+  {
+    "slug": "chart-candlestick",
+    "category": "General"
+  },
+  {
+    "slug": "chart-column",
+    "category": "General"
+  },
+  {
+    "slug": "chart-column-big",
+    "category": "General"
+  },
+  {
+    "slug": "chart-column-decreasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-column-increasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-column-stacked",
+    "category": "General"
+  },
+  {
+    "slug": "chart-gantt",
+    "category": "General"
+  },
+  {
+    "slug": "chart-line",
+    "category": "General"
+  },
+  {
+    "slug": "chart-network",
+    "category": "General"
+  },
+  {
+    "slug": "chart-no-axes-column",
+    "category": "General"
+  },
+  {
+    "slug": "chart-no-axes-column-decreasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-no-axes-column-increasing",
+    "category": "General"
+  },
+  {
+    "slug": "chart-no-axes-combined",
+    "category": "General"
+  },
+  {
+    "slug": "chart-no-axes-gantt",
+    "category": "General"
+  },
+  {
+    "slug": "chart-pie",
+    "category": "General"
+  },
+  {
+    "slug": "chart-scatter",
+    "category": "General"
+  },
+  {
+    "slug": "chart-spline",
+    "category": "General"
+  },
+  {
+    "slug": "check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-circle-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-line",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "check-square-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chef-hat",
+    "category": "General"
+  },
+  {
+    "slug": "cherry",
+    "category": "General"
+  },
+  {
+    "slug": "chess-bishop",
+    "category": "General"
+  },
+  {
+    "slug": "chess-king",
+    "category": "General"
+  },
+  {
+    "slug": "chess-knight",
+    "category": "General"
+  },
+  {
+    "slug": "chess-pawn",
+    "category": "General"
+  },
+  {
+    "slug": "chess-queen",
+    "category": "General"
+  },
+  {
+    "slug": "chess-rook",
+    "category": "General"
+  },
+  {
+    "slug": "chevron-down",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-down-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-down-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-first",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-last",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-left",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-left-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-left-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-right",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-right-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-right-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-up",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-up-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevron-up-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "chevrons-down",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-down-up",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-left",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-left-right",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-left-right-ellipsis",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-right",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-right-left",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-up",
+    "category": "General"
+  },
+  {
+    "slug": "chevrons-up-down",
+    "category": "General"
+  },
+  {
+    "slug": "church",
+    "category": "General"
+  },
+  {
+    "slug": "cigarette",
+    "category": "General"
+  },
+  {
+    "slug": "cigarette-off",
+    "category": "General"
+  },
+  {
+    "slug": "circle",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-alert",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-out-down-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-out-down-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-out-up-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-out-up-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-arrow-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-check",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-check-big",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-chevron-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-chevron-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-chevron-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-chevron-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-dashed",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-dashed-check",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-divide",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-dollar-sign",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-dot",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-dot-dashed",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-ellipsis",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-equal",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-euro",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-fading-arrow-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-fading-plus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-gauge",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-help",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-minus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-parking",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-parking-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-pause",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-percent",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-pile",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-play",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-plus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-pound-sterling",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-power",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-question-mark",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-slash",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-slash-2",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-slashed",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-small",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-star",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-stop",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-user",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-user-round",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circle-x",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "circuit-board",
+    "category": "General"
+  },
+  {
+    "slug": "citrus",
+    "category": "General"
+  },
+  {
+    "slug": "clapperboard",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-check",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-clock",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-copy",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-edit",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-list",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-minus",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-paste",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-pen",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-pen-line",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-plus",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-signature",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-type",
+    "category": "General"
+  },
+  {
+    "slug": "clipboard-x",
+    "category": "General"
+  },
+  {
+    "slug": "clock",
+    "category": "General"
+  },
+  {
+    "slug": "clock-1",
+    "category": "General"
+  },
+  {
+    "slug": "clock-10",
+    "category": "General"
+  },
+  {
+    "slug": "clock-11",
+    "category": "General"
+  },
+  {
+    "slug": "clock-12",
+    "category": "General"
+  },
+  {
+    "slug": "clock-2",
+    "category": "General"
+  },
+  {
+    "slug": "clock-3",
+    "category": "General"
+  },
+  {
+    "slug": "clock-4",
+    "category": "General"
+  },
+  {
+    "slug": "clock-5",
+    "category": "General"
+  },
+  {
+    "slug": "clock-6",
+    "category": "General"
+  },
+  {
+    "slug": "clock-7",
+    "category": "General"
+  },
+  {
+    "slug": "clock-8",
+    "category": "General"
+  },
+  {
+    "slug": "clock-9",
+    "category": "General"
+  },
+  {
+    "slug": "clock-alert",
+    "category": "General"
+  },
+  {
+    "slug": "clock-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "clock-arrow-left",
+    "category": "General"
+  },
+  {
+    "slug": "clock-arrow-right",
+    "category": "General"
+  },
+  {
+    "slug": "clock-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "clock-check",
+    "category": "General"
+  },
+  {
+    "slug": "clock-fading",
+    "category": "General"
+  },
+  {
+    "slug": "clock-plus",
+    "category": "General"
+  },
+  {
+    "slug": "closed-caption",
+    "category": "General"
+  },
+  {
+    "slug": "cloud",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-alert",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-backup",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-check",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-cog",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-download",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-drizzle",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-fog",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-hail",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-lightning",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-moon",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-moon-rain",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-off",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-rain",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-rain-wind",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-snow",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-sun",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-sun-rain",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-sync",
+    "category": "General"
+  },
+  {
+    "slug": "cloud-upload",
+    "category": "General"
+  },
+  {
+    "slug": "cloudy",
+    "category": "General"
+  },
+  {
+    "slug": "clover",
+    "category": "General"
+  },
+  {
+    "slug": "club",
+    "category": "General"
+  },
+  {
+    "slug": "code",
+    "category": "General"
+  },
+  {
+    "slug": "code-2",
+    "category": "General"
+  },
+  {
+    "slug": "code-square",
+    "category": "General"
+  },
+  {
+    "slug": "code-xml",
+    "category": "General"
+  },
+  {
+    "slug": "coffee",
+    "category": "General"
+  },
+  {
+    "slug": "cog",
+    "category": "General"
+  },
+  {
+    "slug": "coins",
+    "category": "General"
+  },
+  {
+    "slug": "columns",
+    "category": "General"
+  },
+  {
+    "slug": "columns-2",
+    "category": "General"
+  },
+  {
+    "slug": "columns-3",
+    "category": "General"
+  },
+  {
+    "slug": "columns-3-cog",
+    "category": "General"
+  },
+  {
+    "slug": "columns-4",
+    "category": "General"
+  },
+  {
+    "slug": "columns-settings",
+    "category": "General"
+  },
+  {
+    "slug": "combine",
+    "category": "General"
+  },
+  {
+    "slug": "command",
+    "category": "General"
+  },
+  {
+    "slug": "compass",
+    "category": "General"
+  },
+  {
+    "slug": "component",
+    "category": "General"
+  },
+  {
+    "slug": "computer",
+    "category": "General"
+  },
+  {
+    "slug": "concierge-bell",
+    "category": "General"
+  },
+  {
+    "slug": "cone",
+    "category": "General"
+  },
+  {
+    "slug": "construction",
+    "category": "General"
+  },
+  {
+    "slug": "contact",
+    "category": "General"
+  },
+  {
+    "slug": "contact-2",
+    "category": "General"
+  },
+  {
+    "slug": "contact-round",
+    "category": "General"
+  },
+  {
+    "slug": "container",
+    "category": "General"
+  },
+  {
+    "slug": "contrast",
+    "category": "General"
+  },
+  {
+    "slug": "cookie",
+    "category": "General"
+  },
+  {
+    "slug": "cooking-pot",
+    "category": "General"
+  },
+  {
+    "slug": "copy",
+    "category": "General"
+  },
+  {
+    "slug": "copy-check",
+    "category": "General"
+  },
+  {
+    "slug": "copy-minus",
+    "category": "General"
+  },
+  {
+    "slug": "copy-plus",
+    "category": "General"
+  },
+  {
+    "slug": "copy-slash",
+    "category": "General"
+  },
+  {
+    "slug": "copy-x",
+    "category": "General"
+  },
+  {
+    "slug": "copyleft",
+    "category": "General"
+  },
+  {
+    "slug": "copyright",
+    "category": "General"
+  },
+  {
+    "slug": "corner-down-left",
+    "category": "General"
+  },
+  {
+    "slug": "corner-down-right",
+    "category": "General"
+  },
+  {
+    "slug": "corner-left-down",
+    "category": "General"
+  },
+  {
+    "slug": "corner-left-up",
+    "category": "General"
+  },
+  {
+    "slug": "corner-right-down",
+    "category": "General"
+  },
+  {
+    "slug": "corner-right-up",
+    "category": "General"
+  },
+  {
+    "slug": "corner-up-left",
+    "category": "General"
+  },
+  {
+    "slug": "corner-up-right",
+    "category": "General"
+  },
+  {
+    "slug": "cpu",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "creative-commons",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card-check",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card-minus",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card-plus",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card-reader",
+    "category": "General"
+  },
+  {
+    "slug": "credit-card-x",
+    "category": "General"
+  },
+  {
+    "slug": "croissant",
+    "category": "General"
+  },
+  {
+    "slug": "crop",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "cross",
+    "category": "General"
+  },
+  {
+    "slug": "crosshair",
+    "category": "General"
+  },
+  {
+    "slug": "crown",
+    "category": "General"
+  },
+  {
+    "slug": "cuboid",
+    "category": "General"
+  },
+  {
+    "slug": "cup-soda",
+    "category": "General"
+  },
+  {
+    "slug": "curly-braces",
+    "category": "General"
+  },
+  {
+    "slug": "currency",
+    "category": "General"
+  },
+  {
+    "slug": "cylinder",
+    "category": "General"
+  },
+  {
+    "slug": "dam",
+    "category": "General"
+  },
+  {
+    "slug": "database",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-arrow-down",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-arrow-up",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-backup",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-check",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-minus",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-plus",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-search",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-x",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "database-zap",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "decimals-arrow-left",
+    "category": "General"
+  },
+  {
+    "slug": "decimals-arrow-right",
+    "category": "General"
+  },
+  {
+    "slug": "delete",
+    "category": "General"
+  },
+  {
+    "slug": "dessert",
+    "category": "General"
+  },
+  {
+    "slug": "diameter",
+    "category": "General"
+  },
+  {
+    "slug": "diamond",
+    "category": "General"
+  },
+  {
+    "slug": "diamond-minus",
+    "category": "General"
+  },
+  {
+    "slug": "diamond-percent",
+    "category": "General"
+  },
+  {
+    "slug": "diamond-plus",
+    "category": "General"
+  },
+  {
+    "slug": "dice-1",
+    "category": "General"
+  },
+  {
+    "slug": "dice-2",
+    "category": "General"
+  },
+  {
+    "slug": "dice-3",
+    "category": "General"
+  },
+  {
+    "slug": "dice-4",
+    "category": "General"
+  },
+  {
+    "slug": "dice-5",
+    "category": "General"
+  },
+  {
+    "slug": "dice-6",
+    "category": "General"
+  },
+  {
+    "slug": "dices",
+    "category": "General"
+  },
+  {
+    "slug": "diff",
+    "category": "General"
+  },
+  {
+    "slug": "disc",
+    "category": "General"
+  },
+  {
+    "slug": "disc-2",
+    "category": "General"
+  },
+  {
+    "slug": "disc-3",
+    "category": "General"
+  },
+  {
+    "slug": "disc-album",
+    "category": "General"
+  },
+  {
+    "slug": "divide",
+    "category": "General"
+  },
+  {
+    "slug": "divide-circle",
+    "category": "General"
+  },
+  {
+    "slug": "divide-square",
+    "category": "General"
+  },
+  {
+    "slug": "dna",
+    "category": "General"
+  },
+  {
+    "slug": "dna-off",
+    "category": "General"
+  },
+  {
+    "slug": "dock",
+    "category": "General"
+  },
+  {
+    "slug": "dog",
+    "category": "General"
+  },
+  {
+    "slug": "dollar-sign",
+    "category": "General"
+  },
+  {
+    "slug": "dome",
+    "category": "General"
+  },
+  {
+    "slug": "donut",
+    "category": "General"
+  },
+  {
+    "slug": "door-closed",
+    "category": "General"
+  },
+  {
+    "slug": "door-closed-locked",
+    "category": "General"
+  },
+  {
+    "slug": "door-open",
+    "category": "General"
+  },
+  {
+    "slug": "door-stairwell",
+    "category": "General"
+  },
+  {
+    "slug": "dot",
+    "category": "General"
+  },
+  {
+    "slug": "dot-square",
+    "category": "General"
+  },
+  {
+    "slug": "download",
+    "category": "General"
+  },
+  {
+    "slug": "download-cloud",
+    "category": "General"
+  },
+  {
+    "slug": "drafting-compass",
+    "category": "General"
+  },
+  {
+    "slug": "drama",
+    "category": "General"
+  },
+  {
+    "slug": "drill",
+    "category": "General"
+  },
+  {
+    "slug": "drone",
+    "category": "General"
+  },
+  {
+    "slug": "droplet",
+    "category": "General"
+  },
+  {
+    "slug": "droplet-off",
+    "category": "General"
+  },
+  {
+    "slug": "droplets",
+    "category": "General"
+  },
+  {
+    "slug": "drum",
+    "category": "General"
+  },
+  {
+    "slug": "drumstick",
+    "category": "General"
+  },
+  {
+    "slug": "dumbbell",
+    "category": "General"
+  },
+  {
+    "slug": "ear",
+    "category": "General"
+  },
+  {
+    "slug": "ear-off",
+    "category": "General"
+  },
+  {
+    "slug": "earth",
+    "category": "General"
+  },
+  {
+    "slug": "earth-lock",
+    "category": "General"
+  },
+  {
+    "slug": "eclipse",
+    "category": "General"
+  },
+  {
+    "slug": "edit",
+    "category": "General"
+  },
+  {
+    "slug": "edit-2",
+    "category": "General"
+  },
+  {
+    "slug": "edit-3",
+    "category": "General"
+  },
+  {
+    "slug": "egg",
+    "category": "General"
+  },
+  {
+    "slug": "egg-fried",
+    "category": "General"
+  },
+  {
+    "slug": "egg-off",
+    "category": "General"
+  },
+  {
+    "slug": "eject",
+    "category": "General"
+  },
+  {
+    "slug": "ellipse",
+    "category": "General"
+  },
+  {
+    "slug": "ellipsis",
+    "category": "General"
+  },
+  {
+    "slug": "ellipsis-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "engine",
+    "category": "General"
+  },
+  {
+    "slug": "equal",
+    "category": "General"
+  },
+  {
+    "slug": "equal-approximately",
+    "category": "General"
+  },
+  {
+    "slug": "equal-approximately-not",
+    "category": "General"
+  },
+  {
+    "slug": "equal-not",
+    "category": "General"
+  },
+  {
+    "slug": "equal-square",
+    "category": "General"
+  },
+  {
+    "slug": "eraser",
+    "category": "General"
+  },
+  {
+    "slug": "ethernet-port",
+    "category": "General"
+  },
+  {
+    "slug": "euro",
+    "category": "General"
+  },
+  {
+    "slug": "ev-charger",
+    "category": "General"
+  },
+  {
+    "slug": "expand",
+    "category": "General"
+  },
+  {
+    "slug": "external-link",
+    "category": "General"
+  },
+  {
+    "slug": "eye",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "eye-closed",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "eye-dashed",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "eye-off",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "face-angry",
+    "category": "General"
+  },
+  {
+    "slug": "face-expressionless",
+    "category": "General"
+  },
+  {
+    "slug": "face-grinning",
+    "category": "General"
+  },
+  {
+    "slug": "face-neutral",
+    "category": "General"
+  },
+  {
+    "slug": "face-slightly-frowning",
+    "category": "General"
+  },
+  {
+    "slug": "face-slightly-smiling",
+    "category": "General"
+  },
+  {
+    "slug": "face-slightly-smiling-plus",
+    "category": "General"
+  },
+  {
+    "slug": "factory",
+    "category": "General"
+  },
+  {
+    "slug": "fan",
+    "category": "General"
+  },
+  {
+    "slug": "fast-forward",
+    "category": "General"
+  },
+  {
+    "slug": "feather",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "fence",
+    "category": "General"
+  },
+  {
+    "slug": "ferris-wheel",
+    "category": "General"
+  },
+  {
+    "slug": "file",
+    "category": "General"
+  },
+  {
+    "slug": "file-archive",
+    "category": "General"
+  },
+  {
+    "slug": "file-audio",
+    "category": "General"
+  },
+  {
+    "slug": "file-audio-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-axis-3-d",
+    "category": "General"
+  },
+  {
+    "slug": "file-axis-3d",
+    "category": "General"
+  },
+  {
+    "slug": "file-badge",
+    "category": "General"
+  },
+  {
+    "slug": "file-badge-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-bar-chart",
+    "category": "General"
+  },
+  {
+    "slug": "file-bar-chart-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-box",
+    "category": "General"
+  },
+  {
+    "slug": "file-braces",
+    "category": "General"
+  },
+  {
+    "slug": "file-braces-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-chart-column",
+    "category": "General"
+  },
+  {
+    "slug": "file-chart-column-increasing",
+    "category": "General"
+  },
+  {
+    "slug": "file-chart-line",
+    "category": "General"
+  },
+  {
+    "slug": "file-chart-pie",
+    "category": "General"
+  },
+  {
+    "slug": "file-check",
+    "category": "General"
+  },
+  {
+    "slug": "file-check-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-check-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-clock",
+    "category": "General"
+  },
+  {
+    "slug": "file-code",
+    "category": "General"
+  },
+  {
+    "slug": "file-code-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-code-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-cog",
+    "category": "General"
+  },
+  {
+    "slug": "file-cog-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-diff",
+    "category": "General"
+  },
+  {
+    "slug": "file-digit",
+    "category": "General"
+  },
+  {
+    "slug": "file-down",
+    "category": "General"
+  },
+  {
+    "slug": "file-edit",
+    "category": "General"
+  },
+  {
+    "slug": "file-exclamation-point",
+    "category": "General"
+  },
+  {
+    "slug": "file-headphone",
+    "category": "General"
+  },
+  {
+    "slug": "file-heart",
+    "category": "General"
+  },
+  {
+    "slug": "file-image",
+    "category": "General"
+  },
+  {
+    "slug": "file-input",
+    "category": "General"
+  },
+  {
+    "slug": "file-json",
+    "category": "General"
+  },
+  {
+    "slug": "file-json-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-key",
+    "category": "General"
+  },
+  {
+    "slug": "file-key-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-line-chart",
+    "category": "General"
+  },
+  {
+    "slug": "file-lock",
+    "category": "General"
+  },
+  {
+    "slug": "file-lock-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-minus",
+    "category": "General"
+  },
+  {
+    "slug": "file-minus-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-minus-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-music",
+    "category": "General"
+  },
+  {
+    "slug": "file-output",
+    "category": "General"
+  },
+  {
+    "slug": "file-pen",
+    "category": "General"
+  },
+  {
+    "slug": "file-pen-line",
+    "category": "General"
+  },
+  {
+    "slug": "file-pie-chart",
+    "category": "General"
+  },
+  {
+    "slug": "file-play",
+    "category": "General"
+  },
+  {
+    "slug": "file-plus",
+    "category": "General"
+  },
+  {
+    "slug": "file-plus-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-plus-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-question",
+    "category": "General"
+  },
+  {
+    "slug": "file-question-mark",
+    "category": "General"
+  },
+  {
+    "slug": "file-scan",
+    "category": "General"
+  },
+  {
+    "slug": "file-search",
+    "category": "General"
+  },
+  {
+    "slug": "file-search-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-search-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-signal",
+    "category": "General"
+  },
+  {
+    "slug": "file-signature",
+    "category": "General"
+  },
+  {
+    "slug": "file-sliders",
+    "category": "General"
+  },
+  {
+    "slug": "file-spreadsheet",
+    "category": "General"
+  },
+  {
+    "slug": "file-stack",
+    "category": "General"
+  },
+  {
+    "slug": "file-symlink",
+    "category": "General"
+  },
+  {
+    "slug": "file-terminal",
+    "category": "General"
+  },
+  {
+    "slug": "file-text",
+    "category": "General"
+  },
+  {
+    "slug": "file-type",
+    "category": "General"
+  },
+  {
+    "slug": "file-type-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-type-corner",
+    "category": "General"
+  },
+  {
+    "slug": "file-up",
+    "category": "General"
+  },
+  {
+    "slug": "file-user",
+    "category": "General"
+  },
+  {
+    "slug": "file-video",
+    "category": "General"
+  },
+  {
+    "slug": "file-video-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-video-camera",
+    "category": "General"
+  },
+  {
+    "slug": "file-volume",
+    "category": "General"
+  },
+  {
+    "slug": "file-volume-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-warning",
+    "category": "General"
+  },
+  {
+    "slug": "file-x",
+    "category": "General"
+  },
+  {
+    "slug": "file-x-2",
+    "category": "General"
+  },
+  {
+    "slug": "file-x-corner",
+    "category": "General"
+  },
+  {
+    "slug": "files",
+    "category": "General"
+  },
+  {
+    "slug": "film",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "filter",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "filter-x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "fingerprint",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "fingerprint-pattern",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "fire-extinguisher",
+    "category": "General"
+  },
+  {
+    "slug": "fish",
+    "category": "General"
+  },
+  {
+    "slug": "fish-off",
+    "category": "General"
+  },
+  {
+    "slug": "fish-symbol",
+    "category": "General"
+  },
+  {
+    "slug": "fishing-hook",
+    "category": "General"
+  },
+  {
+    "slug": "fishing-rod",
+    "category": "General"
+  },
+  {
+    "slug": "flag",
+    "category": "General"
+  },
+  {
+    "slug": "flag-off",
+    "category": "General"
+  },
+  {
+    "slug": "flag-triangle-left",
+    "category": "General"
+  },
+  {
+    "slug": "flag-triangle-right",
+    "category": "General"
+  },
+  {
+    "slug": "flame",
+    "category": "General"
+  },
+  {
+    "slug": "flame-kindling",
+    "category": "General"
+  },
+  {
+    "slug": "flashlight",
+    "category": "General"
+  },
+  {
+    "slug": "flashlight-off",
+    "category": "General"
+  },
+  {
+    "slug": "flask-conical",
+    "category": "General"
+  },
+  {
+    "slug": "flask-conical-off",
+    "category": "General"
+  },
+  {
+    "slug": "flask-round",
+    "category": "General"
+  },
+  {
+    "slug": "flip-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "flip-horizontal-2",
+    "category": "General"
+  },
+  {
+    "slug": "flip-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "flip-vertical-2",
+    "category": "General"
+  },
+  {
+    "slug": "flower",
+    "category": "General"
+  },
+  {
+    "slug": "flower-2",
+    "category": "General"
+  },
+  {
+    "slug": "focus",
+    "category": "General"
+  },
+  {
+    "slug": "fold-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "fold-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "folder",
+    "category": "General"
+  },
+  {
+    "slug": "folder-archive",
+    "category": "General"
+  },
+  {
+    "slug": "folder-bookmark",
+    "category": "General"
+  },
+  {
+    "slug": "folder-check",
+    "category": "General"
+  },
+  {
+    "slug": "folder-clock",
+    "category": "General"
+  },
+  {
+    "slug": "folder-closed",
+    "category": "General"
+  },
+  {
+    "slug": "folder-code",
+    "category": "General"
+  },
+  {
+    "slug": "folder-cog",
+    "category": "General"
+  },
+  {
+    "slug": "folder-cog-2",
+    "category": "General"
+  },
+  {
+    "slug": "folder-dot",
+    "category": "General"
+  },
+  {
+    "slug": "folder-down",
+    "category": "General"
+  },
+  {
+    "slug": "folder-edit",
+    "category": "General"
+  },
+  {
+    "slug": "folder-git",
+    "category": "General"
+  },
+  {
+    "slug": "folder-git-2",
+    "category": "General"
+  },
+  {
+    "slug": "folder-heart",
+    "category": "General"
+  },
+  {
+    "slug": "folder-input",
+    "category": "General"
+  },
+  {
+    "slug": "folder-kanban",
+    "category": "General"
+  },
+  {
+    "slug": "folder-key",
+    "category": "General"
+  },
+  {
+    "slug": "folder-lock",
+    "category": "General"
+  },
+  {
+    "slug": "folder-minus",
+    "category": "General"
+  },
+  {
+    "slug": "folder-open",
+    "category": "General"
+  },
+  {
+    "slug": "folder-open-dot",
+    "category": "General"
+  },
+  {
+    "slug": "folder-output",
+    "category": "General"
+  },
+  {
+    "slug": "folder-pen",
+    "category": "General"
+  },
+  {
+    "slug": "folder-plus",
+    "category": "General"
+  },
+  {
+    "slug": "folder-root",
+    "category": "General"
+  },
+  {
+    "slug": "folder-search",
+    "category": "General"
+  },
+  {
+    "slug": "folder-search-2",
+    "category": "General"
+  },
+  {
+    "slug": "folder-symlink",
+    "category": "General"
+  },
+  {
+    "slug": "folder-sync",
+    "category": "General"
+  },
+  {
+    "slug": "folder-tree",
+    "category": "General"
+  },
+  {
+    "slug": "folder-up",
+    "category": "General"
+  },
+  {
+    "slug": "folder-x",
+    "category": "General"
+  },
+  {
+    "slug": "folders",
+    "category": "General"
+  },
+  {
+    "slug": "footprints",
+    "category": "General"
+  },
+  {
+    "slug": "fork-knife",
+    "category": "General"
+  },
+  {
+    "slug": "fork-knife-crossed",
+    "category": "General"
+  },
+  {
+    "slug": "forklift",
+    "category": "General"
+  },
+  {
+    "slug": "form",
+    "category": "General"
+  },
+  {
+    "slug": "form-input",
+    "category": "General"
+  },
+  {
+    "slug": "forward",
+    "category": "General"
+  },
+  {
+    "slug": "frame",
+    "category": "General"
+  },
+  {
+    "slug": "frown",
+    "category": "General"
+  },
+  {
+    "slug": "fuel",
+    "category": "General"
+  },
+  {
+    "slug": "fullscreen",
+    "category": "General"
+  },
+  {
+    "slug": "function-square",
+    "category": "General"
+  },
+  {
+    "slug": "funnel",
+    "category": "General"
+  },
+  {
+    "slug": "funnel-plus",
+    "category": "General"
+  },
+  {
+    "slug": "funnel-x",
+    "category": "General"
+  },
+  {
+    "slug": "galaxy",
+    "category": "General"
+  },
+  {
+    "slug": "gallery-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "gallery-horizontal-end",
+    "category": "General"
+  },
+  {
+    "slug": "gallery-thumbnails",
+    "category": "General"
+  },
+  {
+    "slug": "gallery-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "gallery-vertical-end",
+    "category": "General"
+  },
+  {
+    "slug": "gamepad",
+    "category": "General"
+  },
+  {
+    "slug": "gamepad-2",
+    "category": "General"
+  },
+  {
+    "slug": "gamepad-directional",
+    "category": "General"
+  },
+  {
+    "slug": "gantt-chart",
+    "category": "General"
+  },
+  {
+    "slug": "gantt-chart-square",
+    "category": "General"
+  },
+  {
+    "slug": "gap-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "gap-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "gauge",
+    "category": "General"
+  },
+  {
+    "slug": "gauge-circle",
+    "category": "General"
+  },
+  {
+    "slug": "gavel",
+    "category": "General"
+  },
+  {
+    "slug": "gem",
+    "category": "General"
+  },
+  {
+    "slug": "georgian-lari",
+    "category": "General"
+  },
+  {
+    "slug": "germ",
+    "category": "General"
+  },
+  {
+    "slug": "germ-off",
+    "category": "General"
+  },
+  {
+    "slug": "ghost",
+    "category": "General"
+  },
+  {
+    "slug": "gift",
+    "category": "General"
+  },
+  {
+    "slug": "git-branch",
+    "category": "General"
+  },
+  {
+    "slug": "git-branch-minus",
+    "category": "General"
+  },
+  {
+    "slug": "git-branch-plus",
+    "category": "General"
+  },
+  {
+    "slug": "git-commit",
+    "category": "General"
+  },
+  {
+    "slug": "git-commit-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "git-commit-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "git-compare",
+    "category": "General"
+  },
+  {
+    "slug": "git-compare-arrows",
+    "category": "General"
+  },
+  {
+    "slug": "git-fork",
+    "category": "General"
+  },
+  {
+    "slug": "git-graph",
+    "category": "General"
+  },
+  {
+    "slug": "git-merge",
+    "category": "General"
+  },
+  {
+    "slug": "git-merge-conflict",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request-arrow",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request-closed",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request-create",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request-create-arrow",
+    "category": "General"
+  },
+  {
+    "slug": "git-pull-request-draft",
+    "category": "General"
+  },
+  {
+    "slug": "glass-water",
+    "category": "General"
+  },
+  {
+    "slug": "glasses",
+    "category": "General"
+  },
+  {
+    "slug": "globe",
+    "category": "Communication"
+  },
+  {
+    "slug": "globe-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "globe-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "globe-lock",
+    "category": "Communication"
+  },
+  {
+    "slug": "globe-off",
+    "category": "Communication"
+  },
+  {
+    "slug": "globe-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "goal",
+    "category": "General"
+  },
+  {
+    "slug": "gpu",
+    "category": "General"
+  },
+  {
+    "slug": "grab",
+    "category": "General"
+  },
+  {
+    "slug": "graduation-cap",
+    "category": "General"
+  },
+  {
+    "slug": "grape",
+    "category": "General"
+  },
+  {
+    "slug": "grid",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2-x-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2-x-2-check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2-x-2-plus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2-x-2-x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2x2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2x2-check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2x2-plus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-2x2-x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-3-x-3",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-3x2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grid-3x3",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "grip",
+    "category": "General"
+  },
+  {
+    "slug": "grip-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "grip-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "group",
+    "category": "General"
+  },
+  {
+    "slug": "guitar",
+    "category": "General"
+  },
+  {
+    "slug": "ham",
+    "category": "General"
+  },
+  {
+    "slug": "hamburger",
+    "category": "General"
+  },
+  {
+    "slug": "hammer",
+    "category": "General"
+  },
+  {
+    "slug": "hand",
+    "category": "General"
+  },
+  {
+    "slug": "hand-coins",
+    "category": "General"
+  },
+  {
+    "slug": "hand-fist",
+    "category": "General"
+  },
+  {
+    "slug": "hand-grab",
+    "category": "General"
+  },
+  {
+    "slug": "hand-heart",
+    "category": "General"
+  },
+  {
+    "slug": "hand-helping",
+    "category": "General"
+  },
+  {
+    "slug": "hand-metal",
+    "category": "General"
+  },
+  {
+    "slug": "hand-platter",
+    "category": "General"
+  },
+  {
+    "slug": "handbag",
+    "category": "General"
+  },
+  {
+    "slug": "handshake",
+    "category": "General"
+  },
+  {
+    "slug": "hard-drive",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "hard-drive-download",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "hard-drive-upload",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "hard-hat",
+    "category": "General"
+  },
+  {
+    "slug": "hash",
+    "category": "General"
+  },
+  {
+    "slug": "hat-glasses",
+    "category": "General"
+  },
+  {
+    "slug": "haze",
+    "category": "General"
+  },
+  {
+    "slug": "hd",
+    "category": "General"
+  },
+  {
+    "slug": "hdmi-port",
+    "category": "General"
+  },
+  {
+    "slug": "heading",
+    "category": "General"
+  },
+  {
+    "slug": "heading-1",
+    "category": "General"
+  },
+  {
+    "slug": "heading-2",
+    "category": "General"
+  },
+  {
+    "slug": "heading-3",
+    "category": "General"
+  },
+  {
+    "slug": "heading-4",
+    "category": "General"
+  },
+  {
+    "slug": "heading-5",
+    "category": "General"
+  },
+  {
+    "slug": "heading-6",
+    "category": "General"
+  },
+  {
+    "slug": "headphone-off",
+    "category": "General"
+  },
+  {
+    "slug": "headphones",
+    "category": "General"
+  },
+  {
+    "slug": "headset",
+    "category": "General"
+  },
+  {
+    "slug": "heart",
+    "category": "General"
+  },
+  {
+    "slug": "heart-crack",
+    "category": "General"
+  },
+  {
+    "slug": "heart-handshake",
+    "category": "General"
+  },
+  {
+    "slug": "heart-minus",
+    "category": "General"
+  },
+  {
+    "slug": "heart-off",
+    "category": "General"
+  },
+  {
+    "slug": "heart-plus",
+    "category": "General"
+  },
+  {
+    "slug": "heart-pulse",
+    "category": "General"
+  },
+  {
+    "slug": "heart-x",
+    "category": "General"
+  },
+  {
+    "slug": "heater",
+    "category": "General"
+  },
+  {
+    "slug": "helicopter",
+    "category": "General"
+  },
+  {
+    "slug": "help-circle",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "helping-hand",
+    "category": "General"
+  },
+  {
+    "slug": "hexagon",
+    "category": "General"
+  },
+  {
+    "slug": "highlighter",
+    "category": "General"
+  },
+  {
+    "slug": "history",
+    "category": "General"
+  },
+  {
+    "slug": "home",
+    "category": "General"
+  },
+  {
+    "slug": "hop",
+    "category": "General"
+  },
+  {
+    "slug": "hop-off",
+    "category": "General"
+  },
+  {
+    "slug": "hospital",
+    "category": "General"
+  },
+  {
+    "slug": "hotel",
+    "category": "General"
+  },
+  {
+    "slug": "hourglass",
+    "category": "General"
+  },
+  {
+    "slug": "house",
+    "category": "General"
+  },
+  {
+    "slug": "house-heart",
+    "category": "General"
+  },
+  {
+    "slug": "house-plug",
+    "category": "General"
+  },
+  {
+    "slug": "house-plus",
+    "category": "General"
+  },
+  {
+    "slug": "house-wifi",
+    "category": "General"
+  },
+  {
+    "slug": "ice-cream",
+    "category": "General"
+  },
+  {
+    "slug": "ice-cream-2",
+    "category": "General"
+  },
+  {
+    "slug": "ice-cream-bowl",
+    "category": "General"
+  },
+  {
+    "slug": "ice-cream-cone",
+    "category": "General"
+  },
+  {
+    "slug": "id-card",
+    "category": "General"
+  },
+  {
+    "slug": "id-card-lanyard",
+    "category": "General"
+  },
+  {
+    "slug": "image",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-minus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-play",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-plus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "image-upscale",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "images",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "import",
+    "category": "General"
+  },
+  {
+    "slug": "inbox",
+    "category": "Communication"
+  },
+  {
+    "slug": "indent",
+    "category": "General"
+  },
+  {
+    "slug": "indent-decrease",
+    "category": "General"
+  },
+  {
+    "slug": "indent-increase",
+    "category": "General"
+  },
+  {
+    "slug": "indian-rupee",
+    "category": "General"
+  },
+  {
+    "slug": "infinity",
+    "category": "General"
+  },
+  {
+    "slug": "info",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "inspect",
+    "category": "General"
+  },
+  {
+    "slug": "inspection-panel",
+    "category": "General"
+  },
+  {
+    "slug": "italic",
+    "category": "General"
+  },
+  {
+    "slug": "iteration-ccw",
+    "category": "General"
+  },
+  {
+    "slug": "iteration-cw",
+    "category": "General"
+  },
+  {
+    "slug": "japanese-yen",
+    "category": "General"
+  },
+  {
+    "slug": "joystick",
+    "category": "General"
+  },
+  {
+    "slug": "kanban",
+    "category": "General"
+  },
+  {
+    "slug": "kanban-square",
+    "category": "General"
+  },
+  {
+    "slug": "kanban-square-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "kayak",
+    "category": "General"
+  },
+  {
+    "slug": "key",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "key-round",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "key-square",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "keyboard",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "keyboard-music",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "keyboard-off",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "lamp",
+    "category": "General"
+  },
+  {
+    "slug": "lamp-ceiling",
+    "category": "General"
+  },
+  {
+    "slug": "lamp-desk",
+    "category": "General"
+  },
+  {
+    "slug": "lamp-floor",
+    "category": "General"
+  },
+  {
+    "slug": "lamp-wall-down",
+    "category": "General"
+  },
+  {
+    "slug": "lamp-wall-up",
+    "category": "General"
+  },
+  {
+    "slug": "land-plot",
+    "category": "General"
+  },
+  {
+    "slug": "landmark",
+    "category": "General"
+  },
+  {
+    "slug": "languages",
+    "category": "General"
+  },
+  {
+    "slug": "laptop",
+    "category": "General"
+  },
+  {
+    "slug": "laptop-2",
+    "category": "General"
+  },
+  {
+    "slug": "laptop-minimal",
+    "category": "General"
+  },
+  {
+    "slug": "laptop-minimal-check",
+    "category": "General"
+  },
+  {
+    "slug": "lasso",
+    "category": "General"
+  },
+  {
+    "slug": "lasso-select",
+    "category": "General"
+  },
+  {
+    "slug": "laugh",
+    "category": "General"
+  },
+  {
+    "slug": "layer-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "layer-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "layers",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-2",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-3",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-arrow-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-arrow-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-minus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layers-plus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "layout",
+    "category": "General"
+  },
+  {
+    "slug": "layout-dashboard",
+    "category": "General"
+  },
+  {
+    "slug": "layout-freeform",
+    "category": "General"
+  },
+  {
+    "slug": "layout-grid",
+    "category": "General"
+  },
+  {
+    "slug": "layout-list",
+    "category": "General"
+  },
+  {
+    "slug": "layout-panel-left",
+    "category": "General"
+  },
+  {
+    "slug": "layout-panel-top",
+    "category": "General"
+  },
+  {
+    "slug": "layout-template",
+    "category": "General"
+  },
+  {
+    "slug": "leaf",
+    "category": "General"
+  },
+  {
+    "slug": "leafy-green",
+    "category": "General"
+  },
+  {
+    "slug": "lectern",
+    "category": "General"
+  },
+  {
+    "slug": "lens-concave",
+    "category": "General"
+  },
+  {
+    "slug": "lens-convex",
+    "category": "General"
+  },
+  {
+    "slug": "letter-text",
+    "category": "General"
+  },
+  {
+    "slug": "library",
+    "category": "General"
+  },
+  {
+    "slug": "library-big",
+    "category": "General"
+  },
+  {
+    "slug": "library-square",
+    "category": "General"
+  },
+  {
+    "slug": "life-buoy",
+    "category": "General"
+  },
+  {
+    "slug": "ligature",
+    "category": "General"
+  },
+  {
+    "slug": "lightbulb",
+    "category": "General"
+  },
+  {
+    "slug": "lightbulb-off",
+    "category": "General"
+  },
+  {
+    "slug": "lighthouse",
+    "category": "General"
+  },
+  {
+    "slug": "line-chart",
+    "category": "General"
+  },
+  {
+    "slug": "line-dot-right-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "line-squiggle",
+    "category": "General"
+  },
+  {
+    "slug": "line-style",
+    "category": "General"
+  },
+  {
+    "slug": "link",
+    "category": "General"
+  },
+  {
+    "slug": "link-2",
+    "category": "General"
+  },
+  {
+    "slug": "link-2-off",
+    "category": "General"
+  },
+  {
+    "slug": "list",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-checks",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-chevrons-down-up",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-chevrons-up-down",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-clock",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-collapse",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-end",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-filter",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-filter-plus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-indent-decrease",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-indent-increase",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-minus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-music",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-ordered",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-plus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-restart",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-sort-ascending",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-sort-descending",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-start",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-todo",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-tree",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-video",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "list-x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "loader",
+    "category": "General"
+  },
+  {
+    "slug": "loader-2",
+    "category": "General"
+  },
+  {
+    "slug": "loader-circle",
+    "category": "General"
+  },
+  {
+    "slug": "loader-pinwheel",
+    "category": "General"
+  },
+  {
+    "slug": "locate",
+    "category": "General"
+  },
+  {
+    "slug": "locate-fixed",
+    "category": "General"
+  },
+  {
+    "slug": "locate-off",
+    "category": "General"
+  },
+  {
+    "slug": "location-edit",
+    "category": "General"
+  },
+  {
+    "slug": "lock",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "lock-keyhole",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "lock-keyhole-open",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "lock-open",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "log-in",
+    "category": "General"
+  },
+  {
+    "slug": "log-out",
+    "category": "General"
+  },
+  {
+    "slug": "logo",
+    "category": "General"
+  },
+  {
+    "slug": "logs",
+    "category": "General"
+  },
+  {
+    "slug": "lollipop",
+    "category": "General"
+  },
+  {
+    "slug": "luggage",
+    "category": "General"
+  },
+  {
+    "slug": "m-square",
+    "category": "General"
+  },
+  {
+    "slug": "magnet",
+    "category": "General"
+  },
+  {
+    "slug": "mail",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-badge",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-clock",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-minus",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-open",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-pen",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-question",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-question-mark",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-search",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-warning",
+    "category": "Communication"
+  },
+  {
+    "slug": "mail-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "mailbox",
+    "category": "Communication"
+  },
+  {
+    "slug": "mails",
+    "category": "Communication"
+  },
+  {
+    "slug": "map",
+    "category": "General"
+  },
+  {
+    "slug": "map-minus",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-check",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-check-inside",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-house",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-minus",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-minus-inside",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-off",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-pen",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-plus",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-plus-inside",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-search",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-x",
+    "category": "General"
+  },
+  {
+    "slug": "map-pin-x-inside",
+    "category": "General"
+  },
+  {
+    "slug": "map-pinned",
+    "category": "General"
+  },
+  {
+    "slug": "map-plus",
+    "category": "General"
+  },
+  {
+    "slug": "mars",
+    "category": "General"
+  },
+  {
+    "slug": "mars-stroke",
+    "category": "General"
+  },
+  {
+    "slug": "martini",
+    "category": "General"
+  },
+  {
+    "slug": "maximize",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "maximize-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "medal",
+    "category": "General"
+  },
+  {
+    "slug": "megaphone",
+    "category": "General"
+  },
+  {
+    "slug": "megaphone-off",
+    "category": "General"
+  },
+  {
+    "slug": "meh",
+    "category": "General"
+  },
+  {
+    "slug": "memory-stick",
+    "category": "General"
+  },
+  {
+    "slug": "menu",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "menu-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "merge",
+    "category": "General"
+  },
+  {
+    "slug": "message-circle",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-code",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-dashed",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-dashed-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-heart",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-more",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-off",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-question",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-question-mark",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-reply",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-warning",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-circle-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-code",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-dashed",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-diff",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-dot",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-heart",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-lock",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-more",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-off",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-quote",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-reply",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-share",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-text",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-warning",
+    "category": "Communication"
+  },
+  {
+    "slug": "message-square-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "messages-square",
+    "category": "General"
+  },
+  {
+    "slug": "metronome",
+    "category": "General"
+  },
+  {
+    "slug": "mic",
+    "category": "General"
+  },
+  {
+    "slug": "mic-2",
+    "category": "General"
+  },
+  {
+    "slug": "mic-audio-lines",
+    "category": "General"
+  },
+  {
+    "slug": "mic-off",
+    "category": "General"
+  },
+  {
+    "slug": "mic-signal",
+    "category": "General"
+  },
+  {
+    "slug": "mic-vocal",
+    "category": "General"
+  },
+  {
+    "slug": "microchip",
+    "category": "General"
+  },
+  {
+    "slug": "microscope",
+    "category": "General"
+  },
+  {
+    "slug": "microwave",
+    "category": "General"
+  },
+  {
+    "slug": "midi-port",
+    "category": "General"
+  },
+  {
+    "slug": "milestone",
+    "category": "General"
+  },
+  {
+    "slug": "milk",
+    "category": "General"
+  },
+  {
+    "slug": "milk-off",
+    "category": "General"
+  },
+  {
+    "slug": "minimize",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "minimize-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "minus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "minus-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "minus-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "mirror-rectangular",
+    "category": "General"
+  },
+  {
+    "slug": "mirror-round",
+    "category": "General"
+  },
+  {
+    "slug": "monitor",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-check",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-cloud",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-cog",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-dot",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-down",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-pause",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-play",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-smartphone",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-speaker",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-stop",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-up",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "monitor-x",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "moon",
+    "category": "General"
+  },
+  {
+    "slug": "moon-star",
+    "category": "General"
+  },
+  {
+    "slug": "mop",
+    "category": "General"
+  },
+  {
+    "slug": "mop-sparkles",
+    "category": "General"
+  },
+  {
+    "slug": "more-horizontal",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "more-vertical",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "mosque",
+    "category": "General"
+  },
+  {
+    "slug": "motorbike",
+    "category": "General"
+  },
+  {
+    "slug": "mountain",
+    "category": "General"
+  },
+  {
+    "slug": "mountain-snow",
+    "category": "General"
+  },
+  {
+    "slug": "mouse",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-left",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-off",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer-2",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer-2-off",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer-ban",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer-click",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-pointer-square-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "mouse-right",
+    "category": "General"
+  },
+  {
+    "slug": "move",
+    "category": "General"
+  },
+  {
+    "slug": "move-3-d",
+    "category": "General"
+  },
+  {
+    "slug": "move-3d",
+    "category": "General"
+  },
+  {
+    "slug": "move-diagonal",
+    "category": "General"
+  },
+  {
+    "slug": "move-diagonal-2",
+    "category": "General"
+  },
+  {
+    "slug": "move-down",
+    "category": "General"
+  },
+  {
+    "slug": "move-down-left",
+    "category": "General"
+  },
+  {
+    "slug": "move-down-right",
+    "category": "General"
+  },
+  {
+    "slug": "move-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "move-left",
+    "category": "General"
+  },
+  {
+    "slug": "move-right",
+    "category": "General"
+  },
+  {
+    "slug": "move-up",
+    "category": "General"
+  },
+  {
+    "slug": "move-up-left",
+    "category": "General"
+  },
+  {
+    "slug": "move-up-right",
+    "category": "General"
+  },
+  {
+    "slug": "move-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "music",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "music-2",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "music-3",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "music-4",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "navigation",
+    "category": "General"
+  },
+  {
+    "slug": "navigation-2",
+    "category": "General"
+  },
+  {
+    "slug": "navigation-2-off",
+    "category": "General"
+  },
+  {
+    "slug": "navigation-off",
+    "category": "General"
+  },
+  {
+    "slug": "network",
+    "category": "General"
+  },
+  {
+    "slug": "newspaper",
+    "category": "General"
+  },
+  {
+    "slug": "nfc",
+    "category": "General"
+  },
+  {
+    "slug": "non-binary",
+    "category": "General"
+  },
+  {
+    "slug": "notebook",
+    "category": "General"
+  },
+  {
+    "slug": "notebook-pen",
+    "category": "General"
+  },
+  {
+    "slug": "notebook-tabs",
+    "category": "General"
+  },
+  {
+    "slug": "notebook-text",
+    "category": "General"
+  },
+  {
+    "slug": "notepad-text",
+    "category": "General"
+  },
+  {
+    "slug": "notepad-text-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "nut",
+    "category": "General"
+  },
+  {
+    "slug": "nut-off",
+    "category": "General"
+  },
+  {
+    "slug": "octagon",
+    "category": "General"
+  },
+  {
+    "slug": "octagon-alert",
+    "category": "General"
+  },
+  {
+    "slug": "octagon-minus",
+    "category": "General"
+  },
+  {
+    "slug": "octagon-pause",
+    "category": "General"
+  },
+  {
+    "slug": "octagon-x",
+    "category": "General"
+  },
+  {
+    "slug": "omega",
+    "category": "General"
+  },
+  {
+    "slug": "option",
+    "category": "General"
+  },
+  {
+    "slug": "orbit",
+    "category": "General"
+  },
+  {
+    "slug": "origami",
+    "category": "General"
+  },
+  {
+    "slug": "outdent",
+    "category": "General"
+  },
+  {
+    "slug": "package",
+    "category": "General"
+  },
+  {
+    "slug": "package-2",
+    "category": "General"
+  },
+  {
+    "slug": "package-check",
+    "category": "General"
+  },
+  {
+    "slug": "package-minus",
+    "category": "General"
+  },
+  {
+    "slug": "package-open",
+    "category": "General"
+  },
+  {
+    "slug": "package-plus",
+    "category": "General"
+  },
+  {
+    "slug": "package-search",
+    "category": "General"
+  },
+  {
+    "slug": "package-x",
+    "category": "General"
+  },
+  {
+    "slug": "paint-bucket",
+    "category": "General"
+  },
+  {
+    "slug": "paint-roller",
+    "category": "General"
+  },
+  {
+    "slug": "paintbrush",
+    "category": "General"
+  },
+  {
+    "slug": "paintbrush-2",
+    "category": "General"
+  },
+  {
+    "slug": "paintbrush-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "palette",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "palmtree",
+    "category": "General"
+  },
+  {
+    "slug": "panda",
+    "category": "General"
+  },
+  {
+    "slug": "panel-bottom",
+    "category": "General"
+  },
+  {
+    "slug": "panel-bottom-close",
+    "category": "General"
+  },
+  {
+    "slug": "panel-bottom-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-bottom-inactive",
+    "category": "General"
+  },
+  {
+    "slug": "panel-bottom-open",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left-close",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left-inactive",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left-open",
+    "category": "General"
+  },
+  {
+    "slug": "panel-left-right-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-right",
+    "category": "General"
+  },
+  {
+    "slug": "panel-right-close",
+    "category": "General"
+  },
+  {
+    "slug": "panel-right-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-right-inactive",
+    "category": "General"
+  },
+  {
+    "slug": "panel-right-open",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top-bottom-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top-close",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top-inactive",
+    "category": "General"
+  },
+  {
+    "slug": "panel-top-open",
+    "category": "General"
+  },
+  {
+    "slug": "panels-left-bottom",
+    "category": "General"
+  },
+  {
+    "slug": "panels-left-right",
+    "category": "General"
+  },
+  {
+    "slug": "panels-right-bottom",
+    "category": "General"
+  },
+  {
+    "slug": "panels-top-bottom",
+    "category": "General"
+  },
+  {
+    "slug": "panels-top-left",
+    "category": "General"
+  },
+  {
+    "slug": "paper-bag",
+    "category": "General"
+  },
+  {
+    "slug": "paperclip",
+    "category": "General"
+  },
+  {
+    "slug": "parasol",
+    "category": "General"
+  },
+  {
+    "slug": "parentheses",
+    "category": "General"
+  },
+  {
+    "slug": "parking-circle",
+    "category": "General"
+  },
+  {
+    "slug": "parking-circle-off",
+    "category": "General"
+  },
+  {
+    "slug": "parking-meter",
+    "category": "General"
+  },
+  {
+    "slug": "parking-square",
+    "category": "General"
+  },
+  {
+    "slug": "parking-square-off",
+    "category": "General"
+  },
+  {
+    "slug": "party-popper",
+    "category": "General"
+  },
+  {
+    "slug": "pause",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "pause-circle",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "pause-octagon",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "paw-print",
+    "category": "General"
+  },
+  {
+    "slug": "pc-case",
+    "category": "General"
+  },
+  {
+    "slug": "pen",
+    "category": "General"
+  },
+  {
+    "slug": "pen-box",
+    "category": "General"
+  },
+  {
+    "slug": "pen-line",
+    "category": "General"
+  },
+  {
+    "slug": "pen-off",
+    "category": "General"
+  },
+  {
+    "slug": "pen-square",
+    "category": "General"
+  },
+  {
+    "slug": "pen-tool",
+    "category": "General"
+  },
+  {
+    "slug": "pencil",
+    "category": "General"
+  },
+  {
+    "slug": "pencil-line",
+    "category": "General"
+  },
+  {
+    "slug": "pencil-off",
+    "category": "General"
+  },
+  {
+    "slug": "pencil-ruler",
+    "category": "General"
+  },
+  {
+    "slug": "pencil-sparkles",
+    "category": "General"
+  },
+  {
+    "slug": "pentagon",
+    "category": "General"
+  },
+  {
+    "slug": "percent",
+    "category": "General"
+  },
+  {
+    "slug": "percent-circle",
+    "category": "General"
+  },
+  {
+    "slug": "percent-diamond",
+    "category": "General"
+  },
+  {
+    "slug": "percent-square",
+    "category": "General"
+  },
+  {
+    "slug": "person-standing",
+    "category": "General"
+  },
+  {
+    "slug": "phi",
+    "category": "General"
+  },
+  {
+    "slug": "philippine-peso",
+    "category": "General"
+  },
+  {
+    "slug": "phone",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-call",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-forwarded",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-incoming",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-missed",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-off",
+    "category": "Communication"
+  },
+  {
+    "slug": "phone-outgoing",
+    "category": "Communication"
+  },
+  {
+    "slug": "pi",
+    "category": "General"
+  },
+  {
+    "slug": "pi-square",
+    "category": "General"
+  },
+  {
+    "slug": "piano",
+    "category": "General"
+  },
+  {
+    "slug": "pickaxe",
+    "category": "General"
+  },
+  {
+    "slug": "picture-in-picture",
+    "category": "General"
+  },
+  {
+    "slug": "picture-in-picture-2",
+    "category": "General"
+  },
+  {
+    "slug": "pie-chart",
+    "category": "General"
+  },
+  {
+    "slug": "piggy-bank",
+    "category": "General"
+  },
+  {
+    "slug": "pilcrow",
+    "category": "General"
+  },
+  {
+    "slug": "pilcrow-left",
+    "category": "General"
+  },
+  {
+    "slug": "pilcrow-right",
+    "category": "General"
+  },
+  {
+    "slug": "pilcrow-square",
+    "category": "General"
+  },
+  {
+    "slug": "pill",
+    "category": "General"
+  },
+  {
+    "slug": "pill-bottle",
+    "category": "General"
+  },
+  {
+    "slug": "pin",
+    "category": "General"
+  },
+  {
+    "slug": "pin-off",
+    "category": "General"
+  },
+  {
+    "slug": "pipette",
+    "category": "General"
+  },
+  {
+    "slug": "pizza",
+    "category": "General"
+  },
+  {
+    "slug": "plane",
+    "category": "General"
+  },
+  {
+    "slug": "plane-landing",
+    "category": "General"
+  },
+  {
+    "slug": "plane-takeoff",
+    "category": "General"
+  },
+  {
+    "slug": "play",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "play-circle",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "play-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "play-square",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "playing-card",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "playing-cards",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "playing-cards-fan",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "plug",
+    "category": "General"
+  },
+  {
+    "slug": "plug-2",
+    "category": "General"
+  },
+  {
+    "slug": "plug-zap",
+    "category": "General"
+  },
+  {
+    "slug": "plug-zap-2",
+    "category": "General"
+  },
+  {
+    "slug": "plus",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "plus-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "plus-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "pocket-knife",
+    "category": "General"
+  },
+  {
+    "slug": "podcast",
+    "category": "General"
+  },
+  {
+    "slug": "podium",
+    "category": "General"
+  },
+  {
+    "slug": "pointer",
+    "category": "General"
+  },
+  {
+    "slug": "pointer-off",
+    "category": "General"
+  },
+  {
+    "slug": "popcorn",
+    "category": "General"
+  },
+  {
+    "slug": "popsicle",
+    "category": "General"
+  },
+  {
+    "slug": "pound-sterling",
+    "category": "General"
+  },
+  {
+    "slug": "power",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "power-circle",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "power-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "power-square",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "presentation",
+    "category": "General"
+  },
+  {
+    "slug": "printer",
+    "category": "General"
+  },
+  {
+    "slug": "printer-check",
+    "category": "General"
+  },
+  {
+    "slug": "printer-x",
+    "category": "General"
+  },
+  {
+    "slug": "projector",
+    "category": "General"
+  },
+  {
+    "slug": "proportions",
+    "category": "General"
+  },
+  {
+    "slug": "puzzle",
+    "category": "General"
+  },
+  {
+    "slug": "pyramid",
+    "category": "General"
+  },
+  {
+    "slug": "qr-code",
+    "category": "General"
+  },
+  {
+    "slug": "quote",
+    "category": "General"
+  },
+  {
+    "slug": "rabbit",
+    "category": "General"
+  },
+  {
+    "slug": "radar",
+    "category": "General"
+  },
+  {
+    "slug": "radiation",
+    "category": "General"
+  },
+  {
+    "slug": "radical",
+    "category": "General"
+  },
+  {
+    "slug": "radio",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "radio-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "radio-receiver",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "radio-tower",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "radius",
+    "category": "General"
+  },
+  {
+    "slug": "rainbow",
+    "category": "General"
+  },
+  {
+    "slug": "rat",
+    "category": "General"
+  },
+  {
+    "slug": "ratio",
+    "category": "General"
+  },
+  {
+    "slug": "receipt",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-cent",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-euro",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-indian-rupee",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-japanese-yen",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-pound-sterling",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-russian-ruble",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-swiss-franc",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-text",
+    "category": "General"
+  },
+  {
+    "slug": "receipt-turkish-lira",
+    "category": "General"
+  },
+  {
+    "slug": "rectangle-circle",
+    "category": "General"
+  },
+  {
+    "slug": "rectangle-ellipsis",
+    "category": "General"
+  },
+  {
+    "slug": "rectangle-goggles",
+    "category": "General"
+  },
+  {
+    "slug": "rectangle-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "rectangle-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "recycle",
+    "category": "General"
+  },
+  {
+    "slug": "redo",
+    "category": "General"
+  },
+  {
+    "slug": "redo-2",
+    "category": "General"
+  },
+  {
+    "slug": "redo-dot",
+    "category": "General"
+  },
+  {
+    "slug": "refresh-ccw",
+    "category": "General"
+  },
+  {
+    "slug": "refresh-ccw-dot",
+    "category": "General"
+  },
+  {
+    "slug": "refresh-cw",
+    "category": "General"
+  },
+  {
+    "slug": "refresh-cw-off",
+    "category": "General"
+  },
+  {
+    "slug": "refrigerator",
+    "category": "General"
+  },
+  {
+    "slug": "regex",
+    "category": "General"
+  },
+  {
+    "slug": "remove-formatting",
+    "category": "General"
+  },
+  {
+    "slug": "repeat",
+    "category": "General"
+  },
+  {
+    "slug": "repeat-1",
+    "category": "General"
+  },
+  {
+    "slug": "repeat-2",
+    "category": "General"
+  },
+  {
+    "slug": "repeat-off",
+    "category": "General"
+  },
+  {
+    "slug": "replace",
+    "category": "General"
+  },
+  {
+    "slug": "replace-all",
+    "category": "General"
+  },
+  {
+    "slug": "reply",
+    "category": "General"
+  },
+  {
+    "slug": "reply-all",
+    "category": "General"
+  },
+  {
+    "slug": "rewind",
+    "category": "General"
+  },
+  {
+    "slug": "ribbon",
+    "category": "General"
+  },
+  {
+    "slug": "road",
+    "category": "General"
+  },
+  {
+    "slug": "robot-arm",
+    "category": "General"
+  },
+  {
+    "slug": "robot-vacuum",
+    "category": "General"
+  },
+  {
+    "slug": "rocket",
+    "category": "General"
+  },
+  {
+    "slug": "rocking-chair",
+    "category": "General"
+  },
+  {
+    "slug": "roller-coaster",
+    "category": "General"
+  },
+  {
+    "slug": "rose",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-3-d",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-3d",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-ccw",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-ccw-clock",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-ccw-key",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-ccw-square",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-cw",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-cw-fading-clock",
+    "category": "General"
+  },
+  {
+    "slug": "rotate-cw-square",
+    "category": "General"
+  },
+  {
+    "slug": "route",
+    "category": "General"
+  },
+  {
+    "slug": "route-off",
+    "category": "General"
+  },
+  {
+    "slug": "router",
+    "category": "General"
+  },
+  {
+    "slug": "rows",
+    "category": "General"
+  },
+  {
+    "slug": "rows-2",
+    "category": "General"
+  },
+  {
+    "slug": "rows-3",
+    "category": "General"
+  },
+  {
+    "slug": "rows-4",
+    "category": "General"
+  },
+  {
+    "slug": "rss",
+    "category": "General"
+  },
+  {
+    "slug": "ruler",
+    "category": "General"
+  },
+  {
+    "slug": "ruler-dimension-line",
+    "category": "General"
+  },
+  {
+    "slug": "russian-ruble",
+    "category": "General"
+  },
+  {
+    "slug": "sailboat",
+    "category": "General"
+  },
+  {
+    "slug": "salad",
+    "category": "General"
+  },
+  {
+    "slug": "sandwich",
+    "category": "General"
+  },
+  {
+    "slug": "satellite",
+    "category": "General"
+  },
+  {
+    "slug": "satellite-dish",
+    "category": "General"
+  },
+  {
+    "slug": "saudi-riyal",
+    "category": "General"
+  },
+  {
+    "slug": "save",
+    "category": "General"
+  },
+  {
+    "slug": "save-all",
+    "category": "General"
+  },
+  {
+    "slug": "save-check",
+    "category": "General"
+  },
+  {
+    "slug": "save-off",
+    "category": "General"
+  },
+  {
+    "slug": "save-pen",
+    "category": "General"
+  },
+  {
+    "slug": "save-plus",
+    "category": "General"
+  },
+  {
+    "slug": "scale",
+    "category": "General"
+  },
+  {
+    "slug": "scale-3-d",
+    "category": "General"
+  },
+  {
+    "slug": "scale-3d",
+    "category": "General"
+  },
+  {
+    "slug": "scaling",
+    "category": "General"
+  },
+  {
+    "slug": "scan",
+    "category": "General"
+  },
+  {
+    "slug": "scan-barcode",
+    "category": "General"
+  },
+  {
+    "slug": "scan-box",
+    "category": "General"
+  },
+  {
+    "slug": "scan-eye",
+    "category": "General"
+  },
+  {
+    "slug": "scan-face",
+    "category": "General"
+  },
+  {
+    "slug": "scan-heart",
+    "category": "General"
+  },
+  {
+    "slug": "scan-line",
+    "category": "General"
+  },
+  {
+    "slug": "scan-qr-code",
+    "category": "General"
+  },
+  {
+    "slug": "scan-search",
+    "category": "General"
+  },
+  {
+    "slug": "scan-square",
+    "category": "General"
+  },
+  {
+    "slug": "scan-text",
+    "category": "General"
+  },
+  {
+    "slug": "scatter-chart",
+    "category": "General"
+  },
+  {
+    "slug": "school",
+    "category": "General"
+  },
+  {
+    "slug": "school-2",
+    "category": "General"
+  },
+  {
+    "slug": "scissors",
+    "category": "General"
+  },
+  {
+    "slug": "scissors-line-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "scissors-square",
+    "category": "General"
+  },
+  {
+    "slug": "scissors-square-dashed-bottom",
+    "category": "General"
+  },
+  {
+    "slug": "scooter",
+    "category": "General"
+  },
+  {
+    "slug": "screen-share",
+    "category": "General"
+  },
+  {
+    "slug": "screen-share-off",
+    "category": "General"
+  },
+  {
+    "slug": "scroll",
+    "category": "General"
+  },
+  {
+    "slug": "scroll-text",
+    "category": "General"
+  },
+  {
+    "slug": "search",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "search-alert",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "search-check",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "search-code",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "search-slash",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "search-x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "section",
+    "category": "General"
+  },
+  {
+    "slug": "send",
+    "category": "Communication"
+  },
+  {
+    "slug": "send-horizonal",
+    "category": "Communication"
+  },
+  {
+    "slug": "send-horizontal",
+    "category": "Communication"
+  },
+  {
+    "slug": "send-to-back",
+    "category": "Communication"
+  },
+  {
+    "slug": "separator-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "separator-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "server",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "server-cog",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "server-crash",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "server-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "server-plus",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "settings",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "settings-2",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "shapes",
+    "category": "General"
+  },
+  {
+    "slug": "share",
+    "category": "Communication"
+  },
+  {
+    "slug": "share-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "sheet",
+    "category": "General"
+  },
+  {
+    "slug": "shell",
+    "category": "General"
+  },
+  {
+    "slug": "shelving-unit",
+    "category": "General"
+  },
+  {
+    "slug": "shield",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-alert",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-ban",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-check",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-close",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-cog",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-cog-corner",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-ellipsis",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-half",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-keyhole",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-lock",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-minus",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-off",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-plus",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-question",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-question-mark",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-user",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "shield-x",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "ship",
+    "category": "General"
+  },
+  {
+    "slug": "ship-cargo",
+    "category": "General"
+  },
+  {
+    "slug": "ship-wheel",
+    "category": "General"
+  },
+  {
+    "slug": "shirt",
+    "category": "General"
+  },
+  {
+    "slug": "shopping-bag",
+    "category": "General"
+  },
+  {
+    "slug": "shopping-basket",
+    "category": "General"
+  },
+  {
+    "slug": "shopping-cart",
+    "category": "General"
+  },
+  {
+    "slug": "shopping-cart-minus",
+    "category": "General"
+  },
+  {
+    "slug": "shopping-cart-plus",
+    "category": "General"
+  },
+  {
+    "slug": "shovel",
+    "category": "General"
+  },
+  {
+    "slug": "shower-head",
+    "category": "General"
+  },
+  {
+    "slug": "shredder",
+    "category": "General"
+  },
+  {
+    "slug": "shrimp",
+    "category": "General"
+  },
+  {
+    "slug": "shrimp-off",
+    "category": "General"
+  },
+  {
+    "slug": "shrink",
+    "category": "General"
+  },
+  {
+    "slug": "shrub",
+    "category": "General"
+  },
+  {
+    "slug": "shuffle",
+    "category": "General"
+  },
+  {
+    "slug": "sidebar",
+    "category": "General"
+  },
+  {
+    "slug": "sidebar-close",
+    "category": "General"
+  },
+  {
+    "slug": "sidebar-open",
+    "category": "General"
+  },
+  {
+    "slug": "sigma",
+    "category": "General"
+  },
+  {
+    "slug": "sigma-square",
+    "category": "General"
+  },
+  {
+    "slug": "signal",
+    "category": "General"
+  },
+  {
+    "slug": "signal-high",
+    "category": "General"
+  },
+  {
+    "slug": "signal-low",
+    "category": "General"
+  },
+  {
+    "slug": "signal-medium",
+    "category": "General"
+  },
+  {
+    "slug": "signal-zero",
+    "category": "General"
+  },
+  {
+    "slug": "signature",
+    "category": "General"
+  },
+  {
+    "slug": "signpost",
+    "category": "General"
+  },
+  {
+    "slug": "signpost-big",
+    "category": "General"
+  },
+  {
+    "slug": "siren",
+    "category": "General"
+  },
+  {
+    "slug": "skip-back",
+    "category": "General"
+  },
+  {
+    "slug": "skip-forward",
+    "category": "General"
+  },
+  {
+    "slug": "skull",
+    "category": "General"
+  },
+  {
+    "slug": "slash",
+    "category": "General"
+  },
+  {
+    "slug": "slash-square",
+    "category": "General"
+  },
+  {
+    "slug": "slice",
+    "category": "General"
+  },
+  {
+    "slug": "sliders",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "sliders-horizontal",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "sliders-vertical",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "smartphone",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "smartphone-charging",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "smartphone-nfc",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "smile",
+    "category": "General"
+  },
+  {
+    "slug": "smile-plus",
+    "category": "General"
+  },
+  {
+    "slug": "snail",
+    "category": "General"
+  },
+  {
+    "slug": "snowflake",
+    "category": "General"
+  },
+  {
+    "slug": "soap-dispenser-droplet",
+    "category": "General"
+  },
+  {
+    "slug": "sofa",
+    "category": "General"
+  },
+  {
+    "slug": "solar-panel",
+    "category": "General"
+  },
+  {
+    "slug": "sort-asc",
+    "category": "General"
+  },
+  {
+    "slug": "sort-desc",
+    "category": "General"
+  },
+  {
+    "slug": "soup",
+    "category": "General"
+  },
+  {
+    "slug": "space",
+    "category": "General"
+  },
+  {
+    "slug": "spade",
+    "category": "General"
+  },
+  {
+    "slug": "sparkle",
+    "category": "General"
+  },
+  {
+    "slug": "sparkles",
+    "category": "General"
+  },
+  {
+    "slug": "speaker",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "speech",
+    "category": "General"
+  },
+  {
+    "slug": "spell-check",
+    "category": "General"
+  },
+  {
+    "slug": "spell-check-2",
+    "category": "General"
+  },
+  {
+    "slug": "spline",
+    "category": "General"
+  },
+  {
+    "slug": "spline-pointer",
+    "category": "General"
+  },
+  {
+    "slug": "split",
+    "category": "General"
+  },
+  {
+    "slug": "split-square-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "split-square-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "spool",
+    "category": "General"
+  },
+  {
+    "slug": "sport-shoe",
+    "category": "General"
+  },
+  {
+    "slug": "spotlight",
+    "category": "General"
+  },
+  {
+    "slug": "spray-can",
+    "category": "General"
+  },
+  {
+    "slug": "sprout",
+    "category": "General"
+  },
+  {
+    "slug": "square",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-activity",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-down-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-down-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-out-down-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-out-down-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-out-up-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-out-up-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-right-enter",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-right-exit",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-up-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-arrow-up-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-asterisk",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-bottom-dashed-scissors",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-centerline-dashed-horizontal",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-centerline-dashed-vertical",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-chart-gantt",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-check",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-check-big",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-chevron-down",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-chevron-left",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-chevron-right",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-chevron-up",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-code",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-bottom",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-bottom-code",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-kanban",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-mouse-pointer",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-text",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dashed-top-solid",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dimensions",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-divide",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-dot",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-equal",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-exclamation-point",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-function",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-gantt-chart",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-kanban",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-library",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-m",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-menu",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-minus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-mouse-pointer",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-parking",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-parking-off",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-pause",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-pen",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-percent",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-pi",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-pilcrow",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-play",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-plus",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-power",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-radical",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-round-corner",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-scissors",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-sigma",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-slash",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-split-horizontal",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-split-vertical",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-square",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-stack",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-star",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-stop",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-terminal",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-text",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-user",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-user-round",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "square-x",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "squares-exclude",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "squares-intersect",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "squares-subtract",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "squares-unite",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "squircle",
+    "category": "General"
+  },
+  {
+    "slug": "squircle-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "squirrel",
+    "category": "General"
+  },
+  {
+    "slug": "stamp",
+    "category": "General"
+  },
+  {
+    "slug": "star",
+    "category": "General"
+  },
+  {
+    "slug": "star-check",
+    "category": "General"
+  },
+  {
+    "slug": "star-half",
+    "category": "General"
+  },
+  {
+    "slug": "star-minus",
+    "category": "General"
+  },
+  {
+    "slug": "star-off",
+    "category": "General"
+  },
+  {
+    "slug": "star-plus",
+    "category": "General"
+  },
+  {
+    "slug": "star-x",
+    "category": "General"
+  },
+  {
+    "slug": "stars",
+    "category": "General"
+  },
+  {
+    "slug": "step-back",
+    "category": "General"
+  },
+  {
+    "slug": "step-forward",
+    "category": "General"
+  },
+  {
+    "slug": "stethoscope",
+    "category": "General"
+  },
+  {
+    "slug": "sticker",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note-check",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note-minus",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note-off",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note-plus",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-note-x",
+    "category": "General"
+  },
+  {
+    "slug": "sticky-notes",
+    "category": "General"
+  },
+  {
+    "slug": "stone",
+    "category": "General"
+  },
+  {
+    "slug": "stop-circle",
+    "category": "General"
+  },
+  {
+    "slug": "store",
+    "category": "General"
+  },
+  {
+    "slug": "stretch-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "stretch-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "strikethrough",
+    "category": "General"
+  },
+  {
+    "slug": "subscript",
+    "category": "General"
+  },
+  {
+    "slug": "subtitles",
+    "category": "General"
+  },
+  {
+    "slug": "summary",
+    "category": "General"
+  },
+  {
+    "slug": "sun",
+    "category": "General"
+  },
+  {
+    "slug": "sun-dim",
+    "category": "General"
+  },
+  {
+    "slug": "sun-medium",
+    "category": "General"
+  },
+  {
+    "slug": "sun-moon",
+    "category": "General"
+  },
+  {
+    "slug": "sun-snow",
+    "category": "General"
+  },
+  {
+    "slug": "sunrise",
+    "category": "General"
+  },
+  {
+    "slug": "sunset",
+    "category": "General"
+  },
+  {
+    "slug": "superscript",
+    "category": "General"
+  },
+  {
+    "slug": "swatch-book",
+    "category": "General"
+  },
+  {
+    "slug": "swiss-franc",
+    "category": "General"
+  },
+  {
+    "slug": "switch-camera",
+    "category": "General"
+  },
+  {
+    "slug": "sword",
+    "category": "General"
+  },
+  {
+    "slug": "swords",
+    "category": "General"
+  },
+  {
+    "slug": "syringe",
+    "category": "General"
+  },
+  {
+    "slug": "table",
+    "category": "General"
+  },
+  {
+    "slug": "table-2",
+    "category": "General"
+  },
+  {
+    "slug": "table-cells-merge",
+    "category": "General"
+  },
+  {
+    "slug": "table-cells-split",
+    "category": "General"
+  },
+  {
+    "slug": "table-columns-split",
+    "category": "General"
+  },
+  {
+    "slug": "table-config",
+    "category": "General"
+  },
+  {
+    "slug": "table-of-contents",
+    "category": "General"
+  },
+  {
+    "slug": "table-properties",
+    "category": "General"
+  },
+  {
+    "slug": "table-rows-split",
+    "category": "General"
+  },
+  {
+    "slug": "tablet",
+    "category": "General"
+  },
+  {
+    "slug": "tablet-smartphone",
+    "category": "General"
+  },
+  {
+    "slug": "tablets",
+    "category": "General"
+  },
+  {
+    "slug": "tag",
+    "category": "General"
+  },
+  {
+    "slug": "tag-plus",
+    "category": "General"
+  },
+  {
+    "slug": "tag-x",
+    "category": "General"
+  },
+  {
+    "slug": "tags",
+    "category": "General"
+  },
+  {
+    "slug": "tally-1",
+    "category": "General"
+  },
+  {
+    "slug": "tally-2",
+    "category": "General"
+  },
+  {
+    "slug": "tally-3",
+    "category": "General"
+  },
+  {
+    "slug": "tally-4",
+    "category": "General"
+  },
+  {
+    "slug": "tally-5",
+    "category": "General"
+  },
+  {
+    "slug": "tangent",
+    "category": "General"
+  },
+  {
+    "slug": "target",
+    "category": "General"
+  },
+  {
+    "slug": "telescope",
+    "category": "General"
+  },
+  {
+    "slug": "tent",
+    "category": "General"
+  },
+  {
+    "slug": "tent-tree",
+    "category": "General"
+  },
+  {
+    "slug": "terminal",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "terminal-square",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "test-tube",
+    "category": "General"
+  },
+  {
+    "slug": "test-tube-2",
+    "category": "General"
+  },
+  {
+    "slug": "test-tube-diagonal",
+    "category": "General"
+  },
+  {
+    "slug": "test-tubes",
+    "category": "General"
+  },
+  {
+    "slug": "text",
+    "category": "General"
+  },
+  {
+    "slug": "text-align-center",
+    "category": "General"
+  },
+  {
+    "slug": "text-align-end",
+    "category": "General"
+  },
+  {
+    "slug": "text-align-justify",
+    "category": "General"
+  },
+  {
+    "slug": "text-align-start",
+    "category": "General"
+  },
+  {
+    "slug": "text-cursor",
+    "category": "General"
+  },
+  {
+    "slug": "text-cursor-input",
+    "category": "General"
+  },
+  {
+    "slug": "text-initial",
+    "category": "General"
+  },
+  {
+    "slug": "text-quote",
+    "category": "General"
+  },
+  {
+    "slug": "text-search",
+    "category": "General"
+  },
+  {
+    "slug": "text-select",
+    "category": "General"
+  },
+  {
+    "slug": "text-selection",
+    "category": "General"
+  },
+  {
+    "slug": "text-wrap",
+    "category": "General"
+  },
+  {
+    "slug": "theater",
+    "category": "General"
+  },
+  {
+    "slug": "thermometer",
+    "category": "General"
+  },
+  {
+    "slug": "thermometer-snowflake",
+    "category": "General"
+  },
+  {
+    "slug": "thermometer-sun",
+    "category": "General"
+  },
+  {
+    "slug": "thumbs-down",
+    "category": "General"
+  },
+  {
+    "slug": "thumbs-up",
+    "category": "General"
+  },
+  {
+    "slug": "tic-tac-toe",
+    "category": "General"
+  },
+  {
+    "slug": "ticket",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-check",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-minus",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-percent",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-plus",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-slash",
+    "category": "General"
+  },
+  {
+    "slug": "ticket-x",
+    "category": "General"
+  },
+  {
+    "slug": "tickets",
+    "category": "General"
+  },
+  {
+    "slug": "tickets-plane",
+    "category": "General"
+  },
+  {
+    "slug": "timeline",
+    "category": "General"
+  },
+  {
+    "slug": "timer",
+    "category": "General"
+  },
+  {
+    "slug": "timer-off",
+    "category": "General"
+  },
+  {
+    "slug": "timer-reset",
+    "category": "General"
+  },
+  {
+    "slug": "toggle-left",
+    "category": "General"
+  },
+  {
+    "slug": "toggle-right",
+    "category": "General"
+  },
+  {
+    "slug": "toilet",
+    "category": "General"
+  },
+  {
+    "slug": "tool-case",
+    "category": "General"
+  },
+  {
+    "slug": "toolbox",
+    "category": "General"
+  },
+  {
+    "slug": "tornado",
+    "category": "General"
+  },
+  {
+    "slug": "torus",
+    "category": "General"
+  },
+  {
+    "slug": "touchpad",
+    "category": "General"
+  },
+  {
+    "slug": "touchpad-off",
+    "category": "General"
+  },
+  {
+    "slug": "towel-rack",
+    "category": "General"
+  },
+  {
+    "slug": "tower-control",
+    "category": "General"
+  },
+  {
+    "slug": "toy-brick",
+    "category": "General"
+  },
+  {
+    "slug": "tractor",
+    "category": "General"
+  },
+  {
+    "slug": "traffic-cone",
+    "category": "General"
+  },
+  {
+    "slug": "trailer",
+    "category": "General"
+  },
+  {
+    "slug": "train",
+    "category": "General"
+  },
+  {
+    "slug": "train-front",
+    "category": "General"
+  },
+  {
+    "slug": "train-front-tunnel",
+    "category": "General"
+  },
+  {
+    "slug": "train-track",
+    "category": "General"
+  },
+  {
+    "slug": "tram-front",
+    "category": "General"
+  },
+  {
+    "slug": "transgender",
+    "category": "General"
+  },
+  {
+    "slug": "trash",
+    "category": "General"
+  },
+  {
+    "slug": "trash-2",
+    "category": "General"
+  },
+  {
+    "slug": "trash-off",
+    "category": "General"
+  },
+  {
+    "slug": "tree-deciduous",
+    "category": "General"
+  },
+  {
+    "slug": "tree-palm",
+    "category": "General"
+  },
+  {
+    "slug": "tree-pine",
+    "category": "General"
+  },
+  {
+    "slug": "trees",
+    "category": "General"
+  },
+  {
+    "slug": "trending-down",
+    "category": "General"
+  },
+  {
+    "slug": "trending-up",
+    "category": "General"
+  },
+  {
+    "slug": "trending-up-down",
+    "category": "General"
+  },
+  {
+    "slug": "triangle",
+    "category": "General"
+  },
+  {
+    "slug": "triangle-alert",
+    "category": "General"
+  },
+  {
+    "slug": "triangle-dashed",
+    "category": "General"
+  },
+  {
+    "slug": "triangle-right",
+    "category": "General"
+  },
+  {
+    "slug": "trophy",
+    "category": "General"
+  },
+  {
+    "slug": "truck",
+    "category": "General"
+  },
+  {
+    "slug": "truck-electric",
+    "category": "General"
+  },
+  {
+    "slug": "turkish-lira",
+    "category": "General"
+  },
+  {
+    "slug": "turntable",
+    "category": "General"
+  },
+  {
+    "slug": "turtle",
+    "category": "General"
+  },
+  {
+    "slug": "tv",
+    "category": "General"
+  },
+  {
+    "slug": "tv-2",
+    "category": "General"
+  },
+  {
+    "slug": "tv-minimal",
+    "category": "General"
+  },
+  {
+    "slug": "tv-minimal-play",
+    "category": "General"
+  },
+  {
+    "slug": "type",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "type-outline",
+    "category": "Media & Design"
+  },
+  {
+    "slug": "umbrella",
+    "category": "General"
+  },
+  {
+    "slug": "umbrella-off",
+    "category": "General"
+  },
+  {
+    "slug": "underline",
+    "category": "General"
+  },
+  {
+    "slug": "undo",
+    "category": "General"
+  },
+  {
+    "slug": "undo-2",
+    "category": "General"
+  },
+  {
+    "slug": "undo-dot",
+    "category": "General"
+  },
+  {
+    "slug": "unfold-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "unfold-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "ungroup",
+    "category": "General"
+  },
+  {
+    "slug": "university",
+    "category": "General"
+  },
+  {
+    "slug": "unlink",
+    "category": "General"
+  },
+  {
+    "slug": "unlink-2",
+    "category": "General"
+  },
+  {
+    "slug": "unlock",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "unlock-keyhole",
+    "category": "Security & Auth"
+  },
+  {
+    "slug": "unplug",
+    "category": "General"
+  },
+  {
+    "slug": "upload",
+    "category": "General"
+  },
+  {
+    "slug": "upload-cloud",
+    "category": "General"
+  },
+  {
+    "slug": "usb",
+    "category": "General"
+  },
+  {
+    "slug": "usb-c-port",
+    "category": "General"
+  },
+  {
+    "slug": "user",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-check-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-circle",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-circle-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-cog",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-cog-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-group",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-key",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-lock",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-minus",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-minus-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-pen",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-plus-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-arrow-left",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-check",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-cog",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-group",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-key",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-minus",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-pen",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-plus",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-search",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-round-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-search",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-shield",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-square",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-square-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-star",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-x",
+    "category": "Communication"
+  },
+  {
+    "slug": "user-x-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "users",
+    "category": "Communication"
+  },
+  {
+    "slug": "users-2",
+    "category": "Communication"
+  },
+  {
+    "slug": "users-round",
+    "category": "Communication"
+  },
+  {
+    "slug": "utensils",
+    "category": "General"
+  },
+  {
+    "slug": "utensils-crossed",
+    "category": "General"
+  },
+  {
+    "slug": "utility-pole",
+    "category": "General"
+  },
+  {
+    "slug": "van",
+    "category": "General"
+  },
+  {
+    "slug": "variable",
+    "category": "General"
+  },
+  {
+    "slug": "vault",
+    "category": "General"
+  },
+  {
+    "slug": "vector-polygon",
+    "category": "General"
+  },
+  {
+    "slug": "vector-square",
+    "category": "General"
+  },
+  {
+    "slug": "vegan",
+    "category": "General"
+  },
+  {
+    "slug": "venetian-mask",
+    "category": "General"
+  },
+  {
+    "slug": "venus",
+    "category": "General"
+  },
+  {
+    "slug": "venus-and-mars",
+    "category": "General"
+  },
+  {
+    "slug": "verified",
+    "category": "General"
+  },
+  {
+    "slug": "vibrate",
+    "category": "General"
+  },
+  {
+    "slug": "vibrate-off",
+    "category": "General"
+  },
+  {
+    "slug": "video",
+    "category": "General"
+  },
+  {
+    "slug": "video-off",
+    "category": "General"
+  },
+  {
+    "slug": "videotape",
+    "category": "General"
+  },
+  {
+    "slug": "view",
+    "category": "General"
+  },
+  {
+    "slug": "virus",
+    "category": "General"
+  },
+  {
+    "slug": "virus-off",
+    "category": "General"
+  },
+  {
+    "slug": "voicemail",
+    "category": "General"
+  },
+  {
+    "slug": "volleyball",
+    "category": "General"
+  },
+  {
+    "slug": "volume",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "volume-1",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "volume-2",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "volume-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "volume-x",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "vote",
+    "category": "General"
+  },
+  {
+    "slug": "wallet",
+    "category": "General"
+  },
+  {
+    "slug": "wallet-2",
+    "category": "General"
+  },
+  {
+    "slug": "wallet-cards",
+    "category": "General"
+  },
+  {
+    "slug": "wallet-minimal",
+    "category": "General"
+  },
+  {
+    "slug": "wallpaper",
+    "category": "General"
+  },
+  {
+    "slug": "wand",
+    "category": "General"
+  },
+  {
+    "slug": "wand-2",
+    "category": "General"
+  },
+  {
+    "slug": "wand-sparkles",
+    "category": "General"
+  },
+  {
+    "slug": "warehouse",
+    "category": "General"
+  },
+  {
+    "slug": "washing-machine",
+    "category": "General"
+  },
+  {
+    "slug": "watch",
+    "category": "General"
+  },
+  {
+    "slug": "waves",
+    "category": "General"
+  },
+  {
+    "slug": "waves-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "waves-arrow-up",
+    "category": "General"
+  },
+  {
+    "slug": "waves-horizontal",
+    "category": "General"
+  },
+  {
+    "slug": "waves-ladder",
+    "category": "General"
+  },
+  {
+    "slug": "waves-vertical",
+    "category": "General"
+  },
+  {
+    "slug": "waypoints",
+    "category": "General"
+  },
+  {
+    "slug": "webcam",
+    "category": "General"
+  },
+  {
+    "slug": "webcam-off",
+    "category": "General"
+  },
+  {
+    "slug": "webhook",
+    "category": "General"
+  },
+  {
+    "slug": "webhook-off",
+    "category": "General"
+  },
+  {
+    "slug": "weight",
+    "category": "General"
+  },
+  {
+    "slug": "weight-tilde",
+    "category": "General"
+  },
+  {
+    "slug": "wheat",
+    "category": "General"
+  },
+  {
+    "slug": "wheat-off",
+    "category": "General"
+  },
+  {
+    "slug": "whistle",
+    "category": "General"
+  },
+  {
+    "slug": "whole-word",
+    "category": "General"
+  },
+  {
+    "slug": "wifi",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-cog",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-high",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-low",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-pen",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-sync",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wifi-zero",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "wind",
+    "category": "General"
+  },
+  {
+    "slug": "wind-arrow-down",
+    "category": "General"
+  },
+  {
+    "slug": "wine",
+    "category": "General"
+  },
+  {
+    "slug": "wine-off",
+    "category": "General"
+  },
+  {
+    "slug": "workflow",
+    "category": "General"
+  },
+  {
+    "slug": "worm",
+    "category": "General"
+  },
+  {
+    "slug": "wrap-text",
+    "category": "General"
+  },
+  {
+    "slug": "wrench",
+    "category": "General"
+  },
+  {
+    "slug": "wrench-off",
+    "category": "General"
+  },
+  {
+    "slug": "x",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "x-circle",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "x-line-top",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "x-octagon",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "x-square",
+    "category": "UI & Controls"
+  },
+  {
+    "slug": "zap",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "zap-off",
+    "category": "Hardware & System"
+  },
+  {
+    "slug": "zodiac-aquarius",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-aries",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-cancer",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-capricorn",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-gemini",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-leo",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-libra",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-ophiuchus",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-pisces",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-sagittarius",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-scorpio",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-taurus",
+    "category": "General"
+  },
+  {
+    "slug": "zodiac-virgo",
+    "category": "General"
+  },
+  {
+    "slug": "zoom-in",
+    "category": "General"
+  },
+  {
+    "slug": "zoom-out",
+    "category": "General"
+  }
+]
